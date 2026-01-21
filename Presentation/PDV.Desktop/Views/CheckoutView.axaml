@@ -1,0 +1,221 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:conv="using:PDV.Desktop.Converters"
+             x:Class="PDV.Desktop.Views.CheckoutView"
+             x:DataType="vm:CheckoutViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="F2" Command="{Binding ProcessPaymentCommand}" CommandParameter="Cash" />
+        <KeyBinding Gesture="F3" Command="{Binding EnterPaymentModeCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding CancelSaleCommand}" />
+        <KeyBinding Gesture="F12" Command="{Binding StartNewSaleCommand}" />
+    </UserControl.KeyBindings>
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2196F3" Padding="16">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Text="PDV - Point of Sale"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="White" />
+                    <TextBlock FontSize="14" Foreground="White" Opacity="0.9">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="Sale #{0} | Items: {1}">
+                                <Binding Path="SaleNumber" />
+                                <Binding Path="ItemCount" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding Total, StringFormat='{}{0:C}'}"
+                           FontSize="36" FontWeight="Bold"
+                           Foreground="White"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,300" Margin="16">
+            <!-- Items Grid -->
+            <Border Background="White" CornerRadius="8" Padding="8"
+                    BorderBrush="#E0E0E0" BorderThickness="1">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- Barcode Input -->
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                        <TextBox Text="{Binding BarcodeInput}"
+                                 Watermark="Scan barcode or type product code..."
+                                 FontSize="16"
+                                 Height="44"
+                                 IsEnabled="{Binding !IsPaymentMode}">
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding SearchProductCommand}" />
+                            </TextBox.KeyBindings>
+                        </TextBox>
+                        <Button Grid.Column="1" Content="Add"
+                                Command="{Binding SearchProductCommand}"
+                                Margin="8,0,0,0"
+                                Height="44" Width="80"
+                                IsEnabled="{Binding !IsPaymentMode}" />
+                    </Grid>
+
+                    <!-- Items DataGrid -->
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Items}"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="True"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Sequence}" Width="50" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="120" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Qty" Binding="{Binding Quantity, StringFormat='{}{0:N2}'}" Width="70" />
+                            <DataGridTextColumn Header="Price" Binding="{Binding UnitPrice, StringFormat='{}{0:C}'}" Width="90" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='{}{0:C}'}" Width="100" IsReadOnly="True" />
+                            <DataGridTemplateColumn Header="" Width="40">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="X"
+                                                Command="{Binding $parent[DataGrid].((vm:CheckoutViewModel)DataContext).RemoveSelectedItemCommand}"
+                                                CommandParameter="{Binding}"
+                                                Background="#FF5252"
+                                                Foreground="White"
+                                                Width="30" Height="26"
+                                                HorizontalContentAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <!-- Right Panel - Payment -->
+            <Border Grid.Column="1" Background="#F5F5F5" CornerRadius="8"
+                    Padding="16" Margin="16,0,0,0"
+                    BorderBrush="#E0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Order Summary" FontWeight="SemiBold" FontSize="16"
+                               Margin="0,0,0,16" />
+
+                    <!-- Totals -->
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Subtotal:" Grid.Row="0" Foreground="#666" />
+                        <TextBlock Text="{Binding Subtotal, StringFormat='{}{0:C}'}"
+                                   Grid.Row="0" Grid.Column="1"
+                                   HorizontalAlignment="Right" />
+
+                        <TextBlock Text="Discount:" Grid.Row="1" Foreground="#666" Margin="0,4,0,0" />
+                        <TextBlock Text="{Binding Discount, StringFormat='-{0:C}'}"
+                                   Grid.Row="1" Grid.Column="1"
+                                   HorizontalAlignment="Right"
+                                   Foreground="#4CAF50" Margin="0,4,0,0" />
+
+                        <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8" />
+
+                        <TextBlock Text="TOTAL:" Grid.Row="3" FontWeight="Bold" FontSize="18" />
+                        <TextBlock Text="{Binding Total, StringFormat='{}{0:C}'}"
+                                   Grid.Row="3" Grid.Column="1"
+                                   FontWeight="Bold" FontSize="18"
+                                   HorizontalAlignment="Right"
+                                   Foreground="#2196F3" />
+                    </Grid>
+
+                    <!-- Payment Section (visible when in payment mode) -->
+                    <StackPanel IsVisible="{Binding IsPaymentMode}">
+                        <TextBlock Text="Amount Received:" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding AmountPaid}"
+                                 FontSize="18"
+                                 Height="40"
+                                 Margin="0,0,0,8" />
+
+                        <TextBlock Text="{Binding Change, StringFormat='Change: {0:C}'}"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="#4CAF50"
+                                   IsVisible="{Binding Change}"
+                                   Margin="0,0,0,16" />
+                    </StackPanel>
+
+                    <!-- Payment Buttons -->
+                    <StackPanel Spacing="8">
+                        <Button Content="Cash (F2)"
+                                Command="{Binding ProcessPaymentCommand}"
+                                CommandParameter="Cash"
+                                Height="48"
+                                HorizontalAlignment="Stretch"
+                                Background="#4CAF50"
+                                Foreground="White"
+                                FontSize="14" FontWeight="SemiBold"
+                                IsEnabled="{Binding ItemCount}" />
+
+                        <Button Content="Credit Card"
+                                Command="{Binding ProcessPaymentCommand}"
+                                CommandParameter="CreditCard"
+                                Height="40"
+                                HorizontalAlignment="Stretch"
+                                Background="#2196F3"
+                                Foreground="White"
+                                IsEnabled="{Binding ItemCount}" />
+
+                        <Button Content="Debit Card (F3)"
+                                Command="{Binding ProcessPaymentCommand}"
+                                CommandParameter="DebitCard"
+                                Height="40"
+                                HorizontalAlignment="Stretch"
+                                Background="#03A9F4"
+                                Foreground="White"
+                                IsEnabled="{Binding ItemCount}" />
+
+                        <Button Content="PIX"
+                                Command="{Binding ProcessPaymentCommand}"
+                                CommandParameter="Pix"
+                                Height="40"
+                                HorizontalAlignment="Stretch"
+                                Background="#00BFA5"
+                                Foreground="White"
+                                IsEnabled="{Binding ItemCount}" />
+
+                        <Separator Margin="0,8" />
+
+                        <Button Content="Cancel Sale (Esc)"
+                                Command="{Binding CancelSaleCommand}"
+                                Height="40"
+                                HorizontalAlignment="Stretch"
+                                Background="#FF5252"
+                                Foreground="White" />
+
+                        <Button Content="New Sale (F12)"
+                                Command="{Binding StartNewSaleCommand}"
+                                Height="40"
+                                HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Padding="16,8"
+                Background="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#FFEBEE|#E8F5E9'}">
+            <TextBlock Text="{Binding StatusMessage}"
+                       FontSize="14"
+                       Foreground="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#C62828|#2E7D32'}" />
+        </Border>
+
+        <!-- Keyboard Shortcuts Info -->
+        <Border Grid.Row="2" Background="#FAFAFA" Padding="16,8"
+                BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
+            <TextBlock Text="F2: Cash | F3: Debit Card | Del: Remove Item | Esc: Cancel Sale | F12: New Sale"
+                       Foreground="#757575" FontSize="12"
+                       HorizontalAlignment="Center" />
+        </Border>
+    </Grid>
+</UserControl>
