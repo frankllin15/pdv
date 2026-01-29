@@ -3,14 +3,18 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PDV.Core.Interfaces.Queries;
 using PDV.Core.Interfaces.Repositories;
-using PDV.Data.Local;
 using PDV.Data.Local.Context;
+using PDV.Data.Local.Handlers;
 using PDV.Data.Local.Queries;
 using PDV.Data.Local.Repositories;
+using PDV.Desktop.Services;
 using PDV.Desktop.ViewModels;
 using PDV.Desktop.Views;
+using PDV.Integration.Sync;
+using Serilog;
 
 namespace PDV.Desktop;
 
@@ -23,24 +27,38 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override async void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
-        var services = new ServiceCollection();
-        ConfigureServices(services);
-        Services = services.BuildServiceProvider();
-
-        // Initialize database
-        await InitializeDatabaseAsync();
-
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        try
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = Services.GetRequiredService<MainViewModel>()
-            };
-        }
+            Console.WriteLine("Configuring services...");
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            Services = services.BuildServiceProvider();
 
-        base.OnFrameworkInitializationCompleted();
+            Console.WriteLine("Initializing database...");
+            InitializeDatabase();
+
+            Console.WriteLine("Starting background sync service...");
+            StartBackgroundSync();
+
+            Console.WriteLine("Creating main window...");
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = Services.GetRequiredService<MainViewModel>()
+                };
+                Console.WriteLine("Main window created successfully!");
+            }
+
+            base.OnFrameworkInitializationCompleted();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR in OnFrameworkInitializationCompleted: {ex}");
+            throw;
+        }
     }
 
     private static void ConfigureServices(IServiceCollection services)
@@ -51,6 +69,8 @@ public partial class App : Application
         Directory.CreateDirectory(dbFolder);
         var dbPath = Path.Combine(dbFolder, "pdv_local.db");
         var connectionString = $"Data Source={dbPath}";
+        
+        Console.WriteLine($"Database path: {dbPath}");
 
         // DbContext
         services.AddDbContext<PdvDbContext>(options =>
@@ -68,17 +88,50 @@ public partial class App : Application
         // ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<CheckoutViewModel>();
+        services.AddTransient<ProductsViewModel>();
+
+        // Sync Services
+        var apiUrl = "http://localhost:5233"; // URL da API
+        services.AddHttpClient();
+        // services.AddLogging(builder => builder.AddSerilog());
+        services.AddSingleton<ISyncService>(sp =>
+        {
+            var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient();
+            var logger = sp.GetRequiredService<ILogger<SyncService>>();
+            return new SyncService(connectionString, apiUrl, logger, httpClient);
+        });
+        services.AddSingleton<IApiAuthService>(sp =>
+        {
+            var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient();
+            var syncService = sp.GetRequiredService<ISyncService>();
+            return new ApiAuthService(httpClient, syncService, apiUrl);
+        });
+        services.AddSingleton<BackgroundSyncService>(sp =>
+        {
+            var syncService = sp.GetRequiredService<ISyncService>();
+            var authService = sp.GetRequiredService<IApiAuthService>();
+            return new BackgroundSyncService(syncService, authService);
+        });
     }
 
-    private static async Task InitializeDatabaseAsync()
+    private static void InitializeDatabase()
     {
         using var scope = Services!.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<PdvDbContext>();
 
-        // Ensure database is created
-        await context.Database.EnsureCreatedAsync();
+        Dapper.SqlMapper.AddTypeHandler(new SqliteGuidTypeHandler());
 
-        // Seed data
-        await SeedData.InitializeAsync(context);
+        // Apply pending migrations
+        context.Database.Migrate();
+    }
+
+    private static void StartBackgroundSync()
+    {
+        var backgroundSync = Services!.GetRequiredService<BackgroundSyncService>();
+        backgroundSync.StatusChanged += (sender, e) =>
+        {
+            Console.WriteLine($"[Sync] {e.Status}: {e.Message}");
+        };
+        backgroundSync.Start();
     }
 }

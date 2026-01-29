@@ -26,7 +26,7 @@ public class ProductQuery : IProductQuery
             WHERE Barcode = @Barcode AND IsActive = 1
             LIMIT 1";
 
-        using var connection = CreateConnection();
+        using var connection = CreateConnection(); 
         return await connection.QueryFirstOrDefaultAsync<ProductDto>(sql, new { Barcode = barcode });
     }
 

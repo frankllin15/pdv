@@ -88,6 +88,8 @@ public partial class CheckoutViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(BarcodeInput))
             return;
 
+        var barcode = BarcodeInput.Trim();
+
         if (_currentSale == null)
         {
             await StartNewSaleAsync();
@@ -95,10 +97,10 @@ public partial class CheckoutViewModel : ViewModelBase
 
         try
         {
-            var product = await _productQuery.GetByBarcodeAsync(BarcodeInput.Trim());
+            var product = await _productQuery.GetByBarcodeAsync(barcode);
             if (product == null)
             {
-                SetStatus($"Product not found: {BarcodeInput}", true);
+                SetStatus($"Product not found: {barcode}", true);
                 return;
             }
 

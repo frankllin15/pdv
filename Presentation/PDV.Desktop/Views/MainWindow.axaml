@@ -9,11 +9,38 @@
         MinWidth="800" MinHeight="600"
         WindowStartupLocation="CenterScreen">
 
+    <Window.KeyBindings>
+        <KeyBinding Gesture="F1" Command="{Binding NavigateToCheckoutCommand}" />
+        <KeyBinding Gesture="F4" Command="{Binding NavigateToProductsCommand}" />
+    </Window.KeyBindings>
+
     <Window.DataTemplates>
         <DataTemplate DataType="vm:CheckoutViewModel">
             <views:CheckoutView />
         </DataTemplate>
+        <DataTemplate DataType="vm:ProductsViewModel">
+            <views:ProductsView />
+        </DataTemplate>
     </Window.DataTemplates>
 
-    <ContentControl Content="{Binding CurrentView}" />
+    <Grid RowDefinitions="Auto,*">
+        <!-- Navigation Menu -->
+        <Border Grid.Row="0" Background="#333" Padding="8,4">
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <Button Content="Checkout (F1)"
+                        Command="{Binding NavigateToCheckoutCommand}"
+                        Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                        Foreground="White"
+                        Padding="16,8" />
+                <Button Content="Products (F4)"
+                        Command="{Binding NavigateToProductsCommand}"
+                        Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                        Foreground="White"
+                        Padding="16,8" />
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <ContentControl Grid.Row="1" Content="{Binding CurrentView}" />
+    </Grid>
 </Window>

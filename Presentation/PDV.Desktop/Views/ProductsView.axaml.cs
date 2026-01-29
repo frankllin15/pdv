@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace PDV.Desktop.Views;
 
-public partial class CheckoutView : UserControl
+public partial class ProductsView : UserControl
 {
-    public CheckoutView()
+    public ProductsView()
     {
         AvaloniaXamlLoader.Load(this);
     }

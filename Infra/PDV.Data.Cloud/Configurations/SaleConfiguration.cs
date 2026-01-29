@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PDV.Core.Entities;
 using PDV.Shared.Enums;
 
-namespace PDV.Data.Local.Configurations;
+namespace PDV.Data.Cloud.Configurations;
 
 public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 {
@@ -23,13 +23,13 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .IsRequired();
 
         builder.Property(s => s.Subtotal)
-            .HasColumnType("REAL");
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(s => s.Discount)
-            .HasColumnType("REAL");
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(s => s.Total)
-            .HasColumnType("REAL");
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(s => s.Status)
             .IsRequired();
@@ -50,7 +50,6 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .HasForeignKey(p => p.SaleId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Ignore the backing fields
         builder.Metadata.FindNavigation(nameof(Sale.Items))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
 
