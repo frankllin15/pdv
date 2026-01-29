@@ -12,6 +12,7 @@
     <Window.KeyBindings>
         <KeyBinding Gesture="F1" Command="{Binding NavigateToCheckoutCommand}" />
         <KeyBinding Gesture="F4" Command="{Binding NavigateToProductsCommand}" />
+        <KeyBinding Gesture="F6" Command="{Binding NavigateToSalesHistoryCommand}" />
     </Window.KeyBindings>
 
     <Window.DataTemplates>
@@ -20,6 +21,9 @@
         </DataTemplate>
         <DataTemplate DataType="vm:ProductsViewModel">
             <views:ProductsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SalesHistoryViewModel">
+            <views:SalesHistoryView />
         </DataTemplate>
     </Window.DataTemplates>
 
@@ -35,6 +39,11 @@
                 <Button Content="Products (F4)"
                         Command="{Binding NavigateToProductsCommand}"
                         Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                        Foreground="White"
+                        Padding="16,8" />
+                <Button Content="Sales History (F6)"
+                        Command="{Binding NavigateToSalesHistoryCommand}"
+                        Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
                         Foreground="White"
                         Padding="16,8" />
             </StackPanel>

@@ -89,6 +89,7 @@ public partial class App : Application
         services.AddTransient<MainViewModel>();
         services.AddTransient<CheckoutViewModel>();
         services.AddTransient<ProductsViewModel>();
+        services.AddTransient<SalesHistoryViewModel>();
 
         // Sync Services
         var apiUrl = "http://localhost:5233"; // URL da API

@@ -11,3 +11,11 @@ public record SaleSummaryDto(
     int ItemCount,
     string? CustomerDocument
 );
+
+public record SalesSummaryDto(
+    int TotalSales,
+    decimal TotalRevenue,
+    decimal AverageTicket,
+    int CompletedSales,
+    int CancelledSales
+);
