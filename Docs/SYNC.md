@@ -42,14 +42,24 @@ Configuradas em `PDV.API/Program.cs`:
 
 ```csharp
 var syncSetup = new SyncSetup("Products", "Sales", "SaleItems", "Payments", "Operators");
+
+// Direção de sincronização
+syncSetup.Tables["Products"].SyncDirection = SyncDirection.DownloadOnly;
+syncSetup.Tables["Operators"].SyncDirection = SyncDirection.DownloadOnly;
+syncSetup.Tables["Sales"].SyncDirection = SyncDirection.Bidirectional;
+syncSetup.Tables["SaleItems"].SyncDirection = SyncDirection.Bidirectional;
+syncSetup.Tables["Payments"].SyncDirection = SyncDirection.Bidirectional;
 ```
 
-**Tabelas atuais:**
-- `Products` - Catálogo de produtos
-- `Sales` - Vendas realizadas
-- `SaleItems` - Itens de cada venda
-- `Payments` - Pagamentos
-- `Operators` - Operadores/Caixas
+**Tabelas e Direções:**
+
+| Tabela | Direção | Descrição |
+|--------|---------|-----------|
+| `Products` | DownloadOnly | Server → Client. Catálogo vem do servidor |
+| `Operators` | DownloadOnly | Server → Client. Operadores cadastrados no servidor |
+| `Sales` | Bidirectional | Client ↔ Server. Vendas criadas localmente |
+| `SaleItems` | Bidirectional | Client ↔ Server. Itens de venda |
+| `Payments` | Bidirectional | Client ↔ Server. Pagamentos |
 
 ## Como Adicionar Nova Tabela à Sincronização
 
@@ -116,6 +126,12 @@ var syncSetup = new SyncSetup(
     "Operators",
     "MinhaTabela"  // ← Adicionar aqui
 );
+
+// Definir direção de sincronização
+// - DownloadOnly: Server → Client (dados mestres)
+// - UploadOnly: Client → Server (dados transacionais)
+// - Bidirectional: Client ↔ Server (padrão)
+syncSetup.Tables["MinhaTabela"].SyncDirection = SyncDirection.Bidirectional;
 ```
 
 ### Passo 6: Atualizar SyncController (opcional)

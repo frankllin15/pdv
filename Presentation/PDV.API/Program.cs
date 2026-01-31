@@ -1,5 +1,6 @@
 using System.Text;
 using Dotmim.Sync;
+using Dotmim.Sync.Enumerations;
 using Dotmim.Sync.SqlServer;
 using Dotmim.Sync.Web.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -56,10 +57,27 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
 
-// Configure Sync tables
+// Configure Sync tables with direction
 var syncSetup = new SyncSetup("Products", "Sales", "SaleItems", "Payments", "Operators");
 
-builder.Services.AddSyncServer<SqlSyncProvider>(connectionString, syncSetup);
+// Products and Operators: Download only (Server → Client)
+// Master data comes from server
+syncSetup.Tables["Products"].SyncDirection = SyncDirection.DownloadOnly;
+syncSetup.Tables["Operators"].SyncDirection = SyncDirection.DownloadOnly;
+
+// Sales, SaleItems, Payments: Bidirectional (Client ↔ Server)
+// Sales created locally, synced to server
+syncSetup.Tables["Sales"].SyncDirection = SyncDirection.Bidirectional;
+syncSetup.Tables["SaleItems"].SyncDirection = SyncDirection.Bidirectional;
+syncSetup.Tables["Payments"].SyncDirection = SyncDirection.Bidirectional;
+
+var syncOptions = new SyncOptions
+{
+    BatchSize = 1000,
+    DisableConstraintsOnApplyChanges = true
+};
+
+builder.Services.AddSyncServer<SqlSyncProvider>(connectionString, syncSetup, syncOptions);
 
 // CORS for Desktop client
 builder.Services.AddCors(options =>
@@ -97,6 +115,31 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<CloudDbContext>();
     await context.Database.MigrateAsync();
     Log.Information("Database migration completed");
+
+    // Seed default operator if none exists
+    if (!context.Operators.Any())
+    {
+        var defaultOperator = new PDV.Core.Entities.Operator("Admin", "ADMIN", "1234", isAdmin: true);
+        context.Operators.Add(defaultOperator);
+        await context.SaveChangesAsync();
+        Log.Information("Default operator created: ADMIN / 1234");
+    }
+
+    // Seed sample products if none exists
+    if (!context.Products.Any())
+    {
+        var products = new[]
+        {
+            new PDV.Core.Entities.Product("7891234567890", "Coca-Cola 350ml", 5.50m),
+            new PDV.Core.Entities.Product("7891234567891", "Pepsi 350ml", 5.00m),
+            new PDV.Core.Entities.Product("7891234567892", "Agua Mineral 500ml", 3.00m),
+            new PDV.Core.Entities.Product("7891234567893", "Salgadinho Doritos", 8.90m),
+            new PDV.Core.Entities.Product("7891234567894", "Chocolate Bis", 4.50m),
+        };
+        context.Products.AddRange(products);
+        await context.SaveChangesAsync();
+        Log.Information("Sample products created: {Count} products", products.Length);
+    }
 }
 
 app.Run();
