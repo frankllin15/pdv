@@ -1,0 +1,188 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             x:Class="PDV.Desktop.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+    <Grid RowDefinitions="Auto,*" Background="#F5F5F5">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2196F3" Padding="32,24">
+            <StackPanel>
+                <TextBlock Text="{Binding OperatorName, StringFormat='Welcome, {0}!'}"
+                           FontSize="28" FontWeight="Bold"
+                           Foreground="White" />
+                <TextBlock Text="Select an option to get started"
+                           FontSize="14" Foreground="White" Opacity="0.9"
+                           Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="24" Margin="32">
+                <!-- Quick Stats -->
+                <TextBlock Text="Today's Summary" FontSize="18" FontWeight="SemiBold" Foreground="#333" />
+
+                <!-- Summary Cards - Horizontal StackPanel -->
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <!-- Pending Sales Card -->
+                    <Border Background="White" CornerRadius="8" Padding="20"
+                            BorderBrush="#E0E0E0" BorderThickness="1"
+                            MinWidth="180">
+                        <StackPanel>
+                            <TextBlock Text="Pending Sales" Foreground="#666" FontSize="13" />
+                            <TextBlock Text="{Binding PendingSalesCount}"
+                                       FontSize="32" FontWeight="Bold" Foreground="#FF9800"
+                                       Margin="0,4,0,0" />
+                            <TextBlock Text="In Progress" Foreground="#999" FontSize="12" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Today's Sales Card -->
+                    <Border Background="White" CornerRadius="8" Padding="20"
+                            BorderBrush="#E0E0E0" BorderThickness="1"
+                            MinWidth="180">
+                        <StackPanel>
+                            <TextBlock Text="Completed Sales" Foreground="#666" FontSize="13" />
+                            <TextBlock Text="{Binding TodaySalesCount}"
+                                       FontSize="32" FontWeight="Bold" Foreground="#4CAF50"
+                                       Margin="0,4,0,0" />
+                            <TextBlock Text="Today" Foreground="#999" FontSize="12" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Today's Total Card -->
+                    <Border Background="White" CornerRadius="8" Padding="20"
+                            BorderBrush="#E0E0E0" BorderThickness="1"
+                            MinWidth="180">
+                        <StackPanel>
+                            <TextBlock Text="Today's Revenue" Foreground="#666" FontSize="13" />
+                            <TextBlock Text="{Binding TodayTotal, StringFormat='{}{0:C}'}"
+                                       FontSize="32" FontWeight="Bold" Foreground="#2196F3"
+                                       Margin="0,4,0,0" />
+                            <TextBlock Text="Total" Foreground="#999" FontSize="12" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Quick Actions -->
+                <TextBlock Text="Quick Actions" FontSize="18" FontWeight="SemiBold" Foreground="#333"
+                           Margin="0,8,0,0" />
+
+                <!-- Action Buttons - 2x2 Grid -->
+                <StackPanel Spacing="16">
+                    <!-- First Row -->
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <!-- New Sale Button -->
+                        <Button Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateToCheckoutCommand}"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0">
+                            <Border Background="#4CAF50" CornerRadius="8" Padding="32,24"
+                                    MinWidth="280">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="New Sale" FontSize="20" FontWeight="SemiBold"
+                                               Foreground="White" HorizontalAlignment="Center" />
+                                    <TextBlock Text="Start a new checkout (F1)"
+                                               Foreground="White" Opacity="0.9" FontSize="13"
+                                               HorizontalAlignment="Center" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Button>
+
+                        <!-- Products Button -->
+                        <Button Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateToProductsCommand}"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0">
+                            <Border Background="#2196F3" CornerRadius="8" Padding="32,24"
+                                    MinWidth="280">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="Products" FontSize="20" FontWeight="SemiBold"
+                                               Foreground="White" HorizontalAlignment="Center" />
+                                    <TextBlock Text="Manage product catalog (F4)"
+                                               Foreground="White" Opacity="0.9" FontSize="13"
+                                               HorizontalAlignment="Center" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Second Row -->
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <!-- Sales History Button -->
+                        <Button Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateToSalesHistoryCommand}"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0">
+                            <Border Background="#9C27B0" CornerRadius="8" Padding="32,24"
+                                    MinWidth="280">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="Sales History" FontSize="20" FontWeight="SemiBold"
+                                               Foreground="White" HorizontalAlignment="Center" />
+                                    <TextBlock Text="View past transactions (F6)"
+                                               Foreground="White" Opacity="0.9" FontSize="13"
+                                               HorizontalAlignment="Center" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Button>
+
+                        <!-- Reports Placeholder -->
+                        <Border Background="#E0E0E0" CornerRadius="8" Padding="32,24"
+                                MinWidth="280">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="Reports" FontSize="20" FontWeight="SemiBold"
+                                           Foreground="#999" HorizontalAlignment="Center" />
+                                <TextBlock Text="Coming soon"
+                                           Foreground="#999" FontSize="13"
+                                           HorizontalAlignment="Center" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Keyboard Shortcuts Info -->
+                <Border Background="White" CornerRadius="8" Padding="20"
+                        BorderBrush="#E0E0E0" BorderThickness="1"
+                        Margin="0,8,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Keyboard Shortcuts" FontWeight="SemiBold" Foreground="#333"
+                                   Margin="0,0,0,12" />
+                        <StackPanel Spacing="4">
+                            <StackPanel Orientation="Horizontal" Spacing="24">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="F1" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
+                                    <TextBlock Text="Open Checkout" Foreground="#666" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="F4" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
+                                    <TextBlock Text="Open Products" Foreground="#666" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="24">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="F6" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
+                                    <TextBlock Text="Sales History" Foreground="#666" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Home" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
+                                    <TextBlock Text="Return to Home" Foreground="#666" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Loading Overlay -->
+        <Border Grid.Row="1" Background="#80FFFFFF" IsVisible="{Binding IsLoading}">
+            <TextBlock Text="Loading..."
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="16" Foreground="#666" />
+        </Border>
+    </Grid>
+</UserControl>

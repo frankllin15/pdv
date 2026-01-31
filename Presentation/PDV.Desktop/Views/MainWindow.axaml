@@ -10,6 +10,7 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.KeyBindings>
+        <KeyBinding Gesture="Home" Command="{Binding NavigateToHomeCommand}" />
         <KeyBinding Gesture="F1" Command="{Binding NavigateToCheckoutCommand}" />
         <KeyBinding Gesture="F4" Command="{Binding NavigateToProductsCommand}" />
         <KeyBinding Gesture="F6" Command="{Binding NavigateToSalesHistoryCommand}" />
@@ -18,6 +19,9 @@
     <Window.DataTemplates>
         <DataTemplate DataType="vm:LoginViewModel">
             <views:LoginView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:HomeViewModel">
+            <views:HomeView />
         </DataTemplate>
         <DataTemplate DataType="vm:CheckoutViewModel">
             <views:CheckoutView />
@@ -36,6 +40,11 @@
             <Border Grid.Row="0" Background="#333" Padding="8,4" IsVisible="{Binding IsLoggedIn}">
                 <Grid ColumnDefinitions="*,Auto">
                     <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                        <Button Content="Home"
+                                Command="{Binding NavigateToHomeCommand}"
+                                Background="{Binding IsHomeActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                                Foreground="White"
+                                Padding="16,8" />
                         <Button Content="Checkout (F1)"
                                 Command="{Binding NavigateToCheckoutCommand}"
                                 Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"

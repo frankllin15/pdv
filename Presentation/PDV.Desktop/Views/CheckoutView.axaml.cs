@@ -18,5 +18,22 @@ public partial class CheckoutView : UserControl
         {
             await viewModel.InitializeCommand.ExecuteAsync(null);
         }
+
+        // Find the DataGrid and attach event handler
+        var dataGrid = this.FindControl<DataGrid>("ItemsDataGrid");
+        if (dataGrid != null)
+        {
+            dataGrid.CellEditEnded += OnCellEditEnded;
+        }
+    }
+
+    private async void OnCellEditEnded(object? sender, DataGridCellEditEndedEventArgs e)
+    {
+        if (e.EditAction == DataGridEditAction.Commit &&
+            e.Row.DataContext is SaleItemViewModel item &&
+            DataContext is CheckoutViewModel viewModel)
+        {
+            await viewModel.UpdateItemQuantityCommand.ExecuteAsync(item);
+        }
     }
 }

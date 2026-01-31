@@ -9,6 +9,7 @@
     <UserControl.KeyBindings>
         <KeyBinding Gesture="F2" Command="{Binding ProcessPaymentCommand}" CommandParameter="Cash" />
         <KeyBinding Gesture="F3" Command="{Binding EnterPaymentModeCommand}" />
+        <KeyBinding Gesture="F5" Command="{Binding OpenProductSearchCommand}" />
         <KeyBinding Gesture="Escape" Command="{Binding RequestCancelSaleCommand}" />
         <KeyBinding Gesture="F12" Command="{Binding RequestNewSaleCommand}" />
     </UserControl.KeyBindings>
@@ -46,7 +47,7 @@
                     BorderBrush="#E0E0E0" BorderThickness="1">
                 <Grid RowDefinitions="Auto,*">
                     <!-- Barcode Input -->
-                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                    <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
                         <TextBox Text="{Binding BarcodeInput}"
                                  Watermark="Scan barcode or type product code..."
                                  FontSize="16"
@@ -61,10 +62,18 @@
                                 Margin="8,0,0,0"
                                 Height="44" Width="80"
                                 IsEnabled="{Binding !IsPaymentMode}" />
+                        <Button Grid.Column="2" Content="Search (F5)"
+                                Command="{Binding OpenProductSearchCommand}"
+                                Margin="8,0,0,0"
+                                Height="44"
+                                Background="#9C27B0"
+                                Foreground="White"
+                                IsEnabled="{Binding !IsPaymentMode}" />
                     </Grid>
 
                     <!-- Items DataGrid -->
                     <DataGrid Grid.Row="1"
+                              x:Name="ItemsDataGrid"
                               ItemsSource="{Binding Items}"
                               AutoGenerateColumns="False"
                               CanUserResizeColumns="True"
@@ -215,7 +224,7 @@
         <!-- Keyboard Shortcuts Info -->
         <Border Grid.Row="2" Background="#FAFAFA" Padding="16,8"
                 BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
-            <TextBlock Text="F2: Cash | F3: Debit Card | Del: Remove Item | Esc: Cancel Sale | F12: New Sale"
+            <TextBlock Text="F2: Cash | F3: Debit | F5: Search Products | Esc: Cancel | F12: New Sale"
                        Foreground="#757575" FontSize="12"
                        HorizontalAlignment="Center" />
         </Border>
@@ -363,6 +372,118 @@
                             Padding="16,8" />
                 </StackPanel>
             </StackPanel>
+        </Border>
+    </Border>
+
+    <!-- Product Search Dialog -->
+    <Border IsVisible="{Binding ShowProductSearch}"
+            Background="#80000000">
+        <Border Background="White" CornerRadius="8"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="600" Height="500"
+                Padding="24">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                <!-- Header -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                    <TextBlock Text="Search Products"
+                               FontSize="20" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <Button Grid.Column="1" Content="X"
+                            Command="{Binding CloseProductSearchCommand}"
+                            Background="Transparent"
+                            Foreground="#666"
+                            FontSize="18"
+                            Padding="8,4" />
+                </Grid>
+
+                <!-- Search Input -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                    <TextBox Text="{Binding ProductSearchText}"
+                             Watermark="Type product name or description..."
+                             FontSize="16"
+                             Height="44">
+                        <TextBox.KeyBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding SearchProductsByDescriptionCommand}" />
+                        </TextBox.KeyBindings>
+                    </TextBox>
+                    <Button Grid.Column="1" Content="Search"
+                            Command="{Binding SearchProductsByDescriptionCommand}"
+                            Margin="8,0,0,0"
+                            Height="44"
+                            Background="#2196F3"
+                            Foreground="White"
+                            Padding="16,0" />
+                </Grid>
+
+                <!-- Results List -->
+                <Border Grid.Row="2"
+                        Background="#F5F5F5" CornerRadius="4"
+                        BorderBrush="#E0E0E0" BorderThickness="1">
+                    <Panel>
+                        <!-- Loading Indicator -->
+                        <TextBlock Text="Searching..."
+                                   IsVisible="{Binding IsSearching}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="#666" />
+
+                        <!-- Empty State -->
+                        <TextBlock Text="Type a search term and press Enter or click Search"
+                                   IsVisible="{Binding !ProductSearchResults.Count}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="#999"
+                                   FontSize="13" />
+
+                        <!-- Results -->
+                        <ScrollViewer IsVisible="{Binding ProductSearchResults.Count}">
+                            <ItemsControl ItemsSource="{Binding ProductSearchResults}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="dto:ProductDto">
+                                        <Button Command="{Binding $parent[ItemsControl].((vm:CheckoutViewModel)DataContext).AddProductFromSearchCommand}"
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent"
+                                                Padding="0"
+                                                Margin="0"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch">
+                                            <Border Background="White"
+                                                    BorderBrush="#E0E0E0" BorderThickness="0,0,0,1"
+                                                    Padding="12,10">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Description}"
+                                                                   FontWeight="SemiBold"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <StackPanel Orientation="Horizontal" Spacing="16">
+                                                            <TextBlock Text="{Binding Barcode, StringFormat='Code: {0}'}"
+                                                                       Foreground="#666" FontSize="12" />
+                                                            <TextBlock Text="{Binding StockQuantity, StringFormat='Stock: {0:N0}'}"
+                                                                       Foreground="#666" FontSize="12" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding UnitPrice, StringFormat='{}{0:C}'}"
+                                                               FontSize="16" FontWeight="Bold"
+                                                               Foreground="#4CAF50"
+                                                               VerticalAlignment="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Panel>
+                </Border>
+
+                <!-- Footer -->
+                <TextBlock Grid.Row="3"
+                           Text="Click on a product to add it to the sale"
+                           Foreground="#666" FontSize="12"
+                           HorizontalAlignment="Center"
+                           Margin="0,12,0,0" />
+            </Grid>
         </Border>
     </Border>
     </Panel>

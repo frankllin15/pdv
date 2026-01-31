@@ -64,9 +64,20 @@ public partial class CheckoutViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isInitialized;
 
+    [ObservableProperty]
+    private bool _showProductSearch;
+
+    [ObservableProperty]
+    private string _productSearchText = string.Empty;
+
+    [ObservableProperty]
+    private bool _isSearching;
+
     public ObservableCollection<SaleItemViewModel> Items { get; } = new();
 
     public ObservableCollection<PendingSaleSummaryDto> PendingSales { get; } = new();
+
+    public ObservableCollection<ProductDto> ProductSearchResults { get; } = new();
 
     /// <summary>
     /// Indicates if there's a sale in progress with items
@@ -180,6 +191,66 @@ public partial class CheckoutViewModel : ViewModelBase
     {
         ShowPendingSalesDialog = false;
         SetStatus("Ready - scan a product to start new sale", false);
+    }
+
+    [RelayCommand]
+    private void OpenProductSearch()
+    {
+        ShowProductSearch = true;
+        ProductSearchText = string.Empty;
+        ProductSearchResults.Clear();
+    }
+
+    [RelayCommand]
+    private void CloseProductSearch()
+    {
+        ShowProductSearch = false;
+        ProductSearchText = string.Empty;
+        ProductSearchResults.Clear();
+    }
+
+    [RelayCommand]
+    private async Task SearchProductsByDescriptionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(ProductSearchText))
+        {
+            ProductSearchResults.Clear();
+            return;
+        }
+
+        try
+        {
+            IsSearching = true;
+            var results = await _productQuery.SearchAsync(ProductSearchText.Trim(), 20);
+
+            ProductSearchResults.Clear();
+            foreach (var product in results)
+            {
+                ProductSearchResults.Add(product);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Search error: {ex.Message}", true);
+        }
+        finally
+        {
+            IsSearching = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddProductFromSearchAsync(ProductDto? product)
+    {
+        if (product == null) return;
+
+        if (_currentSale == null)
+        {
+            await StartNewSaleAsync();
+        }
+
+        await AddProductToSaleAsync(product);
+        CloseProductSearch();
     }
 
     [RelayCommand]

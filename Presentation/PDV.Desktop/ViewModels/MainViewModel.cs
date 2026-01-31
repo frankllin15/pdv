@@ -21,7 +21,10 @@ public partial class MainViewModel : ViewModelBase
     private string _currentOperatorName = string.Empty;
 
     [ObservableProperty]
-    private bool _isCheckoutActive = true;
+    private bool _isHomeActive = true;
+
+    [ObservableProperty]
+    private bool _isCheckoutActive;
 
     [ObservableProperty]
     private bool _isProductsActive;
@@ -86,18 +89,42 @@ public partial class MainViewModel : ViewModelBase
     {
         IsLoggedIn = true;
         CurrentOperatorName = _sessionService.CurrentOperator?.Name ?? string.Empty;
-        NavigateToCheckout();
+        NavigateToHome();
     }
 
     private void ResetActiveStates()
     {
+        IsHomeActive = false;
         IsCheckoutActive = false;
         IsProductsActive = false;
         IsSalesHistoryActive = false;
     }
 
     [RelayCommand]
+    private void NavigateToHome()
+    {
+        if (!TryNavigateWithConfirmation(DoNavigateToHome))
+            return;
+    }
+
+    private void DoNavigateToHome()
+    {
+        _checkoutViewModel = null;
+        var viewModel = App.Services?.GetRequiredService<HomeViewModel>()
+            ?? throw new InvalidOperationException("HomeViewModel not registered");
+
+        CurrentView = viewModel;
+        ResetActiveStates();
+        IsHomeActive = true;
+    }
+
+    [RelayCommand]
     private void NavigateToCheckout()
+    {
+        DoNavigateToCheckout();
+    }
+
+    private void DoNavigateToCheckout()
     {
         _checkoutViewModel = App.Services?.GetRequiredService<CheckoutViewModel>()
             ?? throw new InvalidOperationException("CheckoutViewModel not registered");
