@@ -11,4 +11,6 @@ public interface ISaleRepository : IRepository<Sale>
     Task<IEnumerable<Sale>> GetByStatusAsync(SaleStatus status, CancellationToken cancellationToken = default);
     Task<IEnumerable<Sale>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
     Task<IEnumerable<Sale>> GetPendingSyncAsync(CancellationToken cancellationToken = default);
+    Task<int> CancelAbandonedSalesAsync(TimeSpan maxAge, CancellationToken cancellationToken = default);
+    Task<int> CancelPendingSalesByOperatorAsync(Guid operatorId, CancellationToken cancellationToken = default);
 }

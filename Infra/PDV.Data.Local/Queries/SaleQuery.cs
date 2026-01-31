@@ -211,6 +211,35 @@ public class SaleQuery : ISaleQuery
         );
     }
 
+    public async Task<IEnumerable<PendingSaleSummaryDto>> GetPendingSalesByOperatorAsync(
+        Guid operatorId, CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+            SELECT s.Id, s.SaleNumber, s.SaleDate, s.Total,
+                   (SELECT COUNT(*) FROM SaleItems WHERE SaleId = s.Id) as ItemCount
+            FROM Sales s
+            WHERE s.OperatorId = @OperatorId
+              AND s.Status = @Status
+            ORDER BY s.SaleDate DESC";
+
+        using var connection = CreateConnection();
+        var results = await connection.QueryAsync<PendingSaleQueryResult>(sql, new
+        {
+            OperatorId = operatorId.ToString().ToUpperInvariant(),
+            Status = (int)SaleStatus.InProgress
+        });
+
+        var now = DateTime.UtcNow;
+        return results.Select(r => new PendingSaleSummaryDto(
+            r.Id,
+            r.SaleNumber,
+            r.SaleDate,
+            r.Total,
+            r.ItemCount,
+            now - r.SaleDate
+        ));
+    }
+
     // Helper classes for Dapper mapping
     private class SaleQueryResult
     {
@@ -283,5 +312,14 @@ public class SaleQuery : ISaleQuery
             Guid g => g,
             _ => Guid.Empty
         };
+    }
+
+    private class PendingSaleQueryResult
+    {
+        public Guid Id { get; set; }
+        public int SaleNumber { get; set; }
+        public DateTime SaleDate { get; set; }
+        public decimal Total { get; set; }
+        public int ItemCount { get; set; }
     }
 }

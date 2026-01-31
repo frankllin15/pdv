@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Entities;
 using PDV.Core.Interfaces.Queries;
 using PDV.Core.Interfaces.Repositories;
+using PDV.Core.Interfaces.Services;
 using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
 
@@ -12,7 +13,9 @@ namespace PDV.Desktop.ViewModels;
 public partial class CheckoutViewModel : ViewModelBase
 {
     private readonly IProductQuery _productQuery;
+    private readonly ISaleQuery _saleQuery;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IOperatorSessionService _operatorSession;
 
     private Sale? _currentSale;
 
@@ -49,12 +52,134 @@ public partial class CheckoutViewModel : ViewModelBase
     [ObservableProperty]
     private decimal _change;
 
+    [ObservableProperty]
+    private bool _showPendingSalesDialog;
+
+    [ObservableProperty]
+    private bool _showCancelConfirmDialog;
+
+    [ObservableProperty]
+    private bool _showNewSaleConfirmDialog;
+
+    [ObservableProperty]
+    private bool _isInitialized;
+
     public ObservableCollection<SaleItemViewModel> Items { get; } = new();
 
-    public CheckoutViewModel(IProductQuery productQuery, IUnitOfWork unitOfWork)
+    public ObservableCollection<PendingSaleSummaryDto> PendingSales { get; } = new();
+
+    /// <summary>
+    /// Indicates if there's a sale in progress with items
+    /// </summary>
+    public bool HasPendingSale => _currentSale != null && Items.Count > 0;
+
+    public CheckoutViewModel(
+        IProductQuery productQuery,
+        ISaleQuery saleQuery,
+        IUnitOfWork unitOfWork,
+        IOperatorSessionService operatorSession)
     {
         _productQuery = productQuery;
+        _saleQuery = saleQuery;
         _unitOfWork = unitOfWork;
+        _operatorSession = operatorSession;
+    }
+
+    [RelayCommand]
+    private async Task InitializeAsync()
+    {
+        if (IsInitialized) return;
+
+        try
+        {
+            if (_operatorSession.CurrentOperator == null)
+            {
+                SetStatus("No operator logged in", true);
+                IsInitialized = true;
+                return;
+            }
+
+            var pendingSales = await _saleQuery.GetPendingSalesByOperatorAsync(
+                _operatorSession.CurrentOperator.Id);
+
+            PendingSales.Clear();
+            foreach (var sale in pendingSales)
+            {
+                PendingSales.Add(sale);
+            }
+
+            if (PendingSales.Count > 0)
+            {
+                ShowPendingSalesDialog = true;
+                SetStatus($"You have {PendingSales.Count} pending sale(s)", false);
+            }
+            else
+            {
+                SetStatus("Ready - scan a product to start", false);
+            }
+
+            IsInitialized = true;
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Error initializing: {ex.Message}", true);
+            IsInitialized = true;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ResumeSaleAsync(PendingSaleSummaryDto? pendingSale)
+    {
+        if (pendingSale == null) return;
+
+        try
+        {
+            var sale = await _unitOfWork.Sales.GetByIdWithItemsAsync(pendingSale.Id);
+            if (sale == null)
+            {
+                SetStatus("Sale not found", true);
+                return;
+            }
+
+            _currentSale = sale;
+            SaleNumber = sale.SaleNumber;
+            RefreshItemsFromSale();
+            ShowPendingSalesDialog = false;
+            SetStatus($"Resumed sale #{sale.SaleNumber}", false);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Error resuming sale: {ex.Message}", true);
+        }
+    }
+
+    [RelayCommand]
+    private async Task DiscardPendingSalesAsync()
+    {
+        if (_operatorSession.CurrentOperator == null) return;
+
+        try
+        {
+            var count = await _unitOfWork.Sales.CancelPendingSalesByOperatorAsync(
+                _operatorSession.CurrentOperator.Id);
+            await _unitOfWork.SaveChangesAsync();
+
+            PendingSales.Clear();
+            ShowPendingSalesDialog = false;
+            SetStatus($"Discarded {count} pending sale(s)", false);
+            await StartNewSaleAsync();
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Error discarding sales: {ex.Message}", true);
+        }
+    }
+
+    [RelayCommand]
+    private void StartNewKeepPending()
+    {
+        ShowPendingSalesDialog = false;
+        SetStatus("Ready - scan a product to start new sale", false);
     }
 
     [RelayCommand]
@@ -62,8 +187,9 @@ public partial class CheckoutViewModel : ViewModelBase
     {
         try
         {
+            var operatorId = _operatorSession.CurrentOperator?.Id;
             var nextNumber = await _unitOfWork.Sales.GetNextSaleNumberAsync();
-            _currentSale = new Sale(nextNumber);
+            _currentSale = new Sale(nextNumber, operatorId);
             await _unitOfWork.Sales.AddAsync(_currentSale);
             await _unitOfWork.SaveChangesAsync();
 
@@ -278,11 +404,24 @@ public partial class CheckoutViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task CancelSaleAsync()
+    private void RequestCancelSale()
     {
+        if (_currentSale == null || Items.Count == 0)
+        {
+            // No sale or empty sale, no need for confirmation
+            return;
+        }
+
+        ShowCancelConfirmDialog = true;
+    }
+
+    [RelayCommand]
+    private async Task ConfirmCancelSaleAsync()
+    {
+        ShowCancelConfirmDialog = false;
+
         if (_currentSale == null)
         {
-            await StartNewSaleAsync();
             return;
         }
 
@@ -295,13 +434,70 @@ public partial class CheckoutViewModel : ViewModelBase
                 await _unitOfWork.SaveChangesAsync();
             }
 
+            _currentSale = null;
+            SaleNumber = 0;
+            Items.Clear();
+            UpdateTotals();
+            IsPaymentMode = false;
             SetStatus("Sale cancelled", false);
-            await StartNewSaleAsync();
         }
         catch (Exception ex)
         {
             SetStatus($"Error cancelling: {ex.Message}", true);
         }
+    }
+
+    [RelayCommand]
+    private void DismissCancelDialog()
+    {
+        ShowCancelConfirmDialog = false;
+    }
+
+    [RelayCommand]
+    private void RequestNewSale()
+    {
+        if (_currentSale != null && Items.Count > 0)
+        {
+            // Has items, show confirmation
+            ShowNewSaleConfirmDialog = true;
+            return;
+        }
+
+        // No current sale or empty, just start new
+        _ = StartNewSaleAsync();
+    }
+
+    [RelayCommand]
+    private async Task ConfirmNewSaleAsync()
+    {
+        ShowNewSaleConfirmDialog = false;
+
+        // Cancel current sale first if exists
+        if (_currentSale != null)
+        {
+            try
+            {
+                var sale = await _unitOfWork.Sales.GetByIdAsync(_currentSale.Id);
+                if (sale != null && sale.Status == SaleStatus.InProgress)
+                {
+                    sale.Cancel();
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                SetStatus($"Error cancelling current sale: {ex.Message}", true);
+                return;
+            }
+        }
+
+        await StartNewSaleAsync();
+    }
+
+    [RelayCommand]
+    private void DismissNewSaleDialog()
+    {
+        ShowNewSaleConfirmDialog = false;
     }
 
     [RelayCommand]

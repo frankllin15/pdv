@@ -86,4 +86,33 @@ public class SaleRepository : ISaleRepository
             .Where(s => s.SyncState == SyncState.Pending)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<int> CancelAbandonedSalesAsync(TimeSpan maxAge, CancellationToken cancellationToken = default)
+    {
+        var cutoffDate = DateTime.UtcNow - maxAge;
+        var abandonedSales = await _context.Sales
+            .Where(s => s.Status == SaleStatus.InProgress && s.SaleDate < cutoffDate)
+            .ToListAsync(cancellationToken);
+
+        foreach (var sale in abandonedSales)
+        {
+            sale.Cancel();
+        }
+
+        return abandonedSales.Count;
+    }
+
+    public async Task<int> CancelPendingSalesByOperatorAsync(Guid operatorId, CancellationToken cancellationToken = default)
+    {
+        var pendingSales = await _context.Sales
+            .Where(s => s.OperatorId == operatorId && s.Status == SaleStatus.InProgress)
+            .ToListAsync(cancellationToken);
+
+        foreach (var sale in pendingSales)
+        {
+            sale.Cancel();
+        }
+
+        return pendingSales.Count;
+    }
 }

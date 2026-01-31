@@ -30,45 +30,90 @@
         </DataTemplate>
     </Window.DataTemplates>
 
-    <Grid RowDefinitions="Auto,*">
-        <!-- Navigation Menu (only visible when logged in) -->
-        <Border Grid.Row="0" Background="#333" Padding="8,4" IsVisible="{Binding IsLoggedIn}">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
-                    <Button Content="Checkout (F1)"
-                            Command="{Binding NavigateToCheckoutCommand}"
-                            Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                            Foreground="White"
-                            Padding="16,8" />
-                    <Button Content="Products (F4)"
-                            Command="{Binding NavigateToProductsCommand}"
-                            Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                            Foreground="White"
-                            Padding="16,8" />
-                    <Button Content="Sales History (F6)"
-                            Command="{Binding NavigateToSalesHistoryCommand}"
-                            Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                            Foreground="White"
-                            Padding="16,8" />
-                </StackPanel>
+    <Panel>
+        <Grid RowDefinitions="Auto,*">
+            <!-- Navigation Menu (only visible when logged in) -->
+            <Border Grid.Row="0" Background="#333" Padding="8,4" IsVisible="{Binding IsLoggedIn}">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                        <Button Content="Checkout (F1)"
+                                Command="{Binding NavigateToCheckoutCommand}"
+                                Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                                Foreground="White"
+                                Padding="16,8" />
+                        <Button Content="Products (F4)"
+                                Command="{Binding NavigateToProductsCommand}"
+                                Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                                Foreground="White"
+                                Padding="16,8" />
+                        <Button Content="Sales History (F6)"
+                                Command="{Binding NavigateToSalesHistoryCommand}"
+                                Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                                Foreground="White"
+                                Padding="16,8" />
+                    </StackPanel>
 
-                <!-- User Info and Logout -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding CurrentOperatorName}"
-                               Foreground="#BDBDBD"
-                               VerticalAlignment="Center"
-                               FontSize="13" />
-                    <Button Content="Logout"
-                            Command="{Binding LogoutCommand}"
-                            Background="#555"
-                            Foreground="White"
-                            Padding="12,6"
-                            FontSize="12" />
+                    <!-- User Info and Logout -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding CurrentOperatorName}"
+                                   Foreground="#BDBDBD"
+                                   VerticalAlignment="Center"
+                                   FontSize="13" />
+                        <Button Content="Logout"
+                                Command="{Binding LogoutCommand}"
+                                Background="#555"
+                                Foreground="White"
+                                Padding="12,6"
+                                FontSize="12" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Content -->
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}" />
+        </Grid>
+
+        <!-- Navigation Confirmation Dialog Overlay -->
+        <Border Background="#80000000"
+                IsVisible="{Binding ShowNavigationConfirmDialog}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <Border Background="White"
+                    CornerRadius="8"
+                    Padding="32"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    MinWidth="400"
+                    BoxShadow="0 8 32 0 #60000000">
+                <StackPanel Spacing="20">
+                    <TextBlock Text="Sale in Progress"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+
+                    <TextBlock Text="You have an ongoing sale. Are you sure you want to leave? The sale will remain open."
+                               FontSize="14"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Foreground="#666" />
+
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12"
+                                HorizontalAlignment="Center"
+                                Margin="0,8,0,0">
+                        <Button Content="Cancel"
+                                Command="{Binding CancelNavigationCommand}"
+                                Padding="24,10"
+                                Background="#E0E0E0"
+                                Foreground="#333" />
+                        <Button Content="Leave Anyway"
+                                Command="{Binding ConfirmNavigationCommand}"
+                                Padding="24,10"
+                                Background="#F44336"
+                                Foreground="White" />
+                    </StackPanel>
                 </StackPanel>
-            </Grid>
+            </Border>
         </Border>
-
-        <!-- Content -->
-        <ContentControl Grid.Row="1" Content="{Binding CurrentView}" />
-    </Grid>
+    </Panel>
 </Window>

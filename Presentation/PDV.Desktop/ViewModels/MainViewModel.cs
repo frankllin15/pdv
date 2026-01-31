@@ -8,6 +8,8 @@ namespace PDV.Desktop.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IOperatorSessionService _sessionService;
+    private CheckoutViewModel? _checkoutViewModel;
+    private Action? _pendingNavigation;
 
     [ObservableProperty]
     private ViewModelBase _currentView;
@@ -27,6 +29,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isSalesHistoryActive;
 
+    [ObservableProperty]
+    private bool _showNavigationConfirmDialog;
+
     public MainViewModel(IOperatorSessionService sessionService)
     {
         _sessionService = sessionService;
@@ -39,6 +44,36 @@ public partial class MainViewModel : ViewModelBase
             loginViewModel.LoginSuccessful += OnLoginSuccessful;
         }
         _currentView = loginViewModel ?? throw new InvalidOperationException("LoginViewModel not registered");
+    }
+
+    private bool HasPendingSale => _checkoutViewModel?.HasPendingSale == true;
+
+    private bool TryNavigateWithConfirmation(Action navigationAction)
+    {
+        if (HasPendingSale)
+        {
+            _pendingNavigation = navigationAction;
+            ShowNavigationConfirmDialog = true;
+            return false;
+        }
+
+        navigationAction();
+        return true;
+    }
+
+    [RelayCommand]
+    private void ConfirmNavigation()
+    {
+        ShowNavigationConfirmDialog = false;
+        _pendingNavigation?.Invoke();
+        _pendingNavigation = null;
+    }
+
+    [RelayCommand]
+    private void CancelNavigation()
+    {
+        ShowNavigationConfirmDialog = false;
+        _pendingNavigation = null;
     }
 
     private void OnOperatorChanged(PDV.Shared.DTOs.OperatorDto? operatorDto)
@@ -64,15 +99,23 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToCheckout()
     {
-        CurrentView = App.Services?.GetRequiredService<CheckoutViewModel>()
-            ?? new CheckoutViewModel(null!, null!);
+        _checkoutViewModel = App.Services?.GetRequiredService<CheckoutViewModel>()
+            ?? throw new InvalidOperationException("CheckoutViewModel not registered");
+        CurrentView = _checkoutViewModel;
         ResetActiveStates();
         IsCheckoutActive = true;
     }
 
     [RelayCommand]
-    private async Task NavigateToProductsAsync()
+    private void NavigateToProducts()
     {
+        if (!TryNavigateWithConfirmation(DoNavigateToProducts))
+            return;
+    }
+
+    private async void DoNavigateToProducts()
+    {
+        _checkoutViewModel = null;
         var viewModel = App.Services?.GetRequiredService<ProductsViewModel>()
             ?? new ProductsViewModel(null!, null!);
 
@@ -87,6 +130,13 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToSalesHistory()
     {
+        if (!TryNavigateWithConfirmation(DoNavigateToSalesHistory))
+            return;
+    }
+
+    private void DoNavigateToSalesHistory()
+    {
+        _checkoutViewModel = null;
         var viewModel = App.Services?.GetRequiredService<SalesHistoryViewModel>()
             ?? new SalesHistoryViewModel(null!);
 
@@ -98,6 +148,13 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void Logout()
     {
+        if (!TryNavigateWithConfirmation(DoLogout))
+            return;
+    }
+
+    private void DoLogout()
+    {
+        _checkoutViewModel = null;
         _sessionService.Logout();
         ResetActiveStates();
 

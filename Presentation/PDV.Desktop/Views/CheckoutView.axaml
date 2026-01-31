@@ -2,16 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:dto="using:PDV.Shared.DTOs"
              x:Class="PDV.Desktop.Views.CheckoutView"
              x:DataType="vm:CheckoutViewModel">
 
     <UserControl.KeyBindings>
         <KeyBinding Gesture="F2" Command="{Binding ProcessPaymentCommand}" CommandParameter="Cash" />
         <KeyBinding Gesture="F3" Command="{Binding EnterPaymentModeCommand}" />
-        <KeyBinding Gesture="Escape" Command="{Binding CancelSaleCommand}" />
-        <KeyBinding Gesture="F12" Command="{Binding StartNewSaleCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding RequestCancelSaleCommand}" />
+        <KeyBinding Gesture="F12" Command="{Binding RequestNewSaleCommand}" />
     </UserControl.KeyBindings>
 
+    <Panel>
     <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!-- Header -->
         <Border Grid.Row="0" Background="#2196F3" Padding="16">
@@ -187,14 +189,14 @@
                         <Separator Margin="0,8" />
 
                         <Button Content="Cancel Sale (Esc)"
-                                Command="{Binding CancelSaleCommand}"
+                                Command="{Binding RequestCancelSaleCommand}"
                                 Height="40"
                                 HorizontalAlignment="Stretch"
                                 Background="#FF5252"
                                 Foreground="White" />
 
                         <Button Content="New Sale (F12)"
-                                Command="{Binding StartNewSaleCommand}"
+                                Command="{Binding RequestNewSaleCommand}"
                                 Height="40"
                                 HorizontalAlignment="Stretch" />
                     </StackPanel>
@@ -218,4 +220,150 @@
                        HorizontalAlignment="Center" />
         </Border>
     </Grid>
+
+    <!-- Pending Sales Dialog Overlay -->
+    <Border IsVisible="{Binding ShowPendingSalesDialog}"
+            Background="#80000000">
+        <Border Background="White" CornerRadius="8"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                MinWidth="500" MaxWidth="600" MaxHeight="500"
+                Padding="24" Margin="32">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                <TextBlock Grid.Row="0"
+                           Text="Pending Sales Found"
+                           FontSize="20" FontWeight="Bold"
+                           Margin="0,0,0,8" />
+
+                <TextBlock Grid.Row="1"
+                           Text="You have sales in progress. Choose an action:"
+                           Foreground="#666"
+                           Margin="0,0,0,16" />
+
+                <!-- Pending Sales List -->
+                <Border Grid.Row="2"
+                        Background="#F5F5F5" CornerRadius="4"
+                        BorderBrush="#E0E0E0" BorderThickness="1"
+                        Margin="0,0,0,16">
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding PendingSales}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="dto:PendingSaleSummaryDto">
+                                    <Border Background="White" CornerRadius="4"
+                                            BorderBrush="#E0E0E0" BorderThickness="1"
+                                            Padding="12" Margin="8,8,8,0">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel>
+                                                <TextBlock FontWeight="SemiBold">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="Sale #{0} - {1:C}">
+                                                            <Binding Path="SaleNumber" />
+                                                            <Binding Path="Total" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock Foreground="#666" FontSize="12">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} items | {1:hh\:mm} ago">
+                                                            <Binding Path="ItemCount" />
+                                                            <Binding Path="Age" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Button Grid.Column="1"
+                                                    Content="Resume"
+                                                    Command="{Binding $parent[ItemsControl].((vm:CheckoutViewModel)DataContext).ResumeSaleCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Background="#2196F3"
+                                                    Foreground="White"
+                                                    Padding="16,8"
+                                                    VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+
+                <!-- Action Buttons -->
+                <StackPanel Grid.Row="3" Spacing="8">
+                    <Button Content="Discard All and Start New Sale"
+                            Command="{Binding DiscardPendingSalesCommand}"
+                            HorizontalAlignment="Stretch"
+                            Height="40"
+                            Background="#FF5252"
+                            Foreground="White"
+                            HorizontalContentAlignment="Center" />
+
+                    <Button Content="Start New Sale (Keep Pending)"
+                            Command="{Binding StartNewKeepPendingCommand}"
+                            HorizontalAlignment="Stretch"
+                            Height="40"
+                            HorizontalContentAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Border>
+
+    <!-- Cancel Sale Confirmation Dialog -->
+    <Border IsVisible="{Binding ShowCancelConfirmDialog}"
+            Background="#80000000">
+        <Border Background="White" CornerRadius="8"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                MinWidth="350" MaxWidth="400"
+                Padding="24">
+            <StackPanel Spacing="16">
+                <TextBlock Text="Cancel Sale?"
+                           FontSize="20" FontWeight="Bold" />
+
+                <TextBlock Text="Are you sure you want to cancel this sale? All items will be removed and this action cannot be undone."
+                           TextWrapping="Wrap"
+                           Foreground="#666" />
+
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <Button Content="No, Keep Sale"
+                            Command="{Binding DismissCancelDialogCommand}"
+                            Padding="16,8" />
+
+                    <Button Content="Yes, Cancel Sale"
+                            Command="{Binding ConfirmCancelSaleCommand}"
+                            Background="#FF5252"
+                            Foreground="White"
+                            Padding="16,8" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Border>
+
+    <!-- New Sale Confirmation Dialog -->
+    <Border IsVisible="{Binding ShowNewSaleConfirmDialog}"
+            Background="#80000000">
+        <Border Background="White" CornerRadius="8"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                MinWidth="350" MaxWidth="400"
+                Padding="24">
+            <StackPanel Spacing="16">
+                <TextBlock Text="Start New Sale?"
+                           FontSize="20" FontWeight="Bold" />
+
+                <TextBlock Text="You have an active sale with items. Starting a new sale will cancel the current one. Do you want to continue?"
+                           TextWrapping="Wrap"
+                           Foreground="#666" />
+
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <Button Content="No, Keep Current"
+                            Command="{Binding DismissNewSaleDialogCommand}"
+                            Padding="16,8" />
+
+                    <Button Content="Yes, Start New"
+                            Command="{Binding ConfirmNewSaleCommand}"
+                            Background="#2196F3"
+                            Foreground="White"
+                            Padding="16,8" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Border>
+    </Panel>
 </UserControl>
