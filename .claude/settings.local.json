@@ -3,7 +3,9 @@
     "allow": [
       "Bash(find:*)",
       "Bash(del:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(dotnet build:*)"
     ]
   }
 }

@@ -11,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
 
     private IProductRepository? _products;
     private ISaleRepository? _sales;
+    private IOperatorRepository? _operators;
 
     public UnitOfWork(PdvDbContext context)
     {
@@ -19,6 +20,7 @@ public class UnitOfWork : IUnitOfWork
 
     public IProductRepository Products => _products ??= new ProductRepository(_context);
     public ISaleRepository Sales => _sales ??= new SaleRepository(_context);
+    public IOperatorRepository Operators => _operators ??= new OperatorRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

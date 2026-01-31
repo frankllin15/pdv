@@ -16,6 +16,9 @@
     </Window.KeyBindings>
 
     <Window.DataTemplates>
+        <DataTemplate DataType="vm:LoginViewModel">
+            <views:LoginView />
+        </DataTemplate>
         <DataTemplate DataType="vm:CheckoutViewModel">
             <views:CheckoutView />
         </DataTemplate>
@@ -28,25 +31,41 @@
     </Window.DataTemplates>
 
     <Grid RowDefinitions="Auto,*">
-        <!-- Navigation Menu -->
-        <Border Grid.Row="0" Background="#333" Padding="8,4">
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <Button Content="Checkout (F1)"
-                        Command="{Binding NavigateToCheckoutCommand}"
-                        Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                        Foreground="White"
-                        Padding="16,8" />
-                <Button Content="Products (F4)"
-                        Command="{Binding NavigateToProductsCommand}"
-                        Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                        Foreground="White"
-                        Padding="16,8" />
-                <Button Content="Sales History (F6)"
-                        Command="{Binding NavigateToSalesHistoryCommand}"
-                        Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                        Foreground="White"
-                        Padding="16,8" />
-            </StackPanel>
+        <!-- Navigation Menu (only visible when logged in) -->
+        <Border Grid.Row="0" Background="#333" Padding="8,4" IsVisible="{Binding IsLoggedIn}">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                    <Button Content="Checkout (F1)"
+                            Command="{Binding NavigateToCheckoutCommand}"
+                            Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                            Foreground="White"
+                            Padding="16,8" />
+                    <Button Content="Products (F4)"
+                            Command="{Binding NavigateToProductsCommand}"
+                            Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                            Foreground="White"
+                            Padding="16,8" />
+                    <Button Content="Sales History (F6)"
+                            Command="{Binding NavigateToSalesHistoryCommand}"
+                            Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                            Foreground="White"
+                            Padding="16,8" />
+                </StackPanel>
+
+                <!-- User Info and Logout -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentOperatorName}"
+                               Foreground="#BDBDBD"
+                               VerticalAlignment="Center"
+                               FontSize="13" />
+                    <Button Content="Logout"
+                            Command="{Binding LogoutCommand}"
+                            Background="#555"
+                            Foreground="White"
+                            Padding="12,6"
+                            FontSize="12" />
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Content -->

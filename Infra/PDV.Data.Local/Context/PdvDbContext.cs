@@ -3,16 +3,13 @@ using PDV.Core.Entities;
 
 namespace PDV.Data.Local.Context;
 
-public class PdvDbContext : DbContext
+public class PdvDbContext(DbContextOptions<PdvDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Sale> Sales => Set<Sale>();
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
     public DbSet<Payment> Payments => Set<Payment>();
-
-    public PdvDbContext(DbContextOptions<PdvDbContext> options) : base(options)
-    {
-    }
+    public DbSet<Operator> Operators => Set<Operator>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

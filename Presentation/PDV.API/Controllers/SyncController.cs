@@ -34,7 +34,7 @@ public class SyncController(WebServerAgent webServerAgent, ILogger<SyncControlle
         return Ok(new
         {
             Status = "Sync endpoint ready",
-            Tables = new[] { "Products", "Sales", "SaleItems", "Payments" },
+            Tables = new[] { "Products", "Sales", "SaleItems", "Payments", "Operators" },
             Timestamp = DateTime.UtcNow
         });
     }

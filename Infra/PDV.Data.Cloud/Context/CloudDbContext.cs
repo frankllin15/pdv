@@ -3,16 +3,13 @@ using PDV.Core.Entities;
 
 namespace PDV.Data.Cloud.Context;
 
-public class CloudDbContext : DbContext
+public class CloudDbContext(DbContextOptions<CloudDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Sale> Sales => Set<Sale>();
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
     public DbSet<Payment> Payments => Set<Payment>();
-
-    public CloudDbContext(DbContextOptions<CloudDbContext> options) : base(options)
-    {
-    }
+    public DbSet<Operator> Operators => Set<Operator>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

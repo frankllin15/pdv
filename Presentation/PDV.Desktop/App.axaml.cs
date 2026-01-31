@@ -4,8 +4,10 @@ using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PDV.Core.Entities;
 using PDV.Core.Interfaces.Queries;
 using PDV.Core.Interfaces.Repositories;
+using PDV.Core.Interfaces.Services;
 using PDV.Data.Local.Context;
 using PDV.Data.Local.Handlers;
 using PDV.Data.Local.Queries;
@@ -14,7 +16,6 @@ using PDV.Desktop.Services;
 using PDV.Desktop.ViewModels;
 using PDV.Desktop.Views;
 using PDV.Integration.Sync;
-using Serilog;
 
 namespace PDV.Desktop;
 
@@ -84,12 +85,17 @@ public partial class App : Application
         // Queries (Dapper)
         services.AddScoped<IProductQuery>(_ => new ProductQuery(connectionString));
         services.AddScoped<ISaleQuery>(_ => new SaleQuery(connectionString));
+        services.AddScoped<IOperatorQuery>(_ => new OperatorQuery(connectionString));
+
+        // Session Services
+        services.AddSingleton<IOperatorSessionService>(sp => new OperatorSessionService(sp));
 
         // ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<CheckoutViewModel>();
         services.AddTransient<ProductsViewModel>();
         services.AddTransient<SalesHistoryViewModel>();
+        services.AddTransient<LoginViewModel>();
 
         // Sync Services
         var apiUrl = "http://localhost:5233"; // URL da API
@@ -124,6 +130,15 @@ public partial class App : Application
 
         // Apply pending migrations
         context.Database.Migrate();
+
+        // Seed default operator if none exists
+        if (!context.Operators.Any())
+        {
+            var defaultOperator = new Operator("Admin", "ADMIN", "1234", isAdmin: true);
+            context.Operators.Add(defaultOperator);
+            context.SaveChanges();
+            Console.WriteLine("Default operator created: ADMIN / 1234");
+        }
     }
 
     private static void StartBackgroundSync()

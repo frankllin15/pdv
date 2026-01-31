@@ -57,7 +57,7 @@ builder.Services.AddSession(options =>
 });
 
 // Configure Sync tables
-var syncSetup = new SyncSetup("Products", "Sales", "SaleItems", "Payments");
+var syncSetup = new SyncSetup("Products", "Sales", "SaleItems", "Payments", "Operators");
 
 builder.Services.AddSyncServer<SqlSyncProvider>(connectionString, syncSetup);
 
