@@ -43,4 +43,27 @@ public interface IReceiptPrinterService
     /// <param name="printerName">Printer name to check</param>
     /// <returns>True if printer is available</returns>
     Task<bool> IsPrinterAvailableAsync(string printerName);
+
+    /// <summary>
+    /// Prints a PDF document.
+    /// </summary>
+    /// <param name="pdfContent">PDF content as byte array</param>
+    /// <param name="printerName">Printer name (uses default if null)</param>
+    /// <returns>True if printing was successful</returns>
+    Task<bool> PrintPdfAsync(byte[] pdfContent, string? printerName = null);
+
+    /// <summary>
+    /// Opens a PDF for viewing/printing in the default PDF viewer.
+    /// </summary>
+    /// <param name="pdfContent">PDF content as byte array</param>
+    /// <param name="fileName">Suggested file name for the PDF</param>
+    /// <returns>The path where the PDF was saved</returns>
+    Task<string> OpenPdfAsync(byte[] pdfContent, string? fileName = null);
+
+    /// <summary>
+    /// Saves a PDF to the specified path.
+    /// </summary>
+    /// <param name="pdfContent">PDF content as byte array</param>
+    /// <param name="filePath">Full path to save the PDF</param>
+    Task SavePdfAsync(byte[] pdfContent, string filePath);
 }

@@ -3,6 +3,8 @@ using PDV.Shared.DTOs;
 
 namespace PDV.Core.Interfaces.Services;
 
+// Note: DanfeResult is in PDV.Shared.DTOs
+
 public interface IFiscalManager
 {
     /// <summary>
@@ -28,9 +30,15 @@ public interface IFiscalManager
     Task<int> TransmitContingenciesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Generates DANFE (receipt) content for printing.
+    /// Generates DANFE (receipt) text content for printing.
     /// </summary>
     Task<string> GenerateDanfeAsync(FiscalTransaction transaction, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Generates DANFE with QR code data for printing.
+    /// Returns DanfeResult containing text content, QR code URL and base64 image.
+    /// </summary>
+    Task<DanfeResult> GenerateDanfeWithQrCodeAsync(FiscalTransaction transaction, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Validates that all products in the sale have required fiscal data.
@@ -47,4 +55,15 @@ public interface IFiscalManager
     /// Checks if SEFAZ is currently available.
     /// </summary>
     Task<bool> IsSefazAvailableAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reprints a DANFE for an existing fiscal transaction.
+    /// Records an audit log of the reprint operation.
+    /// </summary>
+    /// <param name="accessKey">The 44-digit access key of the NFC-e</param>
+    /// <param name="operatorId">The operator requesting the reprint</param>
+    /// <param name="reason">Optional reason for the reprint</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing the DANFE content marked as reprint</returns>
+    Task<FiscalResult> ReprintDanfeAsync(string accessKey, Guid operatorId, string? reason = null, CancellationToken cancellationToken = default);
 }

@@ -1,0 +1,326 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:conv="using:PDV.Desktop.Converters"
+             x:Class="PDV.Desktop.Views.FiscalHistoryView"
+             x:DataType="vm:FiscalHistoryViewModel"
+             Background="#F0F0F0">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    </UserControl.Styles>
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="F5" Command="{Binding SearchCommand}" />
+        <KeyBinding Gesture="F4" Command="{Binding OpenReprintDialogCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding ClearDetailCommand}" />
+    </UserControl.KeyBindings>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#9C27B0" Padding="16">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Text="Historico Fiscal"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="White" />
+                    <TextBlock Text="Consulta e reimpressao de NFC-e"
+                               FontSize="14" Foreground="White" Opacity="0.9" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Filters -->
+        <Border Grid.Row="1" Background="White" Padding="16" Margin="16,16,16,0"
+                CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
+            <Grid RowDefinitions="Auto,Auto">
+                <!-- Search by Access Key -->
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12">
+                    <TextBlock Text="Chave de Acesso:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBox Grid.Column="1" Text="{Binding SearchText}"
+                             Watermark="Digite a chave de acesso (44 digitos) ou deixe vazio para buscar por data"
+                             Margin="0,0,8,0" />
+                    <Button Grid.Column="2" Content="Limpar" Command="{Binding ClearSearchCommand}" Padding="8,6" />
+                </Grid>
+
+                <!-- Date Range and Status Filters -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto">
+                    <!-- Date Range -->
+                    <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                        <TextBlock Text="Data Inicio" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                        <DatePicker SelectedDate="{Binding StartDate}" Width="140" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                        <TextBlock Text="Data Fim" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                        <DatePicker SelectedDate="{Binding EndDate}" Width="140" />
+                    </StackPanel>
+
+                    <!-- Quick Filters -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="4" Margin="0,0,16,0">
+                        <Button Content="Hoje" Command="{Binding SetTodayCommand}" Padding="8,6" />
+                        <Button Content="Semana" Command="{Binding SetThisWeekCommand}" Padding="8,6" />
+                        <Button Content="Mes" Command="{Binding SetThisMonthCommand}" Padding="8,6" />
+                    </StackPanel>
+
+                    <!-- Status Filter -->
+                    <StackPanel Grid.Column="3" Margin="0,0,16,0">
+                        <TextBlock Text="Status" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                        <ComboBox ItemsSource="{Binding StatusOptions}"
+                                  SelectedValue="{Binding SelectedStatus}"
+                                  SelectedValueBinding="{Binding Value}"
+                                  DisplayMemberBinding="{Binding Label}"
+                                  Width="120" />
+                    </StackPanel>
+
+                    <!-- Search Button -->
+                    <Button Grid.Column="5" Content="Buscar (F5)"
+                            Command="{Binding SearchCommand}"
+                            Background="#9C27B0"
+                            Foreground="White"
+                            Padding="24,8"
+                            FontWeight="SemiBold"
+                            VerticalAlignment="Bottom" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="2" Margin="16" ColumnDefinitions="*,400">
+            <!-- Transactions Grid -->
+            <Border Background="White" CornerRadius="8" Padding="8"
+                    BorderBrush="#E0E0E0" BorderThickness="1">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- Summary Cards -->
+                    <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,8">
+                        <Border Background="#E1BEE7" CornerRadius="4" Padding="12" Margin="0,0,4,0">
+                            <StackPanel>
+                                <TextBlock Text="Total" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{Binding TotalTransactions}" FontSize="20" FontWeight="Bold" Foreground="#7B1FA2" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Background="#C8E6C9" CornerRadius="4" Padding="12" Margin="4,0">
+                            <StackPanel>
+                                <TextBlock Text="Autorizadas" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{Binding AuthorizedCount}" FontSize="20" FontWeight="Bold" Foreground="#388E3C" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Background="#FFE0B2" CornerRadius="4" Padding="12" Margin="4,0">
+                            <StackPanel>
+                                <TextBlock Text="Contingencia" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{Binding ContingencyCount}" FontSize="20" FontWeight="Bold" Foreground="#F57C00" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="3" Background="#FFCDD2" CornerRadius="4" Padding="12" Margin="4,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Canceladas" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{Binding CancelledCount}" FontSize="20" FontWeight="Bold" Foreground="#D32F2F" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Transactions}"
+                              SelectedItem="{Binding SelectedTransaction}"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="True"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="NFC-e" Binding="{Binding Number}" Width="70" />
+                            <DataGridTextColumn Header="Serie" Binding="{Binding Series}" Width="50" />
+                            <DataGridTextColumn Header="Data" Binding="{Binding CreatedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="130" />
+                            <DataGridTextColumn Header="Valor" Binding="{Binding SaleTotal, StringFormat='{}{0:C}'}" Width="100" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="90" />
+                            <DataGridTextColumn Header="Chave" Binding="{Binding FormattedAccessKey}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <!-- Transaction Detail Panel -->
+            <Border Grid.Column="1" Background="White" CornerRadius="8"
+                    Padding="16" Margin="16,0,0,0"
+                    BorderBrush="#E0E0E0" BorderThickness="1">
+                <Panel>
+                    <!-- When no transaction selected -->
+                    <StackPanel IsVisible="{Binding TransactionDetail, Converter={x:Static ObjectConverters.IsNull}}"
+                                VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Selecione uma transacao"
+                                   Foreground="#999" FontSize="14"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="para ver detalhes"
+                                   Foreground="#999" FontSize="14"
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Transaction Detail -->
+                    <ScrollViewer IsVisible="{Binding TransactionDetail, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel DataContext="{Binding TransactionDetail}" Spacing="12">
+                            <!-- Header -->
+                            <StackPanel>
+                                <TextBlock Text="{Binding Number, StringFormat='NFC-e #{0}'}"
+                                           FontSize="20" FontWeight="Bold" />
+                                <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:dddd, dd MMMM yyyy HH:mm}'}"
+                                           Foreground="#666" />
+                            </StackPanel>
+
+                            <Separator />
+
+                            <!-- Status -->
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Text="Status:" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding StatusText}" />
+                            </Grid>
+
+                            <!-- Contingency Warning -->
+                            <Border Background="#FFF3E0" CornerRadius="4" Padding="8"
+                                    IsVisible="{Binding IsContingency}">
+                                <StackPanel>
+                                    <TextBlock Text="EMITIDA EM CONTINGENCIA" FontWeight="Bold" Foreground="#E65100" />
+                                    <TextBlock Text="Pendente de transmissao a SEFAZ" Foreground="#E65100" FontSize="12" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Protocol -->
+                            <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding Protocol, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                <TextBlock Text="Protocolo:" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding Protocol}" />
+                            </Grid>
+
+                            <!-- Authorization Date -->
+                            <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding AuthorizationDate, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                <TextBlock Text="Autorizado em:" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <TextBlock Grid.Column="1" Text="{Binding AuthorizationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm:ss}'}" />
+                            </Grid>
+
+                            <Separator />
+
+                            <!-- Access Key -->
+                            <StackPanel>
+                                <TextBlock Text="Chave de Acesso" FontWeight="SemiBold" FontSize="14" />
+                                <Border Background="#F5F5F5" CornerRadius="4" Padding="8" Margin="0,4,0,0">
+                                    <TextBlock Text="{Binding FormattedAccessKey}"
+                                               FontFamily="Consolas"
+                                               FontSize="11"
+                                               TextWrapping="Wrap" />
+                                </Border>
+                            </StackPanel>
+
+                            <Separator />
+
+                            <!-- Reprint Info -->
+                            <StackPanel>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Reimpressoes" FontWeight="SemiBold" FontSize="14" />
+                                    <TextBlock Grid.Column="1" Text="{Binding ReprintCount, StringFormat='Total: {0}'}" Foreground="#666" />
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding ReprintHistory}" Margin="0,8,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#FAFAFA" CornerRadius="4" Padding="8" Margin="0,0,0,4">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Text="{Binding ReprintNumber, StringFormat='#{0}'}"
+                                                               FontWeight="Bold" Foreground="#9C27B0"
+                                                               VerticalAlignment="Top" Margin="0,0,8,0" />
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="{Binding ReprintedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontSize="12" />
+                                                        <TextBlock Text="{Binding OperatorName, StringFormat='Por: {0}'}" Foreground="#666" FontSize="11" />
+                                                        <TextBlock Text="{Binding Reason}" Foreground="#999" FontSize="11"
+                                                                   IsVisible="{Binding Reason, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <Separator />
+
+                            <!-- Action Buttons -->
+                            <StackPanel Spacing="8">
+                                <Button Content="Reimprimir DANFE (F4)"
+                                        Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).OpenReprintDialogCommand}"
+                                        Background="#9C27B0"
+                                        Foreground="White"
+                                        Padding="16,10"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        FontWeight="SemiBold" />
+
+                                <Button Content="Abrir como PDF (com QR Code)"
+                                        Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).ReprintAsPdfCommand}"
+                                        Background="#673AB7"
+                                        Foreground="White"
+                                        Padding="16,10"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" />
+
+                                <Button Content="Salvar PDF"
+                                        Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).SavePdfCommand}"
+                                        Padding="16,10"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Padding="16,8"
+                Background="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#FFEBEE|#E8F5E9'}">
+            <TextBlock Text="{Binding StatusMessage}"
+                       FontSize="14"
+                       Foreground="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#C62828|#2E7D32'}" />
+        </Border>
+
+        <!-- Reprint Dialog Overlay -->
+        <Border Grid.RowSpan="4"
+                IsVisible="{Binding ShowReprintDialog}"
+                Background="#80000000">
+            <Border Background="White" CornerRadius="8" Padding="24"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="400">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Reimprimir DANFE" FontSize="18" FontWeight="Bold" />
+
+                    <TextBlock Text="Informe o motivo da reimpressao (opcional):" />
+
+                    <TextBox Text="{Binding ReprintReason}"
+                             Watermark="Ex: Cliente solicitou 2a via"
+                             AcceptsReturn="True"
+                             Height="80"
+                             TextWrapping="Wrap" />
+
+                    <TextBlock Text="Um registro de auditoria sera criado com seu usuario e a data/hora da reimpressao."
+                               TextWrapping="Wrap"
+                               Foreground="#666"
+                               FontSize="12" />
+
+                    <Grid ColumnDefinitions="*,*" Margin="0,8,0,0">
+                        <Button Grid.Column="0" Content="Cancelar"
+                                Command="{Binding CancelReprintDialogCommand}"
+                                Margin="0,0,8,0"
+                                Padding="16,10"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" />
+                        <Button Grid.Column="1" Content="Confirmar"
+                                Command="{Binding ConfirmReprintCommand}"
+                                Background="#9C27B0"
+                                Foreground="White"
+                                Padding="16,10"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                FontWeight="SemiBold" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

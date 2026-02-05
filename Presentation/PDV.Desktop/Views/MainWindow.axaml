@@ -14,6 +14,7 @@
         <KeyBinding Gesture="F1" Command="{Binding NavigateToCheckoutCommand}" />
         <KeyBinding Gesture="F4" Command="{Binding NavigateToProductsCommand}" />
         <KeyBinding Gesture="F6" Command="{Binding NavigateToSalesHistoryCommand}" />
+        <KeyBinding Gesture="F7" Command="{Binding NavigateToFiscalHistoryCommand}" />
     </Window.KeyBindings>
 
     <Window.DataTemplates>
@@ -34,6 +35,9 @@
         </DataTemplate>
         <DataTemplate DataType="vm:FiscalConfigViewModel">
             <views:FiscalConfigView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:FiscalHistoryViewModel">
+            <views:FiscalHistoryView />
         </DataTemplate>
     </Window.DataTemplates>
 
@@ -68,9 +72,14 @@
                                 Foreground="White"
                                 Padding="16,8">
                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                <TextBlock Text="Fiscal" VerticalAlignment="Center" />
+                                <TextBlock Text="Fiscal Config" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
+                        <Button Content="Fiscal History (F7)"
+                                Command="{Binding NavigateToFiscalHistoryCommand}"
+                                Background="{Binding IsFiscalHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                                Foreground="White"
+                                Padding="16,8" />
                     </StackPanel>
 
                     <!-- User Info and Logout -->

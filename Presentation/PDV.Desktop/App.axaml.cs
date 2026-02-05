@@ -92,6 +92,7 @@ public partial class App : Application
         // Fiscal Repositories
         services.AddScoped<IFiscalTransactionRepository, FiscalTransactionRepository>();
         services.AddScoped<IFiscalConfigurationRepository, FiscalConfigurationRepository>();
+        services.AddScoped<IFiscalReprintLogRepository, FiscalReprintLogRepository>();
 
         // Fiscal Services
         services.AddSingleton<XmlBuilderService>();
@@ -114,6 +115,7 @@ public partial class App : Application
         services.AddTransient<SalesHistoryViewModel>();
         services.AddTransient<LoginViewModel>();
         services.AddTransient<FiscalConfigViewModel>();
+        services.AddTransient<FiscalHistoryViewModel>();
 
         // Logging
         services.AddLogging();

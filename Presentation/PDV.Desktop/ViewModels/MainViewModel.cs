@@ -36,6 +36,9 @@ public partial class MainViewModel : ViewModelBase
     private bool _isFiscalConfigActive;
 
     [ObservableProperty]
+    private bool _isFiscalHistoryActive;
+
+    [ObservableProperty]
     private bool _showNavigationConfirmDialog;
 
     public MainViewModel(IOperatorSessionService sessionService)
@@ -102,6 +105,7 @@ public partial class MainViewModel : ViewModelBase
         IsProductsActive = false;
         IsSalesHistoryActive = false;
         IsFiscalConfigActive = false;
+        IsFiscalHistoryActive = false;
     }
 
     [RelayCommand]
@@ -192,6 +196,24 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsFiscalConfigActive = true;
+    }
+
+    [RelayCommand]
+    private void NavigateToFiscalHistory()
+    {
+        if (!TryNavigateWithConfirmation(DoNavigateToFiscalHistory))
+            return;
+    }
+
+    private void DoNavigateToFiscalHistory()
+    {
+        _checkoutViewModel = null;
+        var viewModel = App.Services?.GetRequiredService<FiscalHistoryViewModel>()
+            ?? throw new InvalidOperationException("FiscalHistoryViewModel not registered");
+
+        CurrentView = viewModel;
+        ResetActiveStates();
+        IsFiscalHistoryActive = true;
     }
 
     [RelayCommand]

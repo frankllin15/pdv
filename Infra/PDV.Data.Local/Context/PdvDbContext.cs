@@ -12,6 +12,7 @@ public class PdvDbContext(DbContextOptions<PdvDbContext> options) : DbContext(op
     public DbSet<Operator> Operators => Set<Operator>();
     public DbSet<FiscalTransaction> FiscalTransactions => Set<FiscalTransaction>();
     public DbSet<FiscalConfiguration> FiscalConfigurations => Set<FiscalConfiguration>();
+    public DbSet<FiscalReprintLog> FiscalReprintLogs => Set<FiscalReprintLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

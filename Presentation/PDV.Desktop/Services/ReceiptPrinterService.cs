@@ -105,6 +105,75 @@ public class ReceiptPrinterService : IReceiptPrinterService
         return printers.Contains(printerName, StringComparer.OrdinalIgnoreCase);
     }
 
+    public async Task<bool> PrintPdfAsync(byte[] pdfContent, string? printerName = null)
+    {
+        try
+        {
+            // Save PDF to temp file and print
+            var tempPath = await SavePdfToTempAsync(pdfContent, "danfe_print.pdf");
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // Use SumatraPDF or Adobe Reader command line to print silently
+                // Fallback to opening with default PDF viewer's print dialog
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = tempPath,
+                    UseShellExecute = true,
+                    Verb = "print"
+                };
+
+                Process.Start(startInfo);
+                return true;
+            }
+
+            // For other platforms, open with default viewer
+            await OpenPdfAsync(pdfContent, "danfe_print.pdf");
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<string> OpenPdfAsync(byte[] pdfContent, string? fileName = null)
+    {
+        var tempPath = await SavePdfToTempAsync(pdfContent, fileName ?? "danfe.pdf");
+
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = tempPath,
+            UseShellExecute = true
+        };
+
+        Process.Start(startInfo);
+        return tempPath;
+    }
+
+    public async Task SavePdfAsync(byte[] pdfContent, string filePath)
+    {
+        // Ensure directory exists
+        var directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        await File.WriteAllBytesAsync(filePath, pdfContent);
+    }
+
+    private static async Task<string> SavePdfToTempAsync(byte[] pdfContent, string fileName)
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "PDV");
+        Directory.CreateDirectory(tempDir);
+
+        var tempPath = Path.Combine(tempDir, fileName);
+        await File.WriteAllBytesAsync(tempPath, pdfContent);
+
+        return tempPath;
+    }
+
     private Task<bool> PrintToSpecificPrinterAsync(string content, string printerName)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

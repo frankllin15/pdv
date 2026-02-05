@@ -19,6 +19,7 @@ public class FiscalManager : IFiscalManager
     private readonly IFiscalProvider _provider;
     private readonly IFiscalTransactionRepository _transactionRepository;
     private readonly IFiscalConfigurationRepository _configurationRepository;
+    private readonly IFiscalReprintLogRepository _reprintLogRepository;
     private readonly ISaleRepository _saleRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly XmlBuilderService _xmlBuilder;
@@ -29,6 +30,7 @@ public class FiscalManager : IFiscalManager
         IFiscalProvider provider,
         IFiscalTransactionRepository transactionRepository,
         IFiscalConfigurationRepository configurationRepository,
+        IFiscalReprintLogRepository reprintLogRepository,
         ISaleRepository saleRepository,
         IUnitOfWork unitOfWork,
         XmlBuilderService xmlBuilder,
@@ -38,6 +40,7 @@ public class FiscalManager : IFiscalManager
         _provider = provider;
         _transactionRepository = transactionRepository;
         _configurationRepository = configurationRepository;
+        _reprintLogRepository = reprintLogRepository;
         _saleRepository = saleRepository;
         _unitOfWork = unitOfWork;
         _xmlBuilder = xmlBuilder;
@@ -275,6 +278,12 @@ public class FiscalManager : IFiscalManager
 
     public async Task<string> GenerateDanfeAsync(FiscalTransaction transaction, CancellationToken cancellationToken = default)
     {
+        var result = await GenerateDanfeWithQrCodeAsync(transaction, cancellationToken);
+        return result.TextContent;
+    }
+
+    public async Task<DanfeResult> GenerateDanfeWithQrCodeAsync(FiscalTransaction transaction, CancellationToken cancellationToken = default)
+    {
         var config = await _configurationRepository.GetActiveAsync(cancellationToken);
         if (config == null)
         {
@@ -287,7 +296,7 @@ public class FiscalManager : IFiscalManager
             throw FiscalException.ValidationError("Venda não encontrada");
         }
 
-        return _danfeService.GenerateDanfeText(sale, config, transaction);
+        return _danfeService.GenerateDanfe(sale, config, transaction);
     }
 
     public bool ValidateFiscalProducts(Sale sale, out List<string> errors)
@@ -333,5 +342,62 @@ public class FiscalManager : IFiscalManager
     public async Task<bool> IsSefazAvailableAsync(CancellationToken cancellationToken = default)
     {
         return await _provider.IsAvailableAsync(cancellationToken);
+    }
+
+    public async Task<FiscalResult> ReprintDanfeAsync(string accessKey, Guid operatorId, string? reason = null, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Reprinting DANFE for access key: {AccessKey}, Operator: {OperatorId}", accessKey, operatorId);
+
+        // Validate access key
+        if (!AccessKeyGenerator.Validate(accessKey))
+        {
+            return FiscalResult.Error("Chave de acesso inválida");
+        }
+
+        // Get fiscal transaction
+        var transaction = await _transactionRepository.GetByAccessKeyAsync(accessKey, cancellationToken);
+        if (transaction == null)
+        {
+            _logger.LogWarning("Fiscal transaction not found for access key: {AccessKey}", accessKey);
+            return FiscalResult.Error("Transação fiscal não encontrada");
+        }
+
+        // Get sale with items and payments
+        var sale = await _saleRepository.GetByIdWithItemsAndPaymentsAsync(transaction.SaleId, cancellationToken);
+        if (sale == null)
+        {
+            _logger.LogError("Sale not found for fiscal transaction: {TransactionId}", transaction.Id);
+            return FiscalResult.Error("Venda não encontrada");
+        }
+
+        // Get fiscal configuration
+        var config = await _configurationRepository.GetActiveAsync(cancellationToken);
+        if (config == null)
+        {
+            _logger.LogError("No active fiscal configuration found");
+            return FiscalResult.Error("Configuração fiscal não encontrada");
+        }
+
+        // Get reprint count
+        var reprintCount = await _reprintLogRepository.GetReprintCountAsync(transaction.Id, cancellationToken);
+        var newReprintNumber = reprintCount + 1;
+
+        // Generate DANFE with reprint marker and QR code
+        var reprintDate = DateTime.Now;
+        var danfeResult = _danfeService.GenerateDanfe(
+            sale, config, transaction,
+            isReprint: true,
+            reprintDate: reprintDate,
+            reprintNumber: newReprintNumber);
+
+        // Create audit log
+        var reprintLog = new FiscalReprintLog(transaction.Id, operatorId, newReprintNumber, reason);
+        await _reprintLogRepository.AddAsync(reprintLog, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("DANFE reprinted successfully. AccessKey: {AccessKey}, ReprintNumber: {ReprintNumber}, HasQrCode: {HasQrCode}, HasPdf: {HasPdf}",
+            accessKey, newReprintNumber, danfeResult.HasQrCode, danfeResult.HasPdf);
+
+        return FiscalResult.Reprint(accessKey, danfeResult.TextContent, newReprintNumber, transaction.IsContingency, danfeResult.QrCodeUrl, danfeResult.QrCodeBase64, danfeResult.PdfContent);
     }
 }

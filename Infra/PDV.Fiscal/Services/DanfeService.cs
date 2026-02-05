@@ -1,6 +1,7 @@
 using System.Text;
 using PDV.Core.Entities;
 using PDV.Fiscal.Utilities;
+using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
 
 namespace PDV.Fiscal.Services;
@@ -12,14 +13,106 @@ namespace PDV.Fiscal.Services;
 public class DanfeService
 {
     private const int LineWidth = 48; // Standard 80mm thermal printer width
+    private readonly DanfePdfService? _pdfService;
+
+    public DanfeService()
+    {
+        _pdfService = new DanfePdfService();
+    }
+
+    /// <summary>
+    /// Generates a complete DANFE with QR code for an NFC-e.
+    /// </summary>
+    /// <param name="sale">The sale associated with the fiscal transaction</param>
+    /// <param name="config">Active fiscal configuration</param>
+    /// <param name="transaction">The fiscal transaction</param>
+    /// <param name="isReprint">Whether this is a reprint (2nd copy)</param>
+    /// <param name="reprintDate">Date/time of the reprint</param>
+    /// <param name="reprintNumber">Reprint number (for audit purposes)</param>
+    /// <param name="includePdf">Whether to generate PDF (default: true)</param>
+    /// <returns>DanfeResult containing text content, QR code data, and optionally PDF</returns>
+    public DanfeResult GenerateDanfe(
+        Sale sale,
+        FiscalConfiguration config,
+        FiscalTransaction transaction,
+        bool isReprint = false,
+        DateTime? reprintDate = null,
+        int reprintNumber = 0,
+        bool includePdf = true)
+    {
+        // Generate QR Code URL and image
+        var qrCodeUrl = GenerateQrCodeUrl(transaction, config, sale.Total);
+        string? qrCodeBase64 = null;
+        byte[]? qrCodeBytes = null;
+
+        if (!string.IsNullOrEmpty(qrCodeUrl))
+        {
+            qrCodeBytes = QrCodeGenerator.GenerateQrCodeBytes(qrCodeUrl, pixelsPerModule: 4);
+            qrCodeBase64 = Convert.ToBase64String(qrCodeBytes);
+        }
+
+        // Generate text content
+        var textContent = GenerateDanfeText(sale, config, transaction, qrCodeUrl, isReprint, reprintDate);
+
+        // Generate PDF with QR Code
+        byte[]? pdfContent = null;
+        if (includePdf && _pdfService != null)
+        {
+            try
+            {
+                pdfContent = _pdfService.GeneratePdf(
+                    sale, config, transaction, qrCodeBytes,
+                    isReprint, reprintDate, reprintNumber);
+            }
+            catch
+            {
+                // PDF generation failed - continue without PDF
+                pdfContent = null;
+            }
+        }
+
+        if (isReprint)
+        {
+            return string.IsNullOrEmpty(qrCodeUrl)
+                ? DanfeResult.ReprintWithoutQrCode(textContent, reprintNumber, pdfContent)
+                : DanfeResult.Reprint(textContent, qrCodeUrl, qrCodeBase64!, reprintNumber, pdfContent);
+        }
+
+        return string.IsNullOrEmpty(qrCodeUrl)
+            ? DanfeResult.SuccessWithoutQrCode(textContent, pdfContent)
+            : DanfeResult.Success(textContent, qrCodeUrl, qrCodeBase64!, pdfContent);
+    }
 
     /// <summary>
     /// Generates a text-based DANFE for an NFC-e.
     /// </summary>
+    /// <param name="sale">The sale associated with the fiscal transaction</param>
+    /// <param name="config">Active fiscal configuration</param>
+    /// <param name="transaction">The fiscal transaction</param>
+    /// <param name="isReprint">Whether this is a reprint (2nd copy)</param>
+    /// <param name="reprintDate">Date/time of the reprint</param>
+    [Obsolete("Use GenerateDanfe instead which returns DanfeResult with QR code data")]
     public string GenerateDanfeText(
         Sale sale,
         FiscalConfiguration config,
-        FiscalTransaction transaction)
+        FiscalTransaction transaction,
+        bool isReprint = false,
+        DateTime? reprintDate = null)
+    {
+        var qrCodeUrl = GenerateQrCodeUrl(transaction, config, sale.Total);
+        return GenerateDanfeText(sale, config, transaction, qrCodeUrl, isReprint, reprintDate);
+    }
+
+    /// <summary>
+    /// Generates a text-based DANFE for an NFC-e with QR code URL.
+    /// </summary>
+    private string GenerateDanfeText(
+        Sale sale,
+        FiscalConfiguration config,
+        FiscalTransaction transaction,
+        string? qrCodeUrl,
+        bool isReprint = false,
+        DateTime? reprintDate = null)
     {
         var sb = new StringBuilder();
 
@@ -30,6 +123,16 @@ public class DanfeService
         AppendCentered(sb, config.Address);
         AppendCentered(sb, $"{config.Neighborhood} - CEP: {FormatZipCode(config.ZipCode)}");
         AppendLine(sb);
+
+        // Reprint marker (2nd copy)
+        if (isReprint)
+        {
+            AppendCentered(sb, "================================");
+            AppendCentered(sb, "** REIMPRESSAO - 2a VIA **");
+            AppendCentered(sb, $"Reimpresso em: {(reprintDate ?? DateTime.Now):dd/MM/yyyy HH:mm}");
+            AppendCentered(sb, "================================");
+            AppendLine(sb);
+        }
 
         // Document info
         AppendCentered(sb, "DANFE NFC-e - Documento Auxiliar");
@@ -124,7 +227,7 @@ public class DanfeService
 
         // Access key
         AppendCentered(sb, "Consulte pela Chave de Acesso em:");
-        AppendCentered(sb, GetConsultUrl(config.State));
+        AppendCentered(sb, QrCodeGenerator.GetConsultationUrl(config.State, config.IsProduction));
         AppendLine(sb);
         AppendCentered(sb, "CHAVE DE ACESSO");
         AppendAccessKey(sb, transaction.AccessKey);
@@ -141,15 +244,39 @@ public class DanfeService
         }
         AppendLine(sb);
 
-        // QR Code placeholder
+        // QR Code section
         AppendSeparator(sb);
-        AppendCentered(sb, "[QR CODE]");
+        if (!string.IsNullOrEmpty(qrCodeUrl))
+        {
+            AppendCentered(sb, "QRCODE PARA CONSULTA VIA APP");
+            AppendLine(sb);
+            // QR Code marker - will be replaced by actual QR code image on print
+            // The [QRCODE] tag can be parsed by the printer service
+            AppendCentered(sb, "[QRCODE]");
+            AppendLine(sb);
+            // Also include the URL for text-only printers or debugging
+            AppendCentered(sb, "URL de Consulta:");
+            // Break URL into multiple lines if too long
+            AppendQrCodeUrl(sb, qrCodeUrl);
+        }
+        else
+        {
+            AppendCentered(sb, "CSC NAO CONFIGURADO");
+            AppendCentered(sb, "QR CODE NAO DISPONIVEL");
+        }
         AppendLine(sb);
 
         // Footer
         AppendSeparator(sb);
-        AppendCentered(sb, config.IsProduction ? "AMBIENTE DE PRODUCAO" : "** SEM VALOR FISCAL **");
-        AppendCentered(sb, "** HOMOLOGACAO **");
+        if (config.IsProduction)
+        {
+            AppendCentered(sb, "AMBIENTE DE PRODUCAO");
+        }
+        else
+        {
+            AppendCentered(sb, "** SEM VALOR FISCAL **");
+            AppendCentered(sb, "** HOMOLOGACAO **");
+        }
         AppendLine(sb);
 
         return sb.ToString();
@@ -243,19 +370,22 @@ public class DanfeService
         };
     }
 
-    private static string GetConsultUrl(string state)
+    private static void AppendQrCodeUrl(StringBuilder sb, string url)
     {
-        return state.ToUpperInvariant() switch
+        // Break URL into multiple lines of LineWidth chars for thermal printer
+        const int urlLineWidth = LineWidth - 2; // Leave some margin
+        var remaining = url;
+
+        while (remaining.Length > 0)
         {
-            "SP" => "www.nfce.fazenda.sp.gov.br",
-            "RJ" => "www.fazenda.rj.gov.br/nfce",
-            "MG" => "nfce.fazenda.mg.gov.br",
-            "RS" => "www.sefaz.rs.gov.br/nfce",
-            "PR" => "www.fazenda.pr.gov.br/nfce",
-            "SC" => "sat.sef.sc.gov.br/nfce",
-            "BA" => "nfe.sefaz.ba.gov.br",
-            "PE" => "nfce.sefaz.pe.gov.br",
-            _ => "www.nfe.fazenda.gov.br"
-        };
+            var chunk = remaining.Length <= urlLineWidth
+                ? remaining
+                : remaining[..urlLineWidth];
+
+            sb.AppendLine(chunk);
+            remaining = remaining.Length <= urlLineWidth
+                ? string.Empty
+                : remaining[urlLineWidth..];
+        }
     }
 }
