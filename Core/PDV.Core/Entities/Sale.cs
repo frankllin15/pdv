@@ -15,6 +15,12 @@ public class Sale : Entity
     public Guid? OperatorId { get; private set; }
     public SyncState SyncState { get; private set; } = SyncState.Pending;
 
+    // Fiscal fields
+    public FiscalStatus FiscalStatus { get; private set; } = FiscalStatus.None;
+    public string? FiscalAccessKey { get; private set; }   // 44 digit NFC-e access key
+    public int? FiscalNumber { get; private set; }          // NFC-e number
+    public int? FiscalSeries { get; private set; }          // NFC-e series
+
     private readonly List<SaleItem> _items = new();
     private readonly List<Payment> _payments = new();
 
@@ -150,6 +156,21 @@ public class Sale : Entity
     public void SetSyncState(SyncState state)
     {
         SyncState = state;
+        SetUpdatedAt();
+    }
+
+    public void SetFiscalData(FiscalStatus status, string? accessKey, int? number, int? series)
+    {
+        FiscalStatus = status;
+        FiscalAccessKey = accessKey;
+        FiscalNumber = number;
+        FiscalSeries = series;
+        SetUpdatedAt();
+    }
+
+    public void SetFiscalStatus(FiscalStatus status)
+    {
+        FiscalStatus = status;
         SetUpdatedAt();
     }
 

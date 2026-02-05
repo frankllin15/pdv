@@ -1,3 +1,5 @@
+using PDV.Shared.Enums;
+
 namespace PDV.Shared.DTOs;
 
 public record ProductDto
@@ -11,6 +13,10 @@ public record ProductDto
     public decimal StockQuantity { get; init; }
     public string? TaxCode { get; init; }
     public decimal TaxRate { get; init; }
+    public string? Cfop { get; init; }
+    public string? Cest { get; init; }
+    public TaxOrigin TaxOrigin { get; init; }
+    public string? Cst { get; init; }
     public bool IsActive { get; init; }
 }
 
@@ -24,6 +30,10 @@ public record CreateProductRequest
     public decimal StockQuantity { get; init; }
     public string? TaxCode { get; init; }
     public decimal TaxRate { get; init; }
+    public string? Cfop { get; init; }
+    public string? Cest { get; init; }
+    public TaxOrigin TaxOrigin { get; init; } = TaxOrigin.National;
+    public string? Cst { get; init; }
 }
 
 public record UpdateProductRequest
@@ -36,5 +46,9 @@ public record UpdateProductRequest
     public decimal StockQuantity { get; init; }
     public string? TaxCode { get; init; }
     public decimal TaxRate { get; init; }
+    public string? Cfop { get; init; }
+    public string? Cest { get; init; }
+    public TaxOrigin TaxOrigin { get; init; } = TaxOrigin.National;
+    public string? Cst { get; init; }
     public bool IsActive { get; init; } = true;
 }

@@ -13,6 +13,10 @@ public class Product : Entity
     public decimal StockQuantity { get; private set; }
     public string? TaxCode { get; private set; } // NCM
     public decimal TaxRate { get; private set; } // ICMS
+    public string? Cfop { get; private set; }    // Código Fiscal de Operação (e.g., "5102")
+    public string? Cest { get; private set; }    // Código Especificador da Substituição Tributária
+    public TaxOrigin TaxOrigin { get; private set; } = TaxOrigin.National; // Origem da mercadoria
+    public string? Cst { get; private set; }     // Código de Situação Tributária ICMS
     public bool IsActive { get; private set; } = true;
     public SyncState SyncState { get; private set; } = SyncState.Pending;
 
@@ -26,7 +30,11 @@ public class Product : Entity
         string unitOfMeasure = "UN",
         decimal stockQuantity = 0,
         string? taxCode = null,
-        decimal taxRate = 0)
+        decimal taxRate = 0,
+        string? cfop = null,
+        string? cest = null,
+        TaxOrigin taxOrigin = TaxOrigin.National,
+        string? cst = null)
     {
         SetBarcode(barcode);
         SetDescription(description);
@@ -36,6 +44,10 @@ public class Product : Entity
         StockQuantity = stockQuantity;
         TaxCode = taxCode;
         TaxRate = taxRate;
+        Cfop = cfop;
+        Cest = cest;
+        TaxOrigin = taxOrigin;
+        Cst = cst;
     }
 
     public void SetBarcode(string barcode)
@@ -86,6 +98,15 @@ public class Product : Entity
     public void SetSyncState(SyncState state)
     {
         SyncState = state;
+        SetUpdatedAt();
+    }
+
+    public void SetFiscalData(string? cfop, string? cest, TaxOrigin taxOrigin, string? cst)
+    {
+        Cfop = cfop;
+        Cest = cest;
+        TaxOrigin = taxOrigin;
+        Cst = cst;
         SetUpdatedAt();
     }
 }

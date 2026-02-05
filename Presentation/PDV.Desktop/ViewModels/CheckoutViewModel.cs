@@ -16,6 +16,10 @@ public partial class CheckoutViewModel : ViewModelBase
     private readonly ISaleQuery _saleQuery;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IOperatorSessionService _operatorSession;
+    private readonly IFiscalManager? _fiscalManager;
+    private readonly IReceiptPrinterService? _printerService;
+    private readonly IFiscalConfigurationRepository? _fiscalConfigRepository;
+    private readonly IFiscalTransactionRepository? _fiscalTransactionRepository;
 
     private Sale? _currentSale;
 
@@ -73,6 +77,18 @@ public partial class CheckoutViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isSearching;
 
+    [ObservableProperty]
+    private bool _showReceiptPreview;
+
+    [ObservableProperty]
+    private string _receiptContent = string.Empty;
+
+    [ObservableProperty]
+    private string _receiptFiscalNumber = string.Empty;
+
+    [ObservableProperty]
+    private bool _receiptIsContingency;
+
     public ObservableCollection<SaleItemViewModel> Items { get; } = new();
 
     public ObservableCollection<PendingSaleSummaryDto> PendingSales { get; } = new();
@@ -88,12 +104,20 @@ public partial class CheckoutViewModel : ViewModelBase
         IProductQuery productQuery,
         ISaleQuery saleQuery,
         IUnitOfWork unitOfWork,
-        IOperatorSessionService operatorSession)
+        IOperatorSessionService operatorSession,
+        IFiscalManager? fiscalManager = null,
+        IReceiptPrinterService? printerService = null,
+        IFiscalConfigurationRepository? fiscalConfigRepository = null,
+        IFiscalTransactionRepository? fiscalTransactionRepository = null)
     {
         _productQuery = productQuery;
         _saleQuery = saleQuery;
         _unitOfWork = unitOfWork;
         _operatorSession = operatorSession;
+        _fiscalManager = fiscalManager;
+        _printerService = printerService;
+        _fiscalConfigRepository = fiscalConfigRepository;
+        _fiscalTransactionRepository = fiscalTransactionRepository;
     }
 
     [RelayCommand]
@@ -459,9 +483,15 @@ public partial class CheckoutViewModel : ViewModelBase
                 SetStatus($"Sale #{SaleNumber} completed!{changeMessage}", false);
                 IsPaymentMode = false;
 
-                // Auto-start new sale after a brief moment
-                await Task.Delay(2000);
-                await StartNewSaleAsync();
+                // Process fiscal (NFC-e) after sale completion
+                await ProcessFiscalAsync();
+
+                // Only auto-start new sale if receipt preview is not showing
+                if (!ShowReceiptPreview)
+                {
+                    await Task.Delay(2000);
+                    await StartNewSaleAsync();
+                }
             }
             else
             {
@@ -576,6 +606,133 @@ public partial class CheckoutViewModel : ViewModelBase
     {
         IsPaymentMode = false;
         SetStatus("Returned to sale", false);
+    }
+
+    private async Task ProcessFiscalAsync()
+    {
+        if (_fiscalManager == null || _currentSale == null) return;
+
+        try
+        {
+            if (!await _fiscalManager.IsConfiguredAsync()) return;
+
+            var result = await _fiscalManager.IssueNfceAsync(_currentSale);
+
+            if (result.Success)
+            {
+                var msg = result.IsContingency
+                    ? $"NFC-e {_currentSale.FiscalNumber} em contingencia"
+                    : $"NFC-e {_currentSale.FiscalNumber} autorizada";
+                SetStatus(msg, false);
+
+                // Generate and show receipt
+                await GenerateAndShowReceiptAsync(result.IsContingency);
+            }
+            else
+            {
+                SetStatus($"Erro fiscal: {result.StatusMessage}", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erro ao processar fiscal: {ex.Message}", true);
+        }
+    }
+
+    private async Task GenerateAndShowReceiptAsync(bool isContingency)
+    {
+        if (_currentSale == null || _fiscalTransactionRepository == null || _fiscalConfigRepository == null)
+            return;
+
+        try
+        {
+            var transaction = await _fiscalTransactionRepository.GetBySaleIdAsync(_currentSale.Id);
+            var config = await _fiscalConfigRepository.GetActiveAsync();
+
+            if (transaction == null || config == null)
+                return;
+
+            // Generate DANFE content using FiscalManager
+            var danfeContent = await _fiscalManager!.GenerateDanfeAsync(transaction);
+
+            // Set receipt data for preview
+            ReceiptContent = danfeContent;
+            ReceiptFiscalNumber = _currentSale.FiscalNumber?.ToString() ?? transaction.Number.ToString();
+            ReceiptIsContingency = isContingency;
+
+            // Show preview
+            ShowReceiptPreview = true;
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erro ao gerar recibo: {ex.Message}", true);
+        }
+    }
+
+    [RelayCommand]
+    private async Task PrintReceiptAsync()
+    {
+        if (string.IsNullOrEmpty(ReceiptContent) || _printerService == null)
+            return;
+
+        try
+        {
+            SetStatus("Imprimindo...", false);
+            var success = await _printerService.PrintWithDialogAsync(ReceiptContent);
+
+            if (success)
+            {
+                SetStatus("Impressao enviada!", false);
+            }
+            else
+            {
+                SetStatus("Falha ao imprimir", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erro ao imprimir: {ex.Message}", true);
+        }
+    }
+
+    [RelayCommand]
+    private async Task PrintReceiptAndCloseAsync()
+    {
+        await PrintReceiptAsync();
+        await CloseReceiptPreviewAsync();
+    }
+
+    [RelayCommand]
+    private async Task CloseReceiptPreviewAsync()
+    {
+        ShowReceiptPreview = false;
+        ReceiptContent = string.Empty;
+
+        // Start new sale after closing receipt preview
+        await StartNewSaleAsync();
+    }
+
+    [RelayCommand]
+    private async Task SaveReceiptToFileAsync()
+    {
+        if (string.IsNullOrEmpty(ReceiptContent))
+            return;
+
+        try
+        {
+            var fileName = $"NFC-e_{ReceiptFiscalNumber}_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var filePath = Path.Combine(documentsPath, "PDV", "Recibos", fileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+            await File.WriteAllTextAsync(filePath, ReceiptContent);
+
+            SetStatus($"Salvo em: {filePath}", false);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erro ao salvar: {ex.Message}", true);
+        }
     }
 
     private void UpdateTotals()

@@ -15,6 +15,8 @@ using PDV.Data.Local.Repositories;
 using PDV.Desktop.Services;
 using PDV.Desktop.ViewModels;
 using PDV.Desktop.Views;
+using PDV.Fiscal.Providers;
+using PDV.Fiscal.Services;
 using PDV.Integration.Sync;
 
 namespace PDV.Desktop;
@@ -87,6 +89,20 @@ public partial class App : Application
         services.AddScoped<ISaleQuery>(_ => new SaleQuery(connectionString));
         services.AddScoped<IOperatorQuery>(_ => new OperatorQuery(connectionString));
 
+        // Fiscal Repositories
+        services.AddScoped<IFiscalTransactionRepository, FiscalTransactionRepository>();
+        services.AddScoped<IFiscalConfigurationRepository, FiscalConfigurationRepository>();
+
+        // Fiscal Services
+        services.AddSingleton<XmlBuilderService>();
+        services.AddSingleton<DanfeService>();
+        services.AddSingleton<IFiscalProvider, MockProvider>(sp =>
+            new MockProvider(sp.GetRequiredService<ILogger<MockProvider>>()));
+        services.AddScoped<IFiscalManager, FiscalManager>();
+
+        // Print Services
+        services.AddSingleton<IReceiptPrinterService, ReceiptPrinterService>();
+
         // Session Services
         services.AddSingleton<IOperatorSessionService>(sp => new OperatorSessionService(sp));
 
@@ -97,11 +113,14 @@ public partial class App : Application
         services.AddTransient<ProductsViewModel>();
         services.AddTransient<SalesHistoryViewModel>();
         services.AddTransient<LoginViewModel>();
+        services.AddTransient<FiscalConfigViewModel>();
+
+        // Logging
+        services.AddLogging();
 
         // Sync Services
         var apiUrl = "http://localhost:5233"; // URL da API
         services.AddHttpClient();
-        // services.AddLogging(builder => builder.AddSerilog());
         services.AddSingleton<ISyncService>(sp =>
         {
             var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient();

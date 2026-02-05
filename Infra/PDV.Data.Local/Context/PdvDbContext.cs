@@ -10,6 +10,8 @@ public class PdvDbContext(DbContextOptions<PdvDbContext> options) : DbContext(op
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Operator> Operators => Set<Operator>();
+    public DbSet<FiscalTransaction> FiscalTransactions => Set<FiscalTransaction>();
+    public DbSet<FiscalConfiguration> FiscalConfigurations => Set<FiscalConfiguration>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

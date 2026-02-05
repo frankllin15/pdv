@@ -33,6 +33,7 @@
         <ProjectReference Include="..\..\Core\PDV.Shared\PDV.Shared.csproj" />
         <ProjectReference Include="..\..\Infra\PDV.Data.Local\PDV.Data.Local.csproj" />
         <ProjectReference Include="..\..\Infra\PDV.Integration\PDV.Integration.csproj" />
+        <ProjectReference Include="..\..\Infra\PDV.Fiscal\PDV.Fiscal.csproj" />
     </ItemGroup>
 
 </Project>

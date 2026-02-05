@@ -5,7 +5,9 @@
       "Bash(del:*)",
       "Bash(ls:*)",
       "Bash(dotnet ef migrations add:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)"
     ]
   }
 }

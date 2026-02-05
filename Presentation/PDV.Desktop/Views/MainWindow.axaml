@@ -32,6 +32,9 @@
         <DataTemplate DataType="vm:SalesHistoryViewModel">
             <views:SalesHistoryView />
         </DataTemplate>
+        <DataTemplate DataType="vm:FiscalConfigViewModel">
+            <views:FiscalConfigView />
+        </DataTemplate>
     </Window.DataTemplates>
 
     <Panel>
@@ -60,6 +63,14 @@
                                 Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
                                 Foreground="White"
                                 Padding="16,8" />
+                        <Button Command="{Binding NavigateToFiscalConfigCommand}"
+                                Background="{Binding IsFiscalConfigActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+                                Foreground="White"
+                                Padding="16,8">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="Fiscal" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
 
                     <!-- User Info and Logout -->

@@ -486,5 +486,93 @@
             </Grid>
         </Border>
     </Border>
+
+    <!-- Receipt Preview Dialog -->
+    <Border IsVisible="{Binding ShowReceiptPreview}"
+            Background="#80000000">
+        <Border Background="White" CornerRadius="8"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="520" MaxHeight="650"
+                BoxShadow="0 8 32 0 #40000000">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!-- Header -->
+                <Border Grid.Row="0" Background="#673AB7" Padding="16" CornerRadius="8,8,0,0">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel>
+                            <TextBlock Text="Comprovante de Venda"
+                                       FontSize="18" FontWeight="Bold"
+                                       Foreground="White" />
+                            <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,4,0,0">
+                                <TextBlock Text="{Binding SaleNumber, StringFormat='Venda #{0}'}"
+                                           Foreground="White" Opacity="0.9" FontSize="13" />
+                                <TextBlock Text="{Binding ReceiptFiscalNumber, StringFormat='NFC-e {0}'}"
+                                           Foreground="White" Opacity="0.9" FontSize="13" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Border Grid.Column="1" CornerRadius="4" Padding="8,4"
+                                VerticalAlignment="Center"
+                                Background="{Binding ReceiptIsContingency, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#FF9800|#4CAF50'}">
+                            <TextBlock Text="{Binding ReceiptIsContingency, Converter={x:Static conv:BoolToStringConverter.Instance}, ConverterParameter='Contingencia|Autorizada'}"
+                                       Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Receipt Content -->
+                <Border Grid.Row="1" Background="#F5F5F5" Margin="16" Padding="0"
+                        BorderBrush="#E0E0E0" BorderThickness="1">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto"
+                                  MaxHeight="380">
+                        <TextBlock Text="{Binding ReceiptContent}"
+                                   FontFamily="Consolas, Courier New, monospace"
+                                   FontSize="10"
+                                   Padding="12"
+                                   Background="White"
+                                   TextWrapping="NoWrap" />
+                    </ScrollViewer>
+                </Border>
+
+                <!-- Actions -->
+                <Border Grid.Row="2" Background="#F5F5F5" Padding="16" CornerRadius="0,0,8,8">
+                    <Grid RowDefinitions="Auto,Auto">
+                        <!-- Status -->
+                        <TextBlock Grid.Row="0"
+                                   Text="{Binding StatusMessage}"
+                                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                   Foreground="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#C62828|#2E7D32'}"
+                                   FontSize="13"
+                                   Margin="0,0,0,12"
+                                   HorizontalAlignment="Center" />
+
+                        <!-- Buttons -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                            <Button Content="Salvar"
+                                    Command="{Binding SaveReceiptToFileCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#333"
+                                    Padding="16,10" />
+                            <Button Content="Fechar"
+                                    Command="{Binding CloseReceiptPreviewCommand}"
+                                    Background="#757575"
+                                    Foreground="White"
+                                    Padding="16,10" />
+                            <Button Content="Imprimir"
+                                    Command="{Binding PrintReceiptCommand}"
+                                    Background="#2196F3"
+                                    Foreground="White"
+                                    Padding="16,10" />
+                            <Button Content="Imprimir e Fechar"
+                                    Command="{Binding PrintReceiptAndCloseCommand}"
+                                    Background="#673AB7"
+                                    Foreground="White"
+                                    FontWeight="SemiBold"
+                                    Padding="16,10" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Border>
     </Panel>
 </UserControl>
