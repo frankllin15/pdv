@@ -39,6 +39,18 @@ public partial class MainViewModel : ViewModelBase
     private bool _isFiscalHistoryActive;
 
     [ObservableProperty]
+    private bool _isSidebarVisible;
+
+    [ObservableProperty]
+    private bool _isCadastrosExpanded;
+
+    [ObservableProperty]
+    private bool _isFinanceiroExpanded;
+
+    [ObservableProperty]
+    private bool _isSettingsExpanded;
+
+    [ObservableProperty]
     private bool _showNavigationConfirmDialog;
 
     public MainViewModel(IOperatorSessionService sessionService)
@@ -71,6 +83,21 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void ToggleCadastrosExpanded() => IsCadastrosExpanded = !IsCadastrosExpanded;
+
+    [RelayCommand]
+    private void ToggleFinanceiroExpanded() => IsFinanceiroExpanded = !IsFinanceiroExpanded;
+
+    [RelayCommand]
+    private void ToggleSettingsExpanded() => IsSettingsExpanded = !IsSettingsExpanded;
+
+    [RelayCommand]
+    private void NavigateBackFromCheckout()
+    {
+        if (!TryNavigateWithConfirmation(DoNavigateToHome)) return;
+    }
+
+    [RelayCommand]
     private void ConfirmNavigation()
     {
         ShowNavigationConfirmDialog = false;
@@ -94,6 +121,7 @@ public partial class MainViewModel : ViewModelBase
     private void OnLoginSuccessful()
     {
         IsLoggedIn = true;
+        IsSidebarVisible = true;
         CurrentOperatorName = _sessionService.CurrentOperator?.Name ?? string.Empty;
         NavigateToHome();
     }
@@ -124,6 +152,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsHomeActive = true;
+        IsSidebarVisible = true;
     }
 
     [RelayCommand]
@@ -139,6 +168,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = _checkoutViewModel;
         ResetActiveStates();
         IsCheckoutActive = true;
+        IsSidebarVisible = false;
     }
 
     [RelayCommand]
@@ -157,6 +187,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsProductsActive = true;
+        IsSidebarVisible = true;
 
         // Auto-load products when navigating
         await viewModel.LoadProductsCommand.ExecuteAsync(null);
@@ -178,6 +209,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsSalesHistoryActive = true;
+        IsSidebarVisible = true;
     }
 
     [RelayCommand]
@@ -196,6 +228,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsFiscalConfigActive = true;
+        IsSidebarVisible = true;
     }
 
     [RelayCommand]
@@ -214,6 +247,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsFiscalHistoryActive = true;
+        IsSidebarVisible = true;
     }
 
     [RelayCommand]
@@ -228,6 +262,7 @@ public partial class MainViewModel : ViewModelBase
         _checkoutViewModel = null;
         _sessionService.Logout();
         ResetActiveStates();
+        IsSidebarVisible = false;
 
         var loginViewModel = App.Services?.GetRequiredService<LoginViewModel>();
         if (loginViewModel != null)

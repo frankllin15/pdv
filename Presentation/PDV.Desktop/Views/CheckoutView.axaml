@@ -18,8 +18,20 @@
     <Grid RowDefinitions="Auto,*,Auto,Auto">
         <!-- Header -->
         <Border Grid.Row="0" Background="#2196F3" Padding="16">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackPanel>
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0"
+                        Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateBackFromCheckoutCommand}"
+                        Background="#1976D2" Foreground="White"
+                        Padding="12,8" CornerRadius="4"
+                        VerticalAlignment="Center"
+                        Margin="0,0,12,0"
+                        ToolTip.Tip="Voltar ao Menu">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#x2190;" FontSize="16" VerticalAlignment="Center" />
+                        <TextBlock Text="Menu" FontSize="13" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <StackPanel Grid.Column="1">
                     <TextBlock Text="PDV - Point of Sale"
                                FontSize="24" FontWeight="Bold"
                                Foreground="White" />
@@ -32,7 +44,7 @@
                         </TextBlock.Text>
                     </TextBlock>
                 </StackPanel>
-                <TextBlock Grid.Column="1"
+                <TextBlock Grid.Column="2"
                            Text="{Binding Total, StringFormat='{}{0:C}'}"
                            FontSize="36" FontWeight="Bold"
                            Foreground="White"

@@ -14,7 +14,6 @@
         <KeyBinding Gesture="F1" Command="{Binding NavigateToCheckoutCommand}" />
         <KeyBinding Gesture="F4" Command="{Binding NavigateToProductsCommand}" />
         <KeyBinding Gesture="F6" Command="{Binding NavigateToSalesHistoryCommand}" />
-        <KeyBinding Gesture="F7" Command="{Binding NavigateToFiscalHistoryCommand}" />
     </Window.KeyBindings>
 
     <Window.DataTemplates>
@@ -42,64 +41,194 @@
     </Window.DataTemplates>
 
     <Panel>
-        <Grid RowDefinitions="Auto,*">
-            <!-- Navigation Menu (only visible when logged in) -->
-            <Border Grid.Row="0" Background="#333" Padding="8,4" IsVisible="{Binding IsLoggedIn}">
-                <Grid ColumnDefinitions="*,Auto">
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
-                        <Button Content="Home"
-                                Command="{Binding NavigateToHomeCommand}"
-                                Background="{Binding IsHomeActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
+        <Grid ColumnDefinitions="Auto,*">
+            <!-- Sidebar (Col 0) -->
+            <Border Grid.Column="0" Width="220" Background="#2B2B2B"
+                    IsVisible="{Binding IsSidebarVisible}">
+                <Border.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="Background" Value="#3B3B3B" />
+                    </Style>
+                </Border.Styles>
+                <DockPanel>
+                    <!-- Bottom: Settings + User Info + Logout -->
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <Border Height="1" Background="#444" Margin="8,0" />
+
+                        <!-- Settings Group -->
+                        <Button Command="{Binding ToggleSettingsExpandedCommand}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left"
+                                Background="Transparent"
                                 Foreground="White"
-                                Padding="16,8" />
-                        <Button Content="Checkout (F1)"
-                                Command="{Binding NavigateToCheckoutCommand}"
-                                Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                                Foreground="White"
-                                Padding="16,8" />
-                        <Button Content="Products (F4)"
-                                Command="{Binding NavigateToProductsCommand}"
-                                Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                                Foreground="White"
-                                Padding="16,8" />
-                        <Button Content="Sales History (F6)"
-                                Command="{Binding NavigateToSalesHistoryCommand}"
-                                Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                                Foreground="White"
-                                Padding="16,8" />
-                        <Button Command="{Binding NavigateToFiscalConfigCommand}"
-                                Background="{Binding IsFiscalConfigActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                                Foreground="White"
-                                Padding="16,8">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <TextBlock Text="Fiscal Config" VerticalAlignment="Center" />
+                                CornerRadius="4"
+                                Margin="8,2"
+                                Padding="16,10">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#x2699;" FontSize="16" VerticalAlignment="Center" />
+                                <TextBlock Text="Settings" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="&#x25BC;" FontSize="9" VerticalAlignment="Center"
+                                           Foreground="#888" Margin="4,0,0,0" />
                             </StackPanel>
                         </Button>
-                        <Button Content="Fiscal History (F7)"
-                                Command="{Binding NavigateToFiscalHistoryCommand}"
-                                Background="{Binding IsFiscalHistoryActive, Converter={x:Static views:MainWindow.ActiveBrushConverter}}"
-                                Foreground="White"
-                                Padding="16,8" />
+                        <StackPanel IsVisible="{Binding IsSettingsExpanded}">
+                            <Button Command="{Binding NavigateToFiscalConfigCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Background="{Binding IsFiscalConfigActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                    Foreground="#CCC"
+                                    CornerRadius="4"
+                                    Margin="24,0,8,0"
+                                    Padding="16,10">
+                                <TextBlock Text="Fiscal Config" FontSize="13" />
+                            </Button>
+                            <Button Command="{Binding NavigateToFiscalHistoryCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Background="{Binding IsFiscalHistoryActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                    Foreground="#CCC"
+                                    CornerRadius="4"
+                                    Margin="24,0,8,0"
+                                    Padding="16,10">
+                                <TextBlock Text="Fiscal History" FontSize="13" />
+                            </Button>
+                        </StackPanel>
+
+                        <!-- User Info + Logout -->
+                        <Border Margin="12,8" Padding="0">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding CurrentOperatorName}"
+                                           Foreground="#BDBDBD"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis" />
+                                <Button Grid.Column="1"
+                                        Command="{Binding LogoutCommand}"
+                                        Background="#444"
+                                        Foreground="White"
+                                        CornerRadius="4"
+                                        Padding="10,6"
+                                        FontSize="12"
+                                        ToolTip.Tip="Logout">
+                                    <TextBlock Text="&#x2190;" FontSize="14" />
+                                </Button>
+                            </Grid>
+                        </Border>
                     </StackPanel>
 
-                    <!-- User Info and Logout -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding CurrentOperatorName}"
-                                   Foreground="#BDBDBD"
-                                   VerticalAlignment="Center"
-                                   FontSize="13" />
-                        <Button Content="Logout"
-                                Command="{Binding LogoutCommand}"
-                                Background="#555"
+                    <!-- Top: Brand + Home -->
+                    <StackPanel DockPanel.Dock="Top">
+                        <!-- Brand -->
+                        <StackPanel Margin="16,16,16,4">
+                            <TextBlock Text="PDV" FontSize="22" FontWeight="Bold" Foreground="#2196F3" />
+                            <TextBlock Text="Point of Sale" FontSize="11" Foreground="#888" Margin="0,-2,0,0" />
+                        </StackPanel>
+                        <Border Height="1" Background="#444" Margin="8,8" />
+
+                        <!-- Home Button -->
+                        <Button Command="{Binding NavigateToHomeCommand}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left"
+                                Background="{Binding IsHomeActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
                                 Foreground="White"
-                                Padding="12,6"
-                                FontSize="12" />
+                                CornerRadius="4"
+                                Margin="8,2"
+                                Padding="16,10">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="&#x2302;" FontSize="16" VerticalAlignment="Center" />
+                                <TextBlock Text="Home" FontSize="14" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-                </Grid>
+
+                    <!-- Center: Navigation Items -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,4">
+                            <!-- Checkout Button (primary) -->
+                            <Button Command="{Binding NavigateToCheckoutCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Background="{Binding IsCheckoutActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                    Foreground="White"
+                                    FontWeight="SemiBold"
+                                    CornerRadius="4"
+                                    Margin="8,2"
+                                    Padding="16,10">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="$" FontSize="16" VerticalAlignment="Center" />
+                                    <TextBlock Text="Checkout (F1)" FontSize="14" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+
+                            <Border Height="1" Background="#444" Margin="8,8" />
+
+                            <!-- Cadastros Group -->
+                            <Button Command="{Binding ToggleCadastrosExpandedCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Background="Transparent"
+                                    Foreground="White"
+                                    CornerRadius="4"
+                                    Margin="8,2"
+                                    Padding="16,10">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="&#x2630;" FontSize="16" VerticalAlignment="Center" />
+                                    <TextBlock Text="Cadastros" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Text="&#x25BC;" FontSize="9" VerticalAlignment="Center"
+                                               Foreground="#888" Margin="4,0,0,0" />
+                                </StackPanel>
+                            </Button>
+                            <StackPanel IsVisible="{Binding IsCadastrosExpanded}">
+                                <Button Command="{Binding NavigateToProductsCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="{Binding IsProductsActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                        Foreground="#CCC"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10">
+                                    <TextBlock Text="Products (F4)" FontSize="13" />
+                                </Button>
+                            </StackPanel>
+
+                            <!-- Financeiro Group -->
+                            <Button Command="{Binding ToggleFinanceiroExpandedCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Background="Transparent"
+                                    Foreground="White"
+                                    CornerRadius="4"
+                                    Margin="8,2"
+                                    Padding="16,10">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="&#x2261;" FontSize="16" VerticalAlignment="Center" />
+                                    <TextBlock Text="Financeiro" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Text="&#x25BC;" FontSize="9" VerticalAlignment="Center"
+                                               Foreground="#888" Margin="4,0,0,0" />
+                                </StackPanel>
+                            </Button>
+                            <StackPanel IsVisible="{Binding IsFinanceiroExpanded}">
+                                <Button Command="{Binding NavigateToSalesHistoryCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="{Binding IsSalesHistoryActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                        Foreground="#CCC"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10">
+                                    <TextBlock Text="Sales History (F6)" FontSize="13" />
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
             </Border>
 
-            <!-- Content -->
-            <ContentControl Grid.Row="1" Content="{Binding CurrentView}" />
+            <!-- Content (Col 1) -->
+            <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
         </Grid>
 
         <!-- Navigation Confirmation Dialog Overlay -->
