@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Interfaces.Repositories;
 using PDV.Core.Interfaces.Services;
+using PDV.Desktop.Services;
 using PDV.Shared.Enums;
 
 namespace PDV.Desktop.ViewModels;
@@ -14,6 +15,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     private readonly IFiscalManager _fiscalManager;
     private readonly IOperatorSessionService _sessionService;
     private readonly IReceiptPrinterService _printerService;
+    private readonly IThermalPrinterService? _thermalPrinterService;
 
     [ObservableProperty]
     private string _searchText = string.Empty;
@@ -48,6 +50,18 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     [ObservableProperty]
     private string _reprintReason = string.Empty;
 
+    // Thermal Printer Settings
+    [ObservableProperty]
+    private bool _useThermalPrinter;
+
+    [ObservableProperty]
+    private string? _selectedThermalPrinter;
+
+    [ObservableProperty]
+    private int _qrCodeSize = 6;
+
+    public ObservableCollection<string> AvailablePrinters { get; } = new();
+
     // Summary
     [ObservableProperty]
     private int _totalTransactions;
@@ -77,13 +91,15 @@ public partial class FiscalHistoryViewModel : ViewModelBase
         IFiscalReprintLogRepository reprintLogRepository,
         IFiscalManager fiscalManager,
         IOperatorSessionService sessionService,
-        IReceiptPrinterService printerService)
+        IReceiptPrinterService printerService,
+        IThermalPrinterService? thermalPrinterService = null)
     {
         _transactionRepository = transactionRepository;
         _reprintLogRepository = reprintLogRepository;
         _fiscalManager = fiscalManager;
         _sessionService = sessionService;
         _printerService = printerService;
+        _thermalPrinterService = thermalPrinterService;
     }
 
     [RelayCommand]
@@ -221,16 +237,86 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     [RelayCommand]
     private async Task ConfirmReprintAsync()
     {
-        await ReprintAsync(openPdf: false);
+        await ReprintAsync(openPdf: false, useThermal: false);
     }
 
     [RelayCommand]
     private async Task ReprintAsPdfAsync()
     {
-        await ReprintAsync(openPdf: true);
+        await ReprintAsync(openPdf: true, useThermal: false);
     }
 
-    private async Task ReprintAsync(bool openPdf)
+    [RelayCommand]
+    private async Task ReprintThermalAsync()
+    {
+        await ReprintAsync(openPdf: false, useThermal: true);
+    }
+
+    [RelayCommand]
+    private async Task LoadPrintersAsync()
+    {
+        try
+        {
+            AvailablePrinters.Clear();
+            var printers = await _printerService.GetAvailablePrintersAsync();
+            foreach (var printer in printers)
+            {
+                AvailablePrinters.Add(printer);
+            }
+
+            if (AvailablePrinters.Any() && string.IsNullOrEmpty(SelectedThermalPrinter))
+            {
+                SelectedThermalPrinter = AvailablePrinters.First();
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erro ao carregar impressoras: {ex.Message}", true);
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestQrCodeAsync()
+    {
+        if (_thermalPrinterService == null)
+        {
+            SetStatus("Servico de impressora termica nao disponivel", true);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(SelectedThermalPrinter))
+        {
+            SetStatus("Selecione uma impressora primeiro", true);
+            return;
+        }
+
+        try
+        {
+            IsLoading = true;
+            SetStatus("Imprimindo teste de QR Code...", false);
+
+            var success = await _thermalPrinterService.TestQrCodeSupportAsync(SelectedThermalPrinter);
+
+            if (success)
+            {
+                SetStatus("Teste enviado! Verifique se o QR Code esta visivel na impressao.", false);
+            }
+            else
+            {
+                SetStatus("Falha ao enviar teste. Verifique a conexao da impressora.", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erro ao testar QR Code: {ex.Message}", true);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task ReprintAsync(bool openPdf, bool useThermal)
     {
         if (TransactionDetail == null)
         {
@@ -264,7 +350,35 @@ public partial class FiscalHistoryViewModel : ViewModelBase
             // Update detail to show new reprint count
             TransactionDetail.ReprintCount = result.ReprintNumber;
 
-            if (openPdf && result.HasQrCode)
+            if (useThermal && _thermalPrinterService != null)
+            {
+                // ESC/POS thermal printing with native QR Code
+                if (string.IsNullOrEmpty(SelectedThermalPrinter))
+                {
+                    SetStatus("Selecione uma impressora termica primeiro", true);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(result.DanfeContent))
+                {
+                    var printSuccess = await _thermalPrinterService.PrintDanfeWithQrCodeAsync(
+                        result.DanfeContent,
+                        result.QrCodeUrl,
+                        SelectedThermalPrinter,
+                        QrCodeSize);
+
+                    if (printSuccess)
+                    {
+                        var qrCodeInfo = result.HasQrCode ? " com QR Code nativo" : "";
+                        SetStatus($"Reimpressao #{result.ReprintNumber} enviada via ESC/POS{qrCodeInfo}", false);
+                    }
+                    else
+                    {
+                        SetStatus("Falha ao imprimir via ESC/POS. Verifique a impressora.", true);
+                    }
+                }
+            }
+            else if (openPdf && result.HasQrCode)
             {
                 // Open PDF with QR Code visible
                 if (result.PdfContent != null && result.PdfContent.Length > 0)
@@ -284,13 +398,13 @@ public partial class FiscalHistoryViewModel : ViewModelBase
             }
             else
             {
-                // Print text content (for thermal printers)
+                // Print text content (standard printing)
                 if (!string.IsNullOrEmpty(result.DanfeContent))
                 {
                     await _printerService.PrintAsync(result.DanfeContent);
                 }
 
-                var qrCodeInfo = result.HasQrCode ? " (com QR Code)" : " (sem QR Code)";
+                var qrCodeInfo = result.HasQrCode ? " (QR Code disponivel no PDF)" : "";
                 SetStatus($"Reimpressao #{result.ReprintNumber} enviada para impressora{qrCodeInfo}", false);
             }
 

@@ -102,7 +102,9 @@ public partial class App : Application
         services.AddScoped<IFiscalManager, FiscalManager>();
 
         // Print Services
-        services.AddSingleton<IReceiptPrinterService, ReceiptPrinterService>();
+        services.AddSingleton<ThermalPrinterService>();
+        services.AddSingleton<IReceiptPrinterService>(sp => sp.GetRequiredService<ThermalPrinterService>());
+        services.AddSingleton<IThermalPrinterService>(sp => sp.GetRequiredService<ThermalPrinterService>());
 
         // Session Services
         services.AddSingleton<IOperatorSessionService>(sp => new OperatorSessionService(sp));

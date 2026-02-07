@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using PDV.Core.Interfaces.Services;
+using PDV.Desktop.Utilities;
 
 namespace PDV.Desktop.Services;
 
@@ -216,41 +217,37 @@ public class ReceiptPrinterService : IReceiptPrinterService
 
 /// <summary>
 /// Extended receipt printer service with ESC/POS support for thermal printers.
+/// Supports native QR Code printing on compatible printers.
 /// </summary>
-public class ThermalPrinterService : ReceiptPrinterService
+public class ThermalPrinterService : ReceiptPrinterService, IThermalPrinterService
 {
-    // ESC/POS Commands
-    private static readonly byte[] Initialize = { 0x1B, 0x40 }; // ESC @
-    private static readonly byte[] CutPaper = { 0x1D, 0x56, 0x00 }; // GS V 0
-    private static readonly byte[] LineFeed = { 0x0A }; // LF
-    private static readonly byte[] BoldOn = { 0x1B, 0x45, 0x01 }; // ESC E 1
-    private static readonly byte[] BoldOff = { 0x1B, 0x45, 0x00 }; // ESC E 0
-    private static readonly byte[] AlignCenter = { 0x1B, 0x61, 0x01 }; // ESC a 1
-    private static readonly byte[] AlignLeft = { 0x1B, 0x61, 0x00 }; // ESC a 0
-    private static readonly byte[] DoubleHeight = { 0x1B, 0x21, 0x10 }; // ESC ! 16
-    private static readonly byte[] NormalSize = { 0x1B, 0x21, 0x00 }; // ESC ! 0
-
     /// <summary>
-    /// Prints raw ESC/POS commands to a thermal printer via USB/COM port.
+    /// Prints raw ESC/POS commands to a thermal printer.
     /// </summary>
     /// <param name="content">Text content</param>
-    /// <param name="portName">COM port or printer share name</param>
-    public async Task<bool> PrintRawAsync(string content, string portName)
+    /// <param name="printerName">Printer name or COM port</param>
+    public async Task<bool> PrintRawAsync(string content, string printerName)
     {
         try
         {
-            var bytes = BuildEscPosDocument(content);
+            var builder = new EscPosBuilder()
+                .Initialize();
 
-            if (portName.StartsWith("COM", StringComparison.OrdinalIgnoreCase))
+            // Parse and build ESC/POS document from text
+            var lines = content.Split('\n');
+            foreach (var line in lines)
             {
-                // Serial port printing
-                return await PrintToSerialPortAsync(bytes, portName);
+                if (line.Contains("==="))
+                    builder.Separator('=');
+                else if (line.Contains("---"))
+                    builder.Separator('-');
+                else
+                    builder.TextLine(line.TrimEnd('\r'));
             }
-            else
-            {
-                // Windows printer share
-                return await PrintToWindowsShareAsync(bytes, portName);
-            }
+
+            builder.LineFeed(3).FeedAndCut();
+
+            return await PrintRawBytesAsync(builder.Build(), printerName);
         }
         catch
         {
@@ -258,77 +255,250 @@ public class ThermalPrinterService : ReceiptPrinterService
         }
     }
 
-    private byte[] BuildEscPosDocument(string content)
+    /// <summary>
+    /// Prints a complete DANFE NFC-e with QR Code using ESC/POS commands.
+    /// </summary>
+    /// <param name="danfeText">DANFE text content (with [QRCODE] marker)</param>
+    /// <param name="qrCodeUrl">URL for QR Code (will be printed natively)</param>
+    /// <param name="printerName">Printer name or COM port</param>
+    /// <param name="qrCodeSize">QR Code module size (1-16, default: 6)</param>
+    public async Task<bool> PrintDanfeWithQrCodeAsync(
+        string danfeText,
+        string? qrCodeUrl,
+        string printerName,
+        int qrCodeSize = 6)
     {
-        var result = new List<byte>();
-
-        // Initialize printer
-        result.AddRange(Initialize);
-
-        // Convert text to bytes (CP850 for Portuguese characters)
-        var encoding = System.Text.Encoding.GetEncoding(850);
-        var lines = content.Split('\n');
-
-        foreach (var line in lines)
+        try
         {
-            // Check for formatting hints in the text
-            if (line.Contains("===") || line.Contains("---"))
+            var builder = new EscPosBuilder()
+                .Initialize();
+
+            var lines = danfeText.Split('\n');
+            var qrCodePrinted = false;
+
+            foreach (var line in lines)
             {
-                result.AddRange(encoding.GetBytes(line.Replace("===", "").Replace("---", "")));
+                var trimmedLine = line.TrimEnd('\r');
+
+                // Check for QR Code marker
+                if (trimmedLine.Contains("[QRCODE]") && !string.IsNullOrEmpty(qrCodeUrl) && !qrCodePrinted)
+                {
+                    builder.LineFeed();
+                    builder.QrCode(qrCodeUrl, qrCodeSize, QrErrorCorrection.M, QrModel.Model2);
+                    builder.LineFeed();
+                    qrCodePrinted = true;
+                    continue;
+                }
+
+                // Handle formatting markers
+                if (trimmedLine.Contains("================================"))
+                {
+                    builder.Separator('=');
+                }
+                else if (trimmedLine.Contains("------------------------------------------------") || trimmedLine.Contains("---"))
+                {
+                    builder.Separator('-');
+                }
+                else if (trimmedLine.Contains("** REIMPRESSAO"))
+                {
+                    builder.Bold().CenteredLine(trimmedLine).Bold(false);
+                }
+                else if (trimmedLine.Contains("DANFE NFC-e") || trimmedLine.Contains("VALOR TOTAL"))
+                {
+                    builder.Bold().TextLine(trimmedLine).Bold(false);
+                }
+                else if (trimmedLine.StartsWith("http"))
+                {
+                    // Skip URL lines (QR Code already printed)
+                    continue;
+                }
+                else
+                {
+                    builder.TextLine(trimmedLine);
+                }
             }
-            else
-            {
-                result.AddRange(encoding.GetBytes(line));
-            }
-            result.AddRange(LineFeed);
+
+            builder.LineFeed(4).FeedAndCut();
+
+            return await PrintRawBytesAsync(builder.Build(), printerName);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Prints raw bytes to the printer using Windows RAW printing.
+    /// </summary>
+    public async Task<bool> PrintRawBytesAsync(byte[] data, string printerName)
+    {
+        if (printerName.StartsWith("COM", StringComparison.OrdinalIgnoreCase))
+        {
+            return await PrintToSerialPortAsync(data, printerName);
+        }
+        
+        await File.WriteAllBytesAsync("C:\\temp\\debug_nfe.bin", data);
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return await PrintToWindowsPrinterAsync(data, printerName);
         }
 
-        // Add some line feeds and cut paper
-        result.AddRange(LineFeed);
-        result.AddRange(LineFeed);
-        result.AddRange(LineFeed);
-        result.AddRange(CutPaper);
+        return await PrintToUnixPrinterAsync(data, printerName);
+    }
 
-        return result.ToArray();
+    /// <summary>
+    /// Tests if the printer supports native QR Code by sending a test pattern.
+    /// </summary>
+    public async Task<bool> TestQrCodeSupportAsync(string printerName)
+    {
+        try
+        {
+            var builder = new EscPosBuilder()
+                .Initialize()
+                .CenteredLine("TESTE QR CODE")
+                .LineFeed()
+                .QrCode("https://www.nfe.fazenda.gov.br", 4)
+                .LineFeed(2)
+                .CenteredLine("Se o QR Code acima esta visivel,")
+                .CenteredLine("sua impressora suporta QR Code nativo.")
+                .LineFeed(3)
+                .FeedAndCut();
+
+            return await PrintRawBytesAsync(builder.Build(), printerName);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private async Task<bool> PrintToSerialPortAsync(byte[] data, string portName)
     {
-        // Note: For production, use System.IO.Ports.SerialPort
-        // This is a simplified version
-        await Task.CompletedTask;
-        return false; // Not implemented - requires System.IO.Ports package
-    }
-
-    private async Task<bool> PrintToWindowsShareAsync(byte[] data, string printerName)
-    {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            return false;
-        }
-
+        // Note: Requires System.IO.Ports package for full implementation
+        // This is a basic implementation using file write to COM port
         try
         {
-            // Write to temp file and use copy command to send to printer
-            var tempFile = Path.Combine(Path.GetTempPath(), "receipt_raw.bin");
-            await File.WriteAllBytesAsync(tempFile, data);
-
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c copy /b \"{tempFile}\" \"{printerName}\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using var process = Process.Start(startInfo);
-            process?.WaitForExit(5000);
-
-            return process?.ExitCode == 0;
+            await File.WriteAllBytesAsync($@"\\.\{portName}", data);
+            return true;
         }
         catch
         {
             return false;
         }
     }
+
+    private async Task<bool> PrintToWindowsPrinterAsync(byte[] data, string printerName)
+    {
+        // try
+        // {
+        //     // Method 1: Using Windows spooler via temp file and copy command
+        //     var tempFile = Path.Combine(Path.GetTempPath(), $"receipt_{Guid.NewGuid():N}.bin");
+        //     await File.WriteAllBytesAsync(tempFile, data);
+        //
+        //     try
+        //     {
+        //         // Try direct RAW printing using Windows print command
+        //         var startInfo = new ProcessStartInfo
+        //         {
+        //             FileName = "cmd.exe",
+        //             Arguments = $"/c copy /b \"{tempFile}\" \"\\\\.\\{printerName}\"",
+        //             UseShellExecute = false,
+        //             CreateNoWindow = true,
+        //             RedirectStandardOutput = true,
+        //             RedirectStandardError = true
+        //         };
+        //
+        //         using var process = Process.Start(startInfo);
+        //         if (process != null)
+        //         {
+        //             await process.WaitForExitAsync();
+        //             if (process.ExitCode == 0)
+        //                 return true;
+        //         }
+        //
+        //         // Fallback: Try using printer share path
+        //         startInfo.Arguments = $"/c copy /b \"{tempFile}\" \"{printerName}\"";
+        //         using var process2 = Process.Start(startInfo);
+        //         if (process2 != null)
+        //         {
+        //             await process2.WaitForExitAsync();
+        //             return process2.ExitCode == 0;
+        //         }
+        //
+        //         return false;
+        //     }
+        //     finally
+        //     {
+        //         // Clean up temp file
+        //         try { File.Delete(tempFile); } catch { }
+        //     }
+        // }
+        // catch
+        // {
+        //     return false;
+        // }
+        
+        return await Task.Run(() => RawPrinterHelper.SendBytesToPrinter(printerName, data, "Impressao NFE"));
+    }
+
+    private async Task<bool> PrintToUnixPrinterAsync(byte[] data, string printerName)
+    {
+        try
+        {
+            var tempFile = Path.Combine(Path.GetTempPath(), $"receipt_{Guid.NewGuid():N}.bin");
+            await File.WriteAllBytesAsync(tempFile, data);
+
+            try
+            {
+                // Use lp command on Unix/Linux/macOS
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "lp",
+                    Arguments = $"-d \"{printerName}\" -o raw \"{tempFile}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(startInfo);
+                if (process != null)
+                {
+                    await process.WaitForExitAsync();
+                    return process.ExitCode == 0;
+                }
+
+                return false;
+            }
+            finally
+            {
+                try { File.Delete(tempFile); } catch { }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
+
+/// <summary>
+/// Interface for thermal printer with ESC/POS support.
+/// </summary>
+public interface IThermalPrinterService : IReceiptPrinterService
+{
+    /// <summary>
+    /// Prints DANFE with native QR Code using ESC/POS.
+    /// </summary>
+    Task<bool> PrintDanfeWithQrCodeAsync(string danfeText, string? qrCodeUrl, string printerName, int qrCodeSize = 6);
+
+    /// <summary>
+    /// Prints raw ESC/POS bytes.
+    /// </summary>
+    Task<bool> PrintRawBytesAsync(byte[] data, string printerName);
+
+    /// <summary>
+    /// Tests if printer supports native QR Code.
+    /// </summary>
+    Task<bool> TestQrCodeSupportAsync(string printerName);
 }

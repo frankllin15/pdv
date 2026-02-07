@@ -265,6 +265,47 @@
                                         Padding="16,10"
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Center" />
+
+                                <Separator Margin="0,8" />
+
+                                <!-- Thermal Printer Section -->
+                                <TextBlock Text="Impressora Termica (ESC/POS)" FontWeight="SemiBold" FontSize="12" />
+
+                                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                                    <ComboBox Grid.Column="0"
+                                              ItemsSource="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).AvailablePrinters}"
+                                              SelectedItem="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).SelectedThermalPrinter}"
+                                              PlaceholderText="Selecione a impressora"
+                                              HorizontalAlignment="Stretch" />
+                                    <Button Grid.Column="1" Content="Atualizar"
+                                            Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).LoadPrintersCommand}"
+                                            Margin="4,0,0,0" Padding="8,6" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,*" Margin="0,4,0,0">
+                                    <TextBlock Text="Tamanho QR:" VerticalAlignment="Center" FontSize="12" Margin="0,0,8,0" />
+                                    <NumericUpDown Grid.Column="1"
+                                                   Value="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).QrCodeSize}"
+                                                   Minimum="1" Maximum="16"
+                                                   Width="80" />
+                                </Grid>
+
+                                <Button Content="Imprimir Termica (QR Code Nativo)"
+                                        Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).ReprintThermalCommand}"
+                                        Background="#FF5722"
+                                        Foreground="White"
+                                        Padding="16,10"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Margin="0,4,0,0" />
+
+                                <Button Content="Testar QR Code"
+                                        Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).TestQrCodeCommand}"
+                                        Padding="8,6"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        FontSize="11" />
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
