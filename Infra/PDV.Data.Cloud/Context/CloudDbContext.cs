@@ -11,6 +11,10 @@ public class CloudDbContext(DbContextOptions<CloudDbContext> options) : DbContex
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Operator> Operators => Set<Operator>();
 
+    public DbSet<FiscalTransaction> FiscalTransactions => Set<FiscalTransaction>();
+    public DbSet<FiscalConfiguration> FiscalConfigurations => Set<FiscalConfiguration>();
+    public DbSet<FiscalReprintLog> FiscalReprintLogs => Set<FiscalReprintLog>();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

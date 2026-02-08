@@ -118,7 +118,7 @@ public class BackgroundSyncService : IDisposable
             if (LastSyncResult.Success)
             {
                 OnStatusChanged(SyncStatus.Completed,
-                    $"Sync completed: ↓{LastSyncResult.TotalChangesDownloaded} ↑{LastSyncResult.TotalChangesUploaded}");
+                    $"Sync completed: Downloaded: {LastSyncResult.TotalChangesDownloaded} Uploaded: {LastSyncResult.TotalChangesUploaded}");
             }
             else
             {

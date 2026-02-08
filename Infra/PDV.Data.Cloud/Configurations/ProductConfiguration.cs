@@ -46,11 +46,26 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(p => p.TaxRate)
             .HasColumnType("decimal(5,2)");
+        
+        builder.Property(p => p.Cfop)
+            .HasMaxLength(10);
+
+        builder.Property(p => p.Cest)
+            .HasMaxLength(10);
+
+        builder.Property(p => p.TaxOrigin)
+            .HasDefaultValue(TaxOrigin.National);
+
+        builder.Property(p => p.Cst)
+            .HasMaxLength(10);
+
 
         builder.Property(p => p.IsActive)
             .HasDefaultValue(true);
 
         builder.Property(p => p.SyncState)
             .HasDefaultValue(SyncState.Pending);
+        
+        builder.ToTable(tb => tb.HasTrigger("Products_insert_trigger"));
     }
 }

@@ -39,5 +39,7 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
             .IsRequired();
 
         builder.HasIndex(i => i.SaleId);
+        
+        builder.ToTable(tb => tb.HasTrigger("SalesItems_insert_trigger"));
     }
 }

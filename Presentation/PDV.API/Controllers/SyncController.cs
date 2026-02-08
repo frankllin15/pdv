@@ -34,8 +34,18 @@ public class SyncController(WebServerAgent webServerAgent, ILogger<SyncControlle
         return Ok(new
         {
             Status = "Sync endpoint ready",
-            Tables = new[] { "Products", "Sales", "SaleItems", "Payments", "Operators" },
+            Tables = new[]
+            {
+                new { Name = "Products", Direction = "DownloadOnly" },
+                new { Name = "Sales", Direction = "Bidirectional" },
+                new { Name = "SaleItems", Direction = "Bidirectional" },
+                new { Name = "Payments", Direction = "Bidirectional" },
+                new { Name = "Operators", Direction = "DownloadOnly" },
+                new { Name = "FiscalTransactions", Direction = "Bidirectional" },
+                new { Name = "FiscalConfigurations", Direction = "Bidirectional" },
+            },
             Timestamp = DateTime.UtcNow
+
         });
     }
 }

@@ -48,13 +48,13 @@ public static class ServiceCollectionExtensions
 
         context.Database.Migrate();
 
-        if (!context.Operators.Any())
-        {
-            var defaultOperator = new Operator("Admin", "ADMIN", "1234", isAdmin: true);
-            context.Operators.Add(defaultOperator);
-            context.SaveChanges();
-            Console.WriteLine("Default operator created: ADMIN / 1234");
-        }
+        // if (!context.Operators.Any())
+        // {
+        //     var defaultOperator = new Operator("Admin", "ADMIN", "1234", isAdmin: true);
+        //     context.Operators.Add(defaultOperator);
+        //     context.SaveChanges();
+        //     Console.WriteLine("Default operator created: ADMIN / 1234");
+        // }
     }
 
     public static void StartBackgroundSync(this IServiceProvider serviceProvider)

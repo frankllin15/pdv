@@ -35,5 +35,7 @@ public class OperatorConfiguration : IEntityTypeConfiguration<Operator>
 
         builder.HasIndex(o => o.Code)
             .IsUnique();
+        
+        builder.ToTable(tb => tb.HasTrigger("Operators_insert_trigger"));
     }
 }

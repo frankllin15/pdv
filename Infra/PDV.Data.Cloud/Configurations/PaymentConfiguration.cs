@@ -32,5 +32,7 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .IsRequired();
 
         builder.HasIndex(p => p.SaleId);
+        
+        builder.ToTable(tb => tb.HasTrigger("Payments_insert_trigger"));
     }
 }

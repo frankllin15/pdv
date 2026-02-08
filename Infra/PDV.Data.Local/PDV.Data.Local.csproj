@@ -21,4 +21,8 @@
         <ProjectReference Include="..\..\Core\PDV.Shared\PDV.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

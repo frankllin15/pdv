@@ -22,14 +22,14 @@ builder.Services.AddSwaggerGen();
 
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<CloudDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException("JWT Key not configured.");
+             ?? throw new InvalidOperationException("JWT Key not configured.");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 
@@ -52,13 +52,18 @@ builder.Services.AddAuthorization();
 
 // Dotmim.Sync
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-});
+builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(30); });
 
 // Configure Sync tables with direction
-var syncSetup = new SyncSetup("Products", "Sales", "SaleItems", "Payments", "Operators");
+var syncSetup = new SyncSetup(
+    "Operators",
+    "Products",
+    "FiscalConfigurations",
+    "Sales",
+    "SaleItems",
+    "Payments",
+    "FiscalTransactions"
+);
 
 // Products and Operators: Download only (Server → Client)
 // Master data comes from server
@@ -70,6 +75,10 @@ syncSetup.Tables["Operators"].SyncDirection = SyncDirection.DownloadOnly;
 syncSetup.Tables["Sales"].SyncDirection = SyncDirection.Bidirectional;
 syncSetup.Tables["SaleItems"].SyncDirection = SyncDirection.Bidirectional;
 syncSetup.Tables["Payments"].SyncDirection = SyncDirection.Bidirectional;
+
+// FiscalTransactions and FiscalConfigurations: Bidirectional (Client ↔ Server)
+syncSetup.Tables["FiscalTransactions"].SyncDirection = SyncDirection.Bidirectional;
+syncSetup.Tables["FiscalConfigurations"].SyncDirection = SyncDirection.Bidirectional;
 
 var syncOptions = new SyncOptions
 {
@@ -85,8 +94,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowDesktop", policy =>
     {
         policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -124,8 +133,8 @@ using (var scope = app.Services.CreateScope())
         await context.SaveChangesAsync();
         Log.Information("Default operator created: ADMIN / 1234");
     }
-
-    // Seed sample products if none exists
+    
+    // // Seed sample products if none exists
     if (!context.Products.Any())
     {
         var products = new[]

@@ -39,6 +39,17 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 
         builder.Property(s => s.SyncState)
             .HasDefaultValue(SyncState.Pending);
+        
+        builder.Property(s => s.FiscalStatus)
+            .HasDefaultValue(FiscalStatus.None);
+
+        builder.Property(s => s.FiscalAccessKey)
+            .HasMaxLength(44);
+
+        builder.Property(s => s.FiscalNumber);
+
+        builder.Property(s => s.FiscalSeries);
+
 
         builder.HasMany(s => s.Items)
             .WithOne(i => i.Sale)
@@ -55,5 +66,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 
         builder.Metadata.FindNavigation(nameof(Sale.Payments))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
+        
+        builder.ToTable(tb => tb.HasTrigger("Sales_insert_trigger"));
     }
 }
