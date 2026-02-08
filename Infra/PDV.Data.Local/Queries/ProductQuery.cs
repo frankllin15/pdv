@@ -40,7 +40,7 @@ public class ProductQuery : IProductQuery
             LIMIT 1";
 
         using var connection = CreateConnection();
-        return await connection.QueryFirstOrDefaultAsync<ProductDto>(sql, new { Id = id.ToByteArray() });
+        return await connection.QueryFirstOrDefaultAsync<ProductDto>(sql, new { Id = id });
     }
 
     public async Task<IEnumerable<ProductDto>> SearchAsync(string searchTerm, int limit = 10, CancellationToken cancellationToken = default)

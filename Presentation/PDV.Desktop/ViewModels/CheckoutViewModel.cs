@@ -205,8 +205,8 @@ public partial class CheckoutViewModel : ViewModelBase
 
             PendingSales.Clear();
             ShowPendingSalesDialog = false;
-            SetStatus($"Discarded {count} pending sale(s)", false);
-            await StartNewSaleAsync();
+            SetStatus($"Discarded {count} pending sale(s). Scan a product to start.", false);
+            ResetCheckoutState();
         }
         catch (Exception ex)
         {
@@ -305,6 +305,19 @@ public partial class CheckoutViewModel : ViewModelBase
         {
             SetStatus($"Error starting sale: {ex.Message}", true);
         }
+    }
+
+    private void ResetCheckoutState()
+    {
+        _currentSale = null;
+        SaleNumber = 0;
+        Items.Clear();
+        UpdateTotals();
+        IsPaymentMode = false;
+        AmountPaid = 0;
+        Change = 0;
+        BarcodeInput = string.Empty;
+        SetStatus("Ready - scan a product to start", false);
     }
 
     [RelayCommand]
@@ -493,11 +506,10 @@ public partial class CheckoutViewModel : ViewModelBase
                 // Trigger cloud sync in background (fire-and-forget)
                 _ = _backgroundSyncService?.SyncNowAsync();
 
-                // Only auto-start new sale if receipt preview is not showing
+                // Reset state - new sale will be created when first item is added
                 if (!ShowReceiptPreview)
                 {
-                    await Task.Delay(2000);
-                    await StartNewSaleAsync();
+                    ResetCheckoutState();
                 }
             }
             else
@@ -571,8 +583,8 @@ public partial class CheckoutViewModel : ViewModelBase
             return;
         }
 
-        // No current sale or empty, just start new
-        _ = StartNewSaleAsync();
+        // No current sale or empty, just reset
+        ResetCheckoutState();
     }
 
     [RelayCommand]
@@ -599,7 +611,7 @@ public partial class CheckoutViewModel : ViewModelBase
             }
         }
 
-        await StartNewSaleAsync();
+        ResetCheckoutState();
     }
 
     [RelayCommand]
@@ -710,13 +722,14 @@ public partial class CheckoutViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task CloseReceiptPreviewAsync()
+    private Task CloseReceiptPreviewAsync()
     {
         ShowReceiptPreview = false;
         ReceiptContent = string.Empty;
 
-        // Start new sale after closing receipt preview
-        await StartNewSaleAsync();
+        // Reset state - new sale will be created when first item is added
+        ResetCheckoutState();
+        return Task.CompletedTask;
     }
 
     [RelayCommand]

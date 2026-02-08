@@ -20,7 +20,7 @@ public class OperatorQuery(string connectionString) : IOperatorQuery
 
         using var connection = CreateConnection();
         var result = await connection.QueryFirstOrDefaultAsync<OperatorQueryResult>(
-            sql, new { Id = id.ToByteArray() });
+            sql, new { Id = id });
 
         return result == null ? null : MapToDto(result);
     }
