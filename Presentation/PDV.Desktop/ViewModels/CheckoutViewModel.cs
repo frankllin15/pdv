@@ -5,6 +5,7 @@ using PDV.Core.Entities;
 using PDV.Core.Interfaces.Queries;
 using PDV.Core.Interfaces.Repositories;
 using PDV.Core.Interfaces.Services;
+using PDV.Desktop.Services;
 using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
 
@@ -20,6 +21,7 @@ public partial class CheckoutViewModel : ViewModelBase
     private readonly IReceiptPrinterService? _printerService;
     private readonly IFiscalConfigurationRepository? _fiscalConfigRepository;
     private readonly IFiscalTransactionRepository? _fiscalTransactionRepository;
+    private readonly BackgroundSyncService? _backgroundSyncService;
 
     private Sale? _currentSale;
 
@@ -108,7 +110,8 @@ public partial class CheckoutViewModel : ViewModelBase
         IFiscalManager? fiscalManager = null,
         IReceiptPrinterService? printerService = null,
         IFiscalConfigurationRepository? fiscalConfigRepository = null,
-        IFiscalTransactionRepository? fiscalTransactionRepository = null)
+        IFiscalTransactionRepository? fiscalTransactionRepository = null,
+        BackgroundSyncService? backgroundSyncService = null)
     {
         _productQuery = productQuery;
         _saleQuery = saleQuery;
@@ -118,6 +121,7 @@ public partial class CheckoutViewModel : ViewModelBase
         _printerService = printerService;
         _fiscalConfigRepository = fiscalConfigRepository;
         _fiscalTransactionRepository = fiscalTransactionRepository;
+        _backgroundSyncService = backgroundSyncService;
     }
 
     [RelayCommand]
@@ -485,6 +489,9 @@ public partial class CheckoutViewModel : ViewModelBase
 
                 // Process fiscal (NFC-e) after sale completion
                 await ProcessFiscalAsync();
+
+                // Trigger cloud sync in background (fire-and-forget)
+                _ = _backgroundSyncService?.SyncNowAsync();
 
                 // Only auto-start new sale if receipt preview is not showing
                 if (!ShowReceiptPreview)
