@@ -83,16 +83,7 @@
                                     Padding="16,10">
                                 <TextBlock Text="Fiscal Config" FontSize="13" />
                             </Button>
-                            <Button Command="{Binding NavigateToFiscalHistoryCommand}"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Left"
-                                    Background="{Binding IsFiscalHistoryActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
-                                    Foreground="#CCC"
-                                    CornerRadius="4"
-                                    Margin="24,0,8,0"
-                                    Padding="16,10">
-                                <TextBlock Text="Fiscal History" FontSize="13" />
-                            </Button>
+                        
                         </StackPanel>
 
                         <!-- User Info + Logout -->
@@ -220,6 +211,16 @@
                                         Margin="24,0,8,0"
                                         Padding="16,10">
                                     <TextBlock Text="Sales History (F6)" FontSize="13" />
+                                </Button>
+                                <Button Command="{Binding NavigateToFiscalHistoryCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="{Binding IsFiscalHistoryActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                        Foreground="#CCC"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10">
+                                    <TextBlock Text="Fiscal History" FontSize="13" />
                                 </Button>
                             </StackPanel>
                         </StackPanel>

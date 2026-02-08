@@ -80,6 +80,21 @@ public partial class CheckoutViewModel : ViewModelBase
     private bool _isSearching;
 
     [ObservableProperty]
+    private int _searchCurrentPage = 1;
+
+    [ObservableProperty]
+    private int _searchTotalPages;
+
+    [ObservableProperty]
+    private int _searchTotalCount;
+
+    [ObservableProperty]
+    private bool _hasNextPage;
+
+    [ObservableProperty]
+    private bool _hasPreviousPage;
+
+    [ObservableProperty]
     private bool _showReceiptPreview;
 
     [ObservableProperty]
@@ -222,11 +237,12 @@ public partial class CheckoutViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void OpenProductSearch()
+    private async Task OpenProductSearchAsync()
     {
         ShowProductSearch = true;
         ProductSearchText = string.Empty;
-        ProductSearchResults.Clear();
+        SearchCurrentPage = 1;
+        await LoadProductPageAsync();
     }
 
     [RelayCommand]
@@ -240,22 +256,44 @@ public partial class CheckoutViewModel : ViewModelBase
     [RelayCommand]
     private async Task SearchProductsByDescriptionAsync()
     {
-        if (string.IsNullOrWhiteSpace(ProductSearchText))
-        {
-            ProductSearchResults.Clear();
-            return;
-        }
+        SearchCurrentPage = 1;
+        await LoadProductPageAsync();
+    }
 
+    [RelayCommand]
+    private async Task ProductSearchNextPageAsync()
+    {
+        if (!HasNextPage) return;
+        SearchCurrentPage++;
+        await LoadProductPageAsync();
+    }
+
+    [RelayCommand]
+    private async Task ProductSearchPreviousPageAsync()
+    {
+        if (!HasPreviousPage) return;
+        SearchCurrentPage--;
+        await LoadProductPageAsync();
+    }
+
+    private async Task LoadProductPageAsync()
+    {
         try
         {
             IsSearching = true;
-            var results = await _productQuery.SearchAsync(ProductSearchText.Trim(), 20);
+            var searchTerm = string.IsNullOrWhiteSpace(ProductSearchText) ? null : ProductSearchText.Trim();
+            var result = await _productQuery.GetActivePagedAsync(searchTerm, SearchCurrentPage);
 
             ProductSearchResults.Clear();
-            foreach (var product in results)
+            foreach (var product in result.Items)
             {
                 ProductSearchResults.Add(product);
             }
+
+            SearchTotalPages = result.TotalPages;
+            SearchTotalCount = result.TotalCount;
+            HasNextPage = result.HasNextPage;
+            HasPreviousPage = result.HasPreviousPage;
         }
         catch (Exception ex)
         {

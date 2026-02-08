@@ -8,4 +8,5 @@ public interface IProductQuery
     Task<ProductDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<ProductDto>> SearchAsync(string searchTerm, int limit = 10, CancellationToken cancellationToken = default);
     Task<IEnumerable<ProductDto>> GetAllActiveAsync(CancellationToken cancellationToken = default);
+    Task<PagedResult<ProductDto>> GetActivePagedAsync(string? searchTerm = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default);
 }

@@ -392,14 +392,17 @@
             Background="#80000000">
         <Border Background="White" CornerRadius="8"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="600" Height="500"
+                Width="600" Height="550"
                 Padding="24">
-            <Grid RowDefinitions="Auto,Auto,*,Auto">
+            <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
                 <!-- Header -->
                 <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
-                    <TextBlock Text="Search Products"
-                               FontSize="20" FontWeight="Bold"
-                               VerticalAlignment="Center" />
+                    <StackPanel>
+                        <TextBlock Text="Products"
+                                   FontSize="20" FontWeight="Bold" />
+                        <TextBlock Text="{Binding SearchTotalCount, StringFormat='{}{0} product(s) found'}"
+                                   Foreground="#666" FontSize="12" />
+                    </StackPanel>
                     <Button Grid.Column="1" Content="X"
                             Command="{Binding CloseProductSearchCommand}"
                             Background="Transparent"
@@ -411,7 +414,7 @@
                 <!-- Search Input -->
                 <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
                     <TextBox Text="{Binding ProductSearchText}"
-                             Watermark="Type product name or description..."
+                             Watermark="Filter by name or barcode..."
                              FontSize="16"
                              Height="44">
                         <TextBox.KeyBindings>
@@ -433,14 +436,14 @@
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <Panel>
                         <!-- Loading Indicator -->
-                        <TextBlock Text="Searching..."
+                        <TextBlock Text="Loading..."
                                    IsVisible="{Binding IsSearching}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Foreground="#666" />
 
                         <!-- Empty State -->
-                        <TextBlock Text="Type a search term and press Enter or click Search"
+                        <TextBlock Text="No products found"
                                    IsVisible="{Binding !ProductSearchResults.Count}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -489,12 +492,42 @@
                     </Panel>
                 </Border>
 
+                <!-- Pagination -->
+                <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" Margin="0,12,0,0"
+                      IsVisible="{Binding ProductSearchResults.Count}">
+                    <Button Grid.Column="0"
+                            Content="&lt; Previous"
+                            Command="{Binding ProductSearchPreviousPageCommand}"
+                            IsEnabled="{Binding HasPreviousPage}"
+                            Background="Transparent"
+                            Foreground="#2196F3"
+                            Padding="8,6" />
+                    <TextBlock Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="#666" FontSize="13">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="Page {0} of {1}">
+                                <Binding Path="SearchCurrentPage" />
+                                <Binding Path="SearchTotalPages" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <Button Grid.Column="2"
+                            Content="Next &gt;"
+                            Command="{Binding ProductSearchNextPageCommand}"
+                            IsEnabled="{Binding HasNextPage}"
+                            Background="Transparent"
+                            Foreground="#2196F3"
+                            Padding="8,6" />
+                </Grid>
+
                 <!-- Footer -->
-                <TextBlock Grid.Row="3"
+                <TextBlock Grid.Row="4"
                            Text="Click on a product to add it to the sale"
                            Foreground="#666" FontSize="12"
                            HorizontalAlignment="Center"
-                           Margin="0,12,0,0" />
+                           Margin="0,8,0,0" />
             </Grid>
         </Border>
     </Border>
