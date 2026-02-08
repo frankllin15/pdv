@@ -88,4 +88,25 @@ public class FiscalTransactionRepository : IFiscalTransactionRepository
             .OrderByDescending(f => f.CreatedAt)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<(IReadOnlyList<FiscalTransaction> Items, int TotalCount)> GetPagedAsync(
+        DateTime startDate, DateTime endDate, FiscalStatus? status = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        var query = _context.FiscalTransactions
+            .Include(f => f.Sale)
+            .Where(f => f.CreatedAt >= startDate && f.CreatedAt <= endDate);
+
+        if (status.HasValue)
+            query = query.Where(f => f.Status == status.Value);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .OrderByDescending(f => f.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
+    }
 }

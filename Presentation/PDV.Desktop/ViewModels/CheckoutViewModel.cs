@@ -79,20 +79,7 @@ public partial class CheckoutViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isSearching;
 
-    [ObservableProperty]
-    private int _searchCurrentPage = 1;
-
-    [ObservableProperty]
-    private int _searchTotalPages;
-
-    [ObservableProperty]
-    private int _searchTotalCount;
-
-    [ObservableProperty]
-    private bool _hasNextPage;
-
-    [ObservableProperty]
-    private bool _hasPreviousPage;
+    public PaginationState ProductSearchPagination { get; }
 
     [ObservableProperty]
     private bool _showReceiptPreview;
@@ -137,6 +124,7 @@ public partial class CheckoutViewModel : ViewModelBase
         _fiscalConfigRepository = fiscalConfigRepository;
         _fiscalTransactionRepository = fiscalTransactionRepository;
         _backgroundSyncService = backgroundSyncService;
+        ProductSearchPagination = new PaginationState(LoadProductPageAsync);
     }
 
     [RelayCommand]
@@ -241,7 +229,7 @@ public partial class CheckoutViewModel : ViewModelBase
     {
         ShowProductSearch = true;
         ProductSearchText = string.Empty;
-        SearchCurrentPage = 1;
+        ProductSearchPagination.Reset();
         await LoadProductPageAsync();
     }
 
@@ -256,23 +244,7 @@ public partial class CheckoutViewModel : ViewModelBase
     [RelayCommand]
     private async Task SearchProductsByDescriptionAsync()
     {
-        SearchCurrentPage = 1;
-        await LoadProductPageAsync();
-    }
-
-    [RelayCommand]
-    private async Task ProductSearchNextPageAsync()
-    {
-        if (!HasNextPage) return;
-        SearchCurrentPage++;
-        await LoadProductPageAsync();
-    }
-
-    [RelayCommand]
-    private async Task ProductSearchPreviousPageAsync()
-    {
-        if (!HasPreviousPage) return;
-        SearchCurrentPage--;
+        ProductSearchPagination.Reset();
         await LoadProductPageAsync();
     }
 
@@ -282,7 +254,7 @@ public partial class CheckoutViewModel : ViewModelBase
         {
             IsSearching = true;
             var searchTerm = string.IsNullOrWhiteSpace(ProductSearchText) ? null : ProductSearchText.Trim();
-            var result = await _productQuery.GetActivePagedAsync(searchTerm, SearchCurrentPage);
+            var result = await _productQuery.GetActivePagedAsync(searchTerm, ProductSearchPagination.CurrentPage);
 
             ProductSearchResults.Clear();
             foreach (var product in result.Items)
@@ -290,10 +262,7 @@ public partial class CheckoutViewModel : ViewModelBase
                 ProductSearchResults.Add(product);
             }
 
-            SearchTotalPages = result.TotalPages;
-            SearchTotalCount = result.TotalCount;
-            HasNextPage = result.HasNextPage;
-            HasPreviousPage = result.HasPreviousPage;
+            ProductSearchPagination.Update(result);
         }
         catch (Exception ex)
         {

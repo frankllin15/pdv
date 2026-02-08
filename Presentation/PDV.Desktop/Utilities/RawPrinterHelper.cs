@@ -1,7 +1,6 @@
 namespace PDV.Desktop.Utilities;
 
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 public static class RawPrinterHelper

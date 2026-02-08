@@ -239,6 +239,45 @@ public class SaleQuery : ISaleQuery
         ));
     }
 
+    public async Task<PagedResult<SaleSummaryDto>> GetPagedAsync(
+        DateTime startDate, DateTime endDate, SaleStatus? status = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        var statusFilter = status.HasValue ? " AND s.Status = @Status" : "";
+
+        var countSql = $@"
+            SELECT COUNT(*)
+            FROM Sales s
+            WHERE s.SaleDate >= @StartDate AND s.SaleDate <= @EndDate{statusFilter}";
+
+        var dataSql = $@"
+            SELECT s.Id, s.SaleNumber, s.SaleDate, s.Total, s.Status, s.CustomerDocument,
+                   (SELECT COUNT(*) FROM SaleItems WHERE SaleId = s.Id) as ItemCount
+            FROM Sales s
+            WHERE s.SaleDate >= @StartDate AND s.SaleDate <= @EndDate{statusFilter}
+            ORDER BY s.SaleDate DESC
+            LIMIT @PageSize OFFSET @Offset";
+
+        var parameters = new
+        {
+            StartDate = startDate.ToString("o"),
+            EndDate = endDate.AddDays(1).ToString("o"),
+            Status = status.HasValue ? (int)status.Value : 0,
+            PageSize = pageSize,
+            Offset = (page - 1) * pageSize
+        };
+
+        using var connection = CreateConnection();
+        var totalCount = await connection.ExecuteScalarAsync<int>(countSql, parameters);
+        var results = await connection.QueryAsync<SaleSummaryQueryResult>(dataSql, parameters);
+
+        var items = results.Select(r => new SaleSummaryDto(
+            r.Id, r.SaleNumber, r.SaleDate, r.Total,
+            (SaleStatus)r.Status, r.ItemCount, r.CustomerDocument
+        )).ToList();
+
+        return new PagedResult<SaleSummaryDto>(items, totalCount, page, pageSize);
+    }
+
     // Helper classes for Dapper mapping
     private class SaleQueryResult
     {

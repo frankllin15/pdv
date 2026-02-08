@@ -11,4 +11,5 @@ public interface IFiscalTransactionRepository : IRepository<FiscalTransaction>
     Task<int> GetNextNumberAsync(int series, CancellationToken cancellationToken = default);
     Task<IEnumerable<FiscalTransaction>> GetByStatusAsync(FiscalStatus status, CancellationToken cancellationToken = default);
     Task<IEnumerable<FiscalTransaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
+    Task<(IReadOnlyList<FiscalTransaction> Items, int TotalCount)> GetPagedAsync(DateTime startDate, DateTime endDate, FiscalStatus? status = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default);
 }

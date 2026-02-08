@@ -11,45 +11,34 @@ public partial class SalesHistoryViewModel : ViewModelBase
 {
     private readonly ISaleQuery _saleQuery;
 
-    [ObservableProperty]
-    private DateTimeOffset? _startDate = DateTimeOffset.Now.Date;
+    [ObservableProperty] private DateTimeOffset? _startDate = DateTimeOffset.Now.Date;
 
-    [ObservableProperty]
-    private DateTimeOffset? _endDate = DateTimeOffset.Now.Date;
+    [ObservableProperty] private DateTimeOffset? _endDate = DateTimeOffset.Now.Date;
 
-    [ObservableProperty]
-    private SaleStatus? _selectedStatus;
+    [ObservableProperty] private SaleStatus? _selectedStatus;
 
-    [ObservableProperty]
-    private string _statusMessage = "Select a date range and click Search";
+    [ObservableProperty] private string _statusMessage = "Select a date range and click Search";
 
-    [ObservableProperty]
-    private bool _isError;
+    [ObservableProperty] private bool _isError;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private SaleHistoryItemViewModel? _selectedSale;
+    [ObservableProperty] private SaleHistoryItemViewModel? _selectedSale;
 
-    [ObservableProperty]
-    private SaleDetailViewModel? _saleDetail;
+    [ObservableProperty] private SaleDetailViewModel? _saleDetail;
+
+    public PaginationState Pagination { get; }
 
     // Summary
-    [ObservableProperty]
-    private int _totalSales;
+    [ObservableProperty] private int _totalSales;
 
-    [ObservableProperty]
-    private decimal _totalRevenue;
+    [ObservableProperty] private decimal _totalRevenue;
 
-    [ObservableProperty]
-    private decimal _averageTicket;
+    [ObservableProperty] private decimal _averageTicket;
 
-    [ObservableProperty]
-    private int _completedSales;
+    [ObservableProperty] private int _completedSales;
 
-    [ObservableProperty]
-    private int _cancelledSales;
+    [ObservableProperty] private int _cancelledSales;
 
     public ObservableCollection<SaleHistoryItemViewModel> Sales { get; } = new();
 
@@ -64,10 +53,24 @@ public partial class SalesHistoryViewModel : ViewModelBase
     public SalesHistoryViewModel(ISaleQuery saleQuery)
     {
         _saleQuery = saleQuery;
+        Pagination = new PaginationState(LoadPageAsync);
+    }
+
+    [RelayCommand]
+    private async Task InitializeAsync()
+    {
+        Pagination.Reset();
+        await LoadPageAsync();
     }
 
     [RelayCommand]
     private async Task SearchAsync()
+    {
+        Pagination.Reset();
+        await LoadPageAsync();
+    }
+
+    private async Task LoadPageAsync()
     {
         try
         {
@@ -81,9 +84,9 @@ public partial class SalesHistoryViewModel : ViewModelBase
             var start = StartDate?.DateTime ?? DateTime.Today;
             var end = EndDate?.DateTime ?? DateTime.Today;
 
-            var sales = await _saleQuery.GetByDateRangeAndStatusAsync(start, end, SelectedStatus);
+            var result = await _saleQuery.GetPagedAsync(start, end, SelectedStatus, Pagination.CurrentPage);
 
-            foreach (var sale in sales)
+            foreach (var sale in result.Items)
             {
                 Sales.Add(new SaleHistoryItemViewModel
                 {
@@ -97,6 +100,8 @@ public partial class SalesHistoryViewModel : ViewModelBase
                 });
             }
 
+            Pagination.Update(result);
+
             // Load summary
             var summary = await _saleQuery.GetSummaryAsync(start, end);
             TotalSales = summary.TotalSales;
@@ -105,7 +110,7 @@ public partial class SalesHistoryViewModel : ViewModelBase
             CompletedSales = summary.CompletedSales;
             CancelledSales = summary.CancelledSales;
 
-            SetStatus($"{Sales.Count} sale(s) found", false);
+            SetStatus($"{Pagination.TotalCount} sale(s) found", false);
         }
         catch (Exception ex)
         {
@@ -226,23 +231,17 @@ public partial class SaleHistoryItemViewModel : ObservableObject
 {
     public Guid Id { get; set; }
 
-    [ObservableProperty]
-    private int _saleNumber;
+    [ObservableProperty] private int _saleNumber;
 
-    [ObservableProperty]
-    private DateTime _saleDate;
+    [ObservableProperty] private DateTime _saleDate;
 
-    [ObservableProperty]
-    private decimal _total;
+    [ObservableProperty] private decimal _total;
 
-    [ObservableProperty]
-    private SaleStatus _status;
+    [ObservableProperty] private SaleStatus _status;
 
-    [ObservableProperty]
-    private int _itemCount;
+    [ObservableProperty] private int _itemCount;
 
-    [ObservableProperty]
-    private string? _customerDocument;
+    [ObservableProperty] private string? _customerDocument;
 
     public string StatusText => Status switch
     {
@@ -255,26 +254,19 @@ public partial class SaleHistoryItemViewModel : ObservableObject
 
 public partial class SaleDetailViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private int _saleNumber;
+    [ObservableProperty] private int _saleNumber;
 
-    [ObservableProperty]
-    private DateTime _saleDate;
+    [ObservableProperty] private DateTime _saleDate;
 
-    [ObservableProperty]
-    private decimal _subtotal;
+    [ObservableProperty] private decimal _subtotal;
 
-    [ObservableProperty]
-    private decimal _discount;
+    [ObservableProperty] private decimal _discount;
 
-    [ObservableProperty]
-    private decimal _total;
+    [ObservableProperty] private decimal _total;
 
-    [ObservableProperty]
-    private SaleStatus _status;
+    [ObservableProperty] private SaleStatus _status;
 
-    [ObservableProperty]
-    private string? _customerDocument;
+    [ObservableProperty] private string? _customerDocument;
 
     public ObservableCollection<SaleDetailItemViewModel> Items { get; } = new();
     public ObservableCollection<SaleDetailPaymentViewModel> Payments { get; } = new();
@@ -282,38 +274,28 @@ public partial class SaleDetailViewModel : ObservableObject
 
 public partial class SaleDetailItemViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private string _barcode = string.Empty;
+    [ObservableProperty] private string _barcode = string.Empty;
 
-    [ObservableProperty]
-    private string _description = string.Empty;
+    [ObservableProperty] private string _description = string.Empty;
 
-    [ObservableProperty]
-    private decimal _quantity;
+    [ObservableProperty] private decimal _quantity;
 
-    [ObservableProperty]
-    private decimal _unitPrice;
+    [ObservableProperty] private decimal _unitPrice;
 
-    [ObservableProperty]
-    private decimal _discount;
+    [ObservableProperty] private decimal _discount;
 
-    [ObservableProperty]
-    private decimal _total;
+    [ObservableProperty] private decimal _total;
 }
 
 public partial class SaleDetailPaymentViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private PaymentMethod _method;
+    [ObservableProperty] private PaymentMethod _method;
 
-    [ObservableProperty]
-    private decimal _amount;
+    [ObservableProperty] private decimal _amount;
 
-    [ObservableProperty]
-    private string? _authorizationCode;
+    [ObservableProperty] private string? _authorizationCode;
 
-    [ObservableProperty]
-    private DateTime _paymentDate;
+    [ObservableProperty] private DateTime _paymentDate;
 
     public string MethodText => Method switch
     {

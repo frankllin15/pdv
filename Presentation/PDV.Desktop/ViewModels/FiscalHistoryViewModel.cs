@@ -62,6 +62,8 @@ public partial class FiscalHistoryViewModel : ViewModelBase
 
     public ObservableCollection<string> AvailablePrinters { get; } = new();
 
+    public PaginationState Pagination { get; }
+
     // Summary
     [ObservableProperty]
     private int _totalTransactions;
@@ -100,10 +102,24 @@ public partial class FiscalHistoryViewModel : ViewModelBase
         _sessionService = sessionService;
         _printerService = printerService;
         _thermalPrinterService = thermalPrinterService;
+        Pagination = new PaginationState(LoadPageAsync);
+    }
+
+    [RelayCommand]
+    private async Task InitializeAsync()
+    {
+        Pagination.Reset();
+        await LoadPageAsync();
     }
 
     [RelayCommand]
     private async Task SearchAsync()
+    {
+        Pagination.Reset();
+        await LoadPageAsync();
+    }
+
+    private async Task LoadPageAsync()
     {
         try
         {
@@ -115,7 +131,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
             TransactionDetail = null;
 
             var start = StartDate?.DateTime ?? DateTime.Today.AddDays(-7);
-            var end = (EndDate?.DateTime ?? DateTime.Today).AddDays(1).AddSeconds(-1); // End of day
+            var end = (EndDate?.DateTime ?? DateTime.Today).AddDays(1).AddSeconds(-1);
 
             // If search text is an access key (44 digits), search by key
             if (!string.IsNullOrWhiteSpace(SearchText))
@@ -127,6 +143,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                     if (transaction != null)
                     {
                         Transactions.Add(MapToViewModel(transaction));
+                        Pagination.Update(1, 1, 20);
                         UpdateSummary();
                         SetStatus("1 transacao encontrada", false);
                         return;
@@ -136,22 +153,17 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                 }
             }
 
-            // Search by date range
-            var transactions = await _transactionRepository.GetByDateRangeAsync(start, end);
+            var (items, totalCount) = await _transactionRepository.GetPagedAsync(start, end, SelectedStatus, Pagination.CurrentPage);
 
-            // Filter by status if selected
-            if (SelectedStatus.HasValue)
-            {
-                transactions = transactions.Where(t => t.Status == SelectedStatus.Value);
-            }
-
-            foreach (var transaction in transactions.OrderByDescending(t => t.CreatedAt))
+            foreach (var transaction in items)
             {
                 Transactions.Add(MapToViewModel(transaction));
             }
 
+            Pagination.Update(totalCount, Pagination.CurrentPage, 20);
+
             UpdateSummary();
-            SetStatus($"{Transactions.Count} transacao(oes) encontrada(s)", false);
+            SetStatus($"{Pagination.TotalCount} transacao(oes) encontrada(s)", false);
         }
         catch (Exception ex)
         {

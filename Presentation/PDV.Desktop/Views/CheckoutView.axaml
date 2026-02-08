@@ -400,7 +400,7 @@
                     <StackPanel>
                         <TextBlock Text="Products"
                                    FontSize="20" FontWeight="Bold" />
-                        <TextBlock Text="{Binding SearchTotalCount, StringFormat='{}{0} product(s) found'}"
+                        <TextBlock Text="{Binding ProductSearchPagination.TotalCount, StringFormat='{}{0} product(s) found'}"
                                    Foreground="#666" FontSize="12" />
                     </StackPanel>
                     <Button Grid.Column="1" Content="X"
@@ -497,8 +497,8 @@
                       IsVisible="{Binding ProductSearchResults.Count}">
                     <Button Grid.Column="0"
                             Content="&lt; Previous"
-                            Command="{Binding ProductSearchPreviousPageCommand}"
-                            IsEnabled="{Binding HasPreviousPage}"
+                            Command="{Binding ProductSearchPagination.PreviousPageCommand}"
+                            IsEnabled="{Binding ProductSearchPagination.HasPreviousPage}"
                             Background="Transparent"
                             Foreground="#2196F3"
                             Padding="8,6" />
@@ -508,15 +508,15 @@
                                Foreground="#666" FontSize="13">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="Page {0} of {1}">
-                                <Binding Path="SearchCurrentPage" />
-                                <Binding Path="SearchTotalPages" />
+                                <Binding Path="ProductSearchPagination.CurrentPage" />
+                                <Binding Path="ProductSearchPagination.TotalPages" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                     <Button Grid.Column="2"
                             Content="Next &gt;"
-                            Command="{Binding ProductSearchNextPageCommand}"
-                            IsEnabled="{Binding HasNextPage}"
+                            Command="{Binding ProductSearchPagination.NextPageCommand}"
+                            IsEnabled="{Binding ProductSearchPagination.HasNextPage}"
                             Background="Transparent"
                             Foreground="#2196F3"
                             Padding="8,6" />

@@ -12,4 +12,5 @@ public interface ISaleQuery
     Task<decimal> GetDailyTotalAsync(DateTime date, CancellationToken cancellationToken = default);
     Task<SalesSummaryDto> GetSummaryAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
     Task<IEnumerable<PendingSaleSummaryDto>> GetPendingSalesByOperatorAsync(Guid operatorId, CancellationToken cancellationToken = default);
+    Task<PagedResult<SaleSummaryDto>> GetPagedAsync(DateTime startDate, DateTime endDate, SaleStatus? status = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default);
 }
