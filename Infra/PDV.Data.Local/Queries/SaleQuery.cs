@@ -40,17 +40,17 @@ public class SaleQuery : ISaleQuery
 
         using var connection = CreateConnection();
 
-        var idStr = id.ToString().ToUpperInvariant();
-        var sale = await connection.QueryFirstOrDefaultAsync<SaleQueryResult>(saleSql, new { Id = idStr });
+        var idBytes = id.ToByteArray();
+        var sale = await connection.QueryFirstOrDefaultAsync<SaleQueryResult>(saleSql, new { Id = idBytes });
         if (sale == null) return null;
 
-        var itemResults = await connection.QueryAsync<SaleItemQueryResult>(itemsSql, new { SaleId = idStr });
+        var itemResults = await connection.QueryAsync<SaleItemQueryResult>(itemsSql, new { SaleId = idBytes });
         var items = itemResults.Select(i => new SaleItemDto(
             i.GetId(), i.GetProductId(), i.Barcode, i.ProductDescription,
             i.Quantity, i.UnitPrice, i.Discount, i.Total
         )).ToList();
 
-        var paymentResults = await connection.QueryAsync<PaymentQueryResult>(paymentsSql, new { SaleId = idStr });
+        var paymentResults = await connection.QueryAsync<PaymentQueryResult>(paymentsSql, new { SaleId = idBytes });
         var payments = paymentResults.Select(p => new PaymentDto(
             p.GetId(), (PaymentMethod)p.Method, p.Amount, p.AuthorizationCode, p.CardBrand, p.PaymentDate
         )).ToList();
@@ -225,7 +225,7 @@ public class SaleQuery : ISaleQuery
         using var connection = CreateConnection();
         var results = await connection.QueryAsync<PendingSaleQueryResult>(sql, new
         {
-            OperatorId = operatorId.ToString().ToUpperInvariant(),
+            OperatorId = operatorId.ToByteArray(),
             Status = (int)SaleStatus.InProgress
         });
 
