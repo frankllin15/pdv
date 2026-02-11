@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using PDV.Core.Interfaces.Services;
+using PDV.Desktop.I18n;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -52,6 +53,21 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _showNavigationConfirmDialog;
+
+    [ObservableProperty]
+    private int _selectedLanguageIndex;
+
+    public List<string> Languages { get; } = ["Portugues (BR)", "English (US)"];
+
+    private static readonly string[] CultureCodes = ["pt-BR", "en-US"];
+
+    partial void OnSelectedLanguageIndexChanged(int value)
+    {
+        if (value >= 0 && value < CultureCodes.Length)
+        {
+            LocalizationManager.Instance.SetCulture(CultureCodes[value]);
+        }
+    }
 
     public MainViewModel(IOperatorSessionService sessionService)
     {

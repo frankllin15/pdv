@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PDV.Desktop.I18n;
 using PDV.Desktop.ViewModels;
 using PDV.Desktop.Views;
 
@@ -21,6 +22,7 @@ public partial class App : Application
     {
         try
         {
+            LocalizationManager.Instance.SetCulture("pt-BR");
             Console.WriteLine("Configuring services...");
 
             var configuration = new ConfigurationBuilder()

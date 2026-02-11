@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.SalesHistoryView"
              x:DataType="vm:SalesHistoryViewModel"
              Background="#F0F0F0">
@@ -20,10 +21,10 @@
         <Border Grid.Row="0" Background="#FF5722" Padding="16">
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel>
-                    <TextBlock Text="Sales History"
+                    <TextBlock Text="{i18n:Localize Sales_Lbl_Title}"
                                FontSize="24" FontWeight="Bold"
                                Foreground="White" />
-                    <TextBlock Text="View and analyze past sales"
+                    <TextBlock Text="{i18n:Localize Sales_Lbl_Subtitle}"
                                FontSize="14" Foreground="White" Opacity="0.9" />
                 </StackPanel>
             </Grid>
@@ -35,25 +36,25 @@
             <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto">
                 <!-- Date Range -->
                 <StackPanel Grid.Column="0" Margin="0,0,16,0">
-                    <TextBlock Text="Start Date" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                    <TextBlock Text="{i18n:Localize Global_Lbl_StartDate}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
                     <DatePicker SelectedDate="{Binding StartDate}" Width="140" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Margin="0,0,16,0">
-                    <TextBlock Text="End Date" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                    <TextBlock Text="{i18n:Localize Global_Lbl_EndDate}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
                     <DatePicker SelectedDate="{Binding EndDate}" Width="140" />
                 </StackPanel>
 
                 <!-- Quick Filters -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="4" Margin="0,0,16,0">
-                    <Button Content="Today" Command="{Binding SetTodayCommand}" Padding="8,6" />
-                    <Button Content="This Week" Command="{Binding SetThisWeekCommand}" Padding="8,6" />
-                    <Button Content="This Month" Command="{Binding SetThisMonthCommand}" Padding="8,6" />
+                    <Button Content="{i18n:Localize Global_Lbl_Today}" Command="{Binding SetTodayCommand}" Padding="8,6" />
+                    <Button Content="{i18n:Localize Global_Lbl_ThisWeek}" Command="{Binding SetThisWeekCommand}" Padding="8,6" />
+                    <Button Content="{i18n:Localize Global_Lbl_ThisMonth}" Command="{Binding SetThisMonthCommand}" Padding="8,6" />
                 </StackPanel>
 
                 <!-- Status Filter -->
                 <StackPanel Grid.Column="3" Margin="0,0,16,0">
-                    <TextBlock Text="Status" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                    <TextBlock Text="{i18n:Localize Global_Lbl_Status}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
                     <ComboBox ItemsSource="{Binding StatusOptions}"
                               SelectedValue="{Binding SelectedStatus}"
                               SelectedValueBinding="{Binding Value}"
@@ -62,7 +63,7 @@
                 </StackPanel>
 
                 <!-- Search Button -->
-                <Button Grid.Column="5" Content="Search (F5)"
+                <Button Grid.Column="5" Content="{i18n:Localize Sales_Btn_Search}"
                         Command="{Binding SearchCommand}"
                         Background="#FF5722"
                         Foreground="White"
@@ -82,31 +83,31 @@
                     <Grid ColumnDefinitions="*,*,*,*,*" Margin="0,0,0,8">
                         <Border Background="#E3F2FD" CornerRadius="4" Padding="12" Margin="0,0,4,0">
                             <StackPanel>
-                                <TextBlock Text="Total Sales" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Sales_Lbl_TotalSales}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding TotalSales}" FontSize="20" FontWeight="Bold" Foreground="#1976D2" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="1" Background="#E8F5E9" CornerRadius="4" Padding="12" Margin="4,0">
                             <StackPanel>
-                                <TextBlock Text="Revenue" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Sales_Lbl_Revenue}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding TotalRevenue, StringFormat='{}{0:C}'}" FontSize="20" FontWeight="Bold" Foreground="#388E3C" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="2" Background="#FFF3E0" CornerRadius="4" Padding="12" Margin="4,0">
                             <StackPanel>
-                                <TextBlock Text="Avg Ticket" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Sales_Lbl_AvgTicket}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding AverageTicket, StringFormat='{}{0:C}'}" FontSize="20" FontWeight="Bold" Foreground="#F57C00" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="3" Background="#E8F5E9" CornerRadius="4" Padding="12" Margin="4,0">
                             <StackPanel>
-                                <TextBlock Text="Completed" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Sales_Lbl_Completed}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding CompletedSales}" FontSize="20" FontWeight="Bold" Foreground="#388E3C" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="4" Background="#FFEBEE" CornerRadius="4" Padding="12" Margin="4,0,0,0">
                             <StackPanel>
-                                <TextBlock Text="Cancelled" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Sales_Lbl_Cancelled}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding CancelledSales}" FontSize="20" FontWeight="Bold" Foreground="#D32F2F" />
                             </StackPanel>
                         </Border>
@@ -122,19 +123,19 @@
                               GridLinesVisibility="Horizontal"
                               BorderThickness="0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="#" Binding="{Binding SaleNumber}" Width="70" />
-                            <DataGridTextColumn Header="Date" Binding="{Binding SaleDate, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="140" />
-                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='{}{0:C}'}" Width="100" />
-                            <DataGridTextColumn Header="Items" Binding="{Binding ItemCount}" Width="60" />
-                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="90" />
-                            <DataGridTextColumn Header="Customer" Binding="{Binding CustomerDocument}" Width="*" />
+                            <DataGridTextColumn Header="{i18n:Localize Sales_Col_Number}" Binding="{Binding SaleNumber}" Width="70" />
+                            <DataGridTextColumn Header="{i18n:Localize Sales_Col_Date}" Binding="{Binding SaleDate, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="140" />
+                            <DataGridTextColumn Header="{i18n:Localize Sales_Col_Total}" Binding="{Binding Total, StringFormat='{}{0:C}'}" Width="100" />
+                            <DataGridTextColumn Header="{i18n:Localize Sales_Col_Items}" Binding="{Binding ItemCount}" Width="60" />
+                            <DataGridTextColumn Header="{i18n:Localize Sales_Col_Status}" Binding="{Binding StatusText}" Width="90" />
+                            <DataGridTextColumn Header="{i18n:Localize Sales_Col_Customer}" Binding="{Binding CustomerDocument}" Width="*" />
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <!-- Pagination -->
                     <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" Margin="4,8,4,4">
                         <Button Grid.Column="0"
-                                Content="&lt; Previous"
+                                Content="{i18n:Localize Global_Btn_Previous}"
                                 Command="{Binding Pagination.PreviousPageCommand}"
                                 IsEnabled="{Binding Pagination.HasPreviousPage}"
                                 Background="Transparent"
@@ -143,16 +144,10 @@
                         <TextBlock Grid.Column="1"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   Foreground="#666" FontSize="13">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="Page {0} of {1}">
-                                    <Binding Path="Pagination.CurrentPage" />
-                                    <Binding Path="Pagination.TotalPages" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
+                                   Foreground="#666" FontSize="13"
+                                   Text="{Binding Pagination.PageInfo}" />
                         <Button Grid.Column="2"
-                                Content="Next &gt;"
+                                Content="{i18n:Localize Global_Btn_Next}"
                                 Command="{Binding Pagination.NextPageCommand}"
                                 IsEnabled="{Binding Pagination.HasNextPage}"
                                 Background="Transparent"
@@ -170,7 +165,7 @@
                     <!-- When no sale selected -->
                     <StackPanel IsVisible="{Binding SaleDetail, Converter={x:Static ObjectConverters.IsNull}}"
                                 VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="Select a sale to view details"
+                        <TextBlock Text="{i18n:Localize Sales_Lbl_SelectToView}"
                                    Foreground="#999" FontSize="14"
                                    HorizontalAlignment="Center" />
                     </StackPanel>
@@ -180,7 +175,7 @@
                         <StackPanel DataContext="{Binding SaleDetail}" Spacing="12">
                             <!-- Header -->
                             <StackPanel>
-                                <TextBlock Text="{Binding SaleNumber, StringFormat='Sale #{0}'}"
+                                <TextBlock Text="{Binding SaleNumberDisplay}"
                                            FontSize="20" FontWeight="Bold" />
                                 <TextBlock Text="{Binding SaleDate, StringFormat='{}{0:dddd, dd MMMM yyyy HH:mm}'}"
                                            Foreground="#666" />
@@ -189,7 +184,7 @@
                             <Separator />
 
                             <!-- Items -->
-                            <TextBlock Text="Items" FontWeight="SemiBold" FontSize="14" />
+                            <TextBlock Text="{i18n:Localize Sales_Lbl_Items}" FontWeight="SemiBold" FontSize="14" />
                             <ItemsControl ItemsSource="{Binding Items}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -218,14 +213,14 @@
 
                             <!-- Totals -->
                             <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
-                                <TextBlock Text="Subtotal" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Sales_Lbl_Subtotal}" Foreground="#666" />
                                 <TextBlock Grid.Column="1" Text="{Binding Subtotal, StringFormat='{}{0:C}'}" />
 
-                                <TextBlock Grid.Row="1" Text="Discount" Foreground="#666" Margin="0,4,0,0" />
+                                <TextBlock Grid.Row="1" Text="{i18n:Localize Sales_Lbl_Discount}" Foreground="#666" Margin="0,4,0,0" />
                                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Discount, StringFormat='-{0:C}'}"
                                            Foreground="#4CAF50" Margin="0,4,0,0" />
 
-                                <TextBlock Grid.Row="2" Text="TOTAL" FontWeight="Bold" FontSize="16" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="2" Text="{i18n:Localize Sales_Lbl_Total}" FontWeight="Bold" FontSize="16" Margin="0,8,0,0" />
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Total, StringFormat='{}{0:C}'}"
                                            FontWeight="Bold" FontSize="16" Foreground="#FF5722" Margin="0,8,0,0" />
                             </Grid>
@@ -233,7 +228,7 @@
                             <Separator />
 
                             <!-- Payments -->
-                            <TextBlock Text="Payments" FontWeight="SemiBold" FontSize="14" />
+                            <TextBlock Text="{i18n:Localize Sales_Lbl_Payments}" FontWeight="SemiBold" FontSize="14" />
                             <ItemsControl ItemsSource="{Binding Payments}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>

@@ -37,6 +37,18 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Update="I18n\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="I18n\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\Core\PDV.Core\PDV.Core.csproj" />
         <ProjectReference Include="..\..\Core\PDV.Shared\PDV.Shared.csproj" />
         <ProjectReference Include="..\..\Infra\PDV.Data.Local\PDV.Data.Local.csproj" />

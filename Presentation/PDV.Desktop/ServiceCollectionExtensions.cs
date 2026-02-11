@@ -10,6 +10,7 @@ using PDV.Data.Local.Context;
 using PDV.Data.Local.Handlers;
 using PDV.Data.Local.Queries;
 using PDV.Data.Local.Repositories;
+using PDV.Desktop.I18n;
 using PDV.Desktop.Services;
 using PDV.Desktop.ViewModels;
 using PDV.Fiscal.Providers;
@@ -35,6 +36,8 @@ public static class ServiceCollectionExtensions
         AddViewModels(services);
         AddLogging(services);
         AddSyncServices(services, configuration, connectionString);
+
+        services.AddSingleton(LocalizationManager.Instance);
 
         return services;
     }

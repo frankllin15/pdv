@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Interfaces.Services;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -13,7 +14,7 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
     private string _receiptContent = string.Empty;
 
     [ObservableProperty]
-    private string _title = "Comprovante de Venda";
+    private string _title = Res.Receipt_Lbl_Title;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -41,6 +42,12 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isContingency;
+
+    public string SaleNumberDisplay => string.Format(Res.Receipt_Lbl_SaleNumber, SaleNumber);
+    public string TotalDisplay => string.Format(Res.Receipt_Lbl_TotalFormat, Total);
+
+    partial void OnSaleNumberChanged(int value) => OnPropertyChanged(nameof(SaleNumberDisplay));
+    partial void OnTotalChanged(decimal value) => OnPropertyChanged(nameof(TotalDisplay));
 
     public ObservableCollection<string> AvailablePrinters { get; } = new();
 
@@ -77,7 +84,7 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao carregar impressoras: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_LoadPrintersError, ex.Message), true);
         }
     }
 
@@ -86,14 +93,14 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
     {
         if (string.IsNullOrEmpty(ReceiptContent))
         {
-            SetStatus("Nenhum conteudo para imprimir", true);
+            SetStatus(Res.Receipt_Msg_NoContent, true);
             return;
         }
 
         try
         {
             IsPrinting = true;
-            SetStatus("Imprimindo...", false);
+            SetStatus(Res.Global_Msg_Printing, false);
 
             bool success;
             if (!string.IsNullOrEmpty(SelectedPrinter))
@@ -107,16 +114,16 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
 
             if (success)
             {
-                SetStatus("Impressao enviada com sucesso!", false);
+                SetStatus(Res.Global_Msg_PrintSent, false);
             }
             else
             {
-                SetStatus("Falha ao enviar impressao", true);
+                SetStatus(Res.Global_Msg_PrintFailed, true);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao imprimir: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_PrintError, ex.Message), true);
         }
         finally
         {
@@ -156,11 +163,11 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
 
             await File.WriteAllTextAsync(filePath, ReceiptContent);
 
-            SetStatus($"Salvo em: {filePath}", false);
+            SetStatus(string.Format(Res.Global_Msg_SavedAt, filePath), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao salvar: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_SaveError, ex.Message), true);
         }
     }
 
@@ -180,8 +187,8 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
         IsContingency = isContingency;
 
         Title = isContingency
-            ? $"NFC-e {fiscalNumber} (Contingencia)"
-            : $"NFC-e {fiscalNumber}";
+            ? string.Format(Res.Receipt_Msg_NfceContingency, fiscalNumber)
+            : string.Format(Res.Receipt_Msg_NfceNormal, fiscalNumber);
     }
 
     private void SetStatus(string message, bool isError)

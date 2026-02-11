@@ -3,6 +3,7 @@ using PDV.Core.Interfaces.Queries;
 using PDV.Core.Interfaces.Services;
 using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -26,11 +27,15 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isLoading;
 
+    public string WelcomeMessage => string.Format(Res.Home_Lbl_Welcome, OperatorName);
+
+    partial void OnOperatorNameChanged(string value) => OnPropertyChanged(nameof(WelcomeMessage));
+
     public HomeViewModel(ISaleQuery saleQuery, IOperatorSessionService operatorSession)
     {
         _saleQuery = saleQuery;
         _operatorSession = operatorSession;
-        OperatorName = _operatorSession.CurrentOperator?.Name ?? "Operator";
+        OperatorName = _operatorSession.CurrentOperator?.Name ?? Res.Home_Lbl_Operator;
     }
 
     public async Task LoadDashboardDataAsync()

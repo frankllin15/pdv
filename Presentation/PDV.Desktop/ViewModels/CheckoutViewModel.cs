@@ -8,6 +8,7 @@ using PDV.Core.Interfaces.Services;
 using PDV.Desktop.Services;
 using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -29,7 +30,7 @@ public partial class CheckoutViewModel : ViewModelBase
     private string _barcodeInput = string.Empty;
 
     [ObservableProperty]
-    private string _statusMessage = "Ready";
+    private string _statusMessage = Res.PDV_Msg_Ready;
 
     [ObservableProperty]
     private bool _isError;
@@ -104,6 +105,20 @@ public partial class CheckoutViewModel : ViewModelBase
     /// </summary>
     public bool HasPendingSale => _currentSale != null && Items.Count > 0;
 
+    public string SaleInfoHeader => string.Format(Res.PDV_Lbl_SaleInfo, SaleNumber, ItemCount);
+    public string ChangeDisplay => string.Format(Res.PDV_Lbl_Change, Change);
+    public string ReceiptSaleNumberDisplay => string.Format(Res.PDV_Receipt_SaleNumber, SaleNumber);
+    public string ReceiptNfceDisplay => string.Format(Res.PDV_Receipt_NfceNumber, ReceiptFiscalNumber);
+
+    partial void OnSaleNumberChanged(int value)
+    {
+        OnPropertyChanged(nameof(SaleInfoHeader));
+        OnPropertyChanged(nameof(ReceiptSaleNumberDisplay));
+    }
+    partial void OnItemCountChanged(int value) => OnPropertyChanged(nameof(SaleInfoHeader));
+    partial void OnChangeChanged(decimal value) => OnPropertyChanged(nameof(ChangeDisplay));
+    partial void OnReceiptFiscalNumberChanged(string value) => OnPropertyChanged(nameof(ReceiptNfceDisplay));
+
     public CheckoutViewModel(
         IProductQuery productQuery,
         ISaleQuery saleQuery,
@@ -136,7 +151,7 @@ public partial class CheckoutViewModel : ViewModelBase
         {
             if (_operatorSession.CurrentOperator == null)
             {
-                SetStatus("No operator logged in", true);
+                SetStatus(Res.PDV_Msg_NoOperator, true);
                 IsInitialized = true;
                 return;
             }
@@ -153,18 +168,18 @@ public partial class CheckoutViewModel : ViewModelBase
             if (PendingSales.Count > 0)
             {
                 ShowPendingSalesDialog = true;
-                SetStatus($"You have {PendingSales.Count} pending sale(s)", false);
+                SetStatus(string.Format(Res.PDV_Msg_PendingSalesCount, PendingSales.Count), false);
             }
             else
             {
-                SetStatus("Ready - scan a product to start", false);
+                SetStatus(Res.PDV_Msg_ReadyScan, false);
             }
 
             IsInitialized = true;
         }
         catch (Exception ex)
         {
-            SetStatus($"Error initializing: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_InitError, ex.Message), true);
             IsInitialized = true;
         }
     }
@@ -179,7 +194,7 @@ public partial class CheckoutViewModel : ViewModelBase
             var sale = await _unitOfWork.Sales.GetByIdWithItemsAsync(pendingSale.Id);
             if (sale == null)
             {
-                SetStatus("Sale not found", true);
+                SetStatus(Res.PDV_Msg_SaleNotFound, true);
                 return;
             }
 
@@ -187,11 +202,11 @@ public partial class CheckoutViewModel : ViewModelBase
             SaleNumber = sale.SaleNumber;
             RefreshItemsFromSale();
             ShowPendingSalesDialog = false;
-            SetStatus($"Resumed sale #{sale.SaleNumber}", false);
+            SetStatus(string.Format(Res.PDV_Msg_ResumedSale, sale.SaleNumber), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error resuming sale: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_ResumeError, ex.Message), true);
         }
     }
 
@@ -208,12 +223,12 @@ public partial class CheckoutViewModel : ViewModelBase
 
             PendingSales.Clear();
             ShowPendingSalesDialog = false;
-            SetStatus($"Discarded {count} pending sale(s). Scan a product to start.", false);
+            SetStatus(string.Format(Res.PDV_Msg_DiscardedSales, count), false);
             ResetCheckoutState();
         }
         catch (Exception ex)
         {
-            SetStatus($"Error discarding sales: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_DiscardError, ex.Message), true);
         }
     }
 
@@ -221,7 +236,7 @@ public partial class CheckoutViewModel : ViewModelBase
     private void StartNewKeepPending()
     {
         ShowPendingSalesDialog = false;
-        SetStatus("Ready - scan a product to start new sale", false);
+        SetStatus(Res.PDV_Msg_ReadyNewSale, false);
     }
 
     [RelayCommand]
@@ -266,7 +281,7 @@ public partial class CheckoutViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Search error: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_SearchError, ex.Message), true);
         }
         finally
         {
@@ -306,11 +321,11 @@ public partial class CheckoutViewModel : ViewModelBase
             AmountPaid = 0;
             Change = 0;
             BarcodeInput = string.Empty;
-            SetStatus("New sale started", false);
+            SetStatus(Res.PDV_Msg_NewSaleStarted, false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error starting sale: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_StartSaleError, ex.Message), true);
         }
     }
 
@@ -324,7 +339,7 @@ public partial class CheckoutViewModel : ViewModelBase
         AmountPaid = 0;
         Change = 0;
         BarcodeInput = string.Empty;
-        SetStatus("Ready - scan a product to start", false);
+        SetStatus(Res.PDV_Msg_ReadyScan, false);
     }
 
     [RelayCommand]
@@ -345,7 +360,7 @@ public partial class CheckoutViewModel : ViewModelBase
             var product = await _productQuery.GetByBarcodeAsync(barcode);
             if (product == null)
             {
-                SetStatus($"Product not found: {barcode}", true);
+                SetStatus(string.Format(Res.PDV_Msg_ProductNotFound, barcode), true);
                 return;
             }
 
@@ -354,7 +369,7 @@ public partial class CheckoutViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Error: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_Error, ex.Message), true);
         }
     }
 
@@ -365,7 +380,7 @@ public partial class CheckoutViewModel : ViewModelBase
         var productEntity = await _unitOfWork.Products.GetByIdAsync(productDto.Id);
         if (productEntity == null)
         {
-            SetStatus("Product not found in database", true);
+            SetStatus(Res.PDV_Msg_ProductNotInDb, true);
             return;
         }
 
@@ -377,7 +392,7 @@ public partial class CheckoutViewModel : ViewModelBase
         await _unitOfWork.SaveChangesAsync();
 
         RefreshItemsFromSale();
-        SetStatus($"Added: {productDto.ShortDescription}", false);
+        SetStatus(string.Format(Res.PDV_Msg_Added, productDto.ShortDescription), false);
     }
 
     private void RefreshItemsFromSale()
@@ -418,11 +433,11 @@ public partial class CheckoutViewModel : ViewModelBase
             await _unitOfWork.SaveChangesAsync();
 
             RefreshItemsFromSale();
-            SetStatus("Item removed", false);
+            SetStatus(Res.PDV_Msg_ItemRemoved, false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error removing item: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_RemoveError, ex.Message), true);
         }
     }
 
@@ -441,11 +456,11 @@ public partial class CheckoutViewModel : ViewModelBase
             await _unitOfWork.SaveChangesAsync();
 
             RefreshItemsFromSale();
-            SetStatus("Quantity updated", false);
+            SetStatus(Res.PDV_Msg_QtyUpdated, false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error updating quantity: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_QtyError, ex.Message), true);
         }
     }
 
@@ -454,14 +469,14 @@ public partial class CheckoutViewModel : ViewModelBase
     {
         if (_currentSale == null || !Items.Any())
         {
-            SetStatus("No items in sale", true);
+            SetStatus(Res.PDV_Msg_NoItems, true);
             return;
         }
 
         IsPaymentMode = true;
         AmountPaid = 0;
         Change = 0;
-        SetStatus("Select payment method", false);
+        SetStatus(Res.PDV_Msg_SelectPayment, false);
     }
 
     [RelayCommand]
@@ -471,7 +486,7 @@ public partial class CheckoutViewModel : ViewModelBase
 
         if (!Enum.TryParse<PaymentMethod>(paymentMethodStr, out var paymentMethod))
         {
-            SetStatus("Invalid payment method", true);
+            SetStatus(Res.PDV_Msg_InvalidPayment, true);
             return;
         }
 
@@ -503,8 +518,9 @@ public partial class CheckoutViewModel : ViewModelBase
 
             if (_currentSale.Status == SaleStatus.Completed)
             {
-                var changeMessage = Change > 0 ? $" - Change: {Change:C}" : "";
-                SetStatus($"Sale #{SaleNumber} completed!{changeMessage}", false);
+                SetStatus(Change > 0
+                    ? string.Format(Res.PDV_Msg_SaleCompletedChange, SaleNumber, Change)
+                    : string.Format(Res.PDV_Msg_SaleCompleted, SaleNumber), false);
                 IsPaymentMode = false;
 
                 // Process fiscal (NFC-e) after sale completion
@@ -521,12 +537,12 @@ public partial class CheckoutViewModel : ViewModelBase
             }
             else
             {
-                SetStatus($"Remaining: {_currentSale.GetRemainingAmount():C}", false);
+                SetStatus(string.Format(Res.PDV_Msg_Remaining, _currentSale.GetRemainingAmount()), false);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Payment error: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_PaymentError, ex.Message), true);
         }
     }
 
@@ -566,11 +582,11 @@ public partial class CheckoutViewModel : ViewModelBase
             Items.Clear();
             UpdateTotals();
             IsPaymentMode = false;
-            SetStatus("Sale cancelled", false);
+            SetStatus(Res.PDV_Msg_SaleCancelled, false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error cancelling: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_CancelError, ex.Message), true);
         }
     }
 
@@ -613,7 +629,7 @@ public partial class CheckoutViewModel : ViewModelBase
             }
             catch (Exception ex)
             {
-                SetStatus($"Error cancelling current sale: {ex.Message}", true);
+                SetStatus(string.Format(Res.PDV_Msg_CancelCurrentError, ex.Message), true);
                 return;
             }
         }
@@ -631,7 +647,7 @@ public partial class CheckoutViewModel : ViewModelBase
     private void ExitPaymentMode()
     {
         IsPaymentMode = false;
-        SetStatus("Returned to sale", false);
+        SetStatus(Res.PDV_Msg_ReturnedToSale, false);
     }
 
     private async Task ProcessFiscalAsync()
@@ -647,8 +663,8 @@ public partial class CheckoutViewModel : ViewModelBase
             if (result.Success)
             {
                 var msg = result.IsContingency
-                    ? $"NFC-e {_currentSale.FiscalNumber} em contingencia"
-                    : $"NFC-e {_currentSale.FiscalNumber} autorizada";
+                    ? string.Format(Res.PDV_Msg_NfceContingency, _currentSale.FiscalNumber)
+                    : string.Format(Res.PDV_Msg_NfceAuthorized, _currentSale.FiscalNumber);
                 SetStatus(msg, false);
 
                 // Generate and show receipt
@@ -656,12 +672,12 @@ public partial class CheckoutViewModel : ViewModelBase
             }
             else
             {
-                SetStatus($"Erro fiscal: {result.StatusMessage}", true);
+                SetStatus(string.Format(Res.PDV_Msg_FiscalError, result.StatusMessage), true);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao processar fiscal: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_FiscalProcessError, ex.Message), true);
         }
     }
 
@@ -691,7 +707,7 @@ public partial class CheckoutViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao gerar recibo: {ex.Message}", true);
+            SetStatus(string.Format(Res.PDV_Msg_ReceiptError, ex.Message), true);
         }
     }
 
@@ -703,21 +719,21 @@ public partial class CheckoutViewModel : ViewModelBase
 
         try
         {
-            SetStatus("Imprimindo...", false);
+            SetStatus(Res.Global_Msg_Printing, false);
             var success = await _printerService.PrintWithDialogAsync(ReceiptContent);
 
             if (success)
             {
-                SetStatus("Impressao enviada!", false);
+                SetStatus(Res.PDV_Msg_PrintSent, false);
             }
             else
             {
-                SetStatus("Falha ao imprimir", true);
+                SetStatus(Res.PDV_Msg_PrintFailed, true);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao imprimir: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_PrintError, ex.Message), true);
         }
     }
 
@@ -754,11 +770,11 @@ public partial class CheckoutViewModel : ViewModelBase
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
             await File.WriteAllTextAsync(filePath, ReceiptContent);
 
-            SetStatus($"Salvo em: {filePath}", false);
+            SetStatus(string.Format(Res.Global_Msg_SavedAt, filePath), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao salvar: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_SaveError, ex.Message), true);
         }
     }
 

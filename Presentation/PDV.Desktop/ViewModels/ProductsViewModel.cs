@@ -5,6 +5,7 @@ using PDV.Core.Entities;
 using PDV.Core.Interfaces.Queries;
 using PDV.Core.Interfaces.Repositories;
 using PDV.Shared.DTOs;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -17,7 +18,7 @@ public partial class ProductsViewModel : ViewModelBase
     private string _searchText = string.Empty;
 
     [ObservableProperty]
-    private string _statusMessage = "Ready";
+    private string _statusMessage = Res.Global_Lbl_Ready;
 
     [ObservableProperty]
     private bool _isError;
@@ -47,7 +48,7 @@ public partial class ProductsViewModel : ViewModelBase
     {
         try
         {
-            SetStatus("Loading products...", false);
+            SetStatus(Res.Products_Msg_Loading, false);
             Products.Clear();
 
             var products = string.IsNullOrWhiteSpace(SearchText)
@@ -59,11 +60,11 @@ public partial class ProductsViewModel : ViewModelBase
                 Products.Add(MapToViewModel(product));
             }
 
-            SetStatus($"{Products.Count} product(s) found", false);
+            SetStatus(string.Format(Res.Products_Msg_FoundCount, Products.Count), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error loading products: {ex.Message}", true);
+            SetStatus(string.Format(Res.Products_Msg_LoadError, ex.Message), true);
         }
     }
 
@@ -83,7 +84,7 @@ public partial class ProductsViewModel : ViewModelBase
         };
         IsNewProduct = true;
         IsEditing = true;
-        SetStatus("Creating new product", false);
+        SetStatus(Res.Products_Msg_CreatingNew, false);
     }
 
     [RelayCommand]
@@ -106,7 +107,7 @@ public partial class ProductsViewModel : ViewModelBase
         };
         IsNewProduct = false;
         IsEditing = true;
-        SetStatus($"Editing: {product.Description}", false);
+        SetStatus(string.Format(Res.Products_Msg_Editing, product.Description), false);
     }
 
     [RelayCommand]
@@ -114,19 +115,19 @@ public partial class ProductsViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(EditingProduct.Barcode))
         {
-            SetStatus("Barcode is required", true);
+            SetStatus(Res.Products_Msg_BarcodeRequired, true);
             return;
         }
 
         if (string.IsNullOrWhiteSpace(EditingProduct.Description))
         {
-            SetStatus("Description is required", true);
+            SetStatus(Res.Products_Msg_DescriptionRequired, true);
             return;
         }
 
         if (EditingProduct.UnitPrice < 0)
         {
-            SetStatus("Unit price cannot be negative", true);
+            SetStatus(Res.Products_Msg_PriceNegative, true);
             return;
         }
 
@@ -146,7 +147,7 @@ public partial class ProductsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Error saving product: {ex.Message}", true);
+            SetStatus(string.Format(Res.Products_Msg_SaveError, ex.Message), true);
         }
     }
 
@@ -156,7 +157,7 @@ public partial class ProductsViewModel : ViewModelBase
         var existing = await _productQuery.GetByBarcodeAsync(EditingProduct.Barcode);
         if (existing != null)
         {
-            SetStatus($"Barcode {EditingProduct.Barcode} already exists", true);
+            SetStatus(string.Format(Res.Products_Msg_BarcodeExists, EditingProduct.Barcode), true);
             return;
         }
 
@@ -175,7 +176,7 @@ public partial class ProductsViewModel : ViewModelBase
         await _unitOfWork.Products.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
 
-        SetStatus($"Product created: {product.Description}", false);
+        SetStatus(string.Format(Res.Products_Msg_Created, product.Description), false);
     }
 
     private async Task UpdateProductAsync()
@@ -183,7 +184,7 @@ public partial class ProductsViewModel : ViewModelBase
         var product = await _unitOfWork.Products.GetByIdAsync(EditingProduct.Id);
         if (product == null)
         {
-            SetStatus("Product not found", true);
+            SetStatus(Res.Products_Msg_ProductNotFound, true);
             return;
         }
 
@@ -193,7 +194,7 @@ public partial class ProductsViewModel : ViewModelBase
             var existing = await _productQuery.GetByBarcodeAsync(EditingProduct.Barcode);
             if (existing != null && existing.Id != EditingProduct.Id)
             {
-                SetStatus($"Barcode {EditingProduct.Barcode} already exists", true);
+                SetStatus(string.Format(Res.Products_Msg_BarcodeExists, EditingProduct.Barcode), true);
                 return;
             }
         }
@@ -220,7 +221,7 @@ public partial class ProductsViewModel : ViewModelBase
 
         await _unitOfWork.SaveChangesAsync();
 
-        SetStatus($"Product updated: {product.Description}", false);
+        SetStatus(string.Format(Res.Products_Msg_Updated, product.Description), false);
     }
 
     [RelayCommand]
@@ -228,7 +229,7 @@ public partial class ProductsViewModel : ViewModelBase
     {
         IsEditing = false;
         EditingProduct = new();
-        SetStatus("Edit cancelled", false);
+        SetStatus(Res.Products_Msg_EditCancelled, false);
     }
 
     [RelayCommand]
@@ -243,13 +244,13 @@ public partial class ProductsViewModel : ViewModelBase
             {
                 entity.Deactivate();
                 await _unitOfWork.SaveChangesAsync();
-                SetStatus($"Product deactivated: {product.Description}", false);
+                SetStatus(string.Format(Res.Products_Msg_Deactivated, product.Description), false);
                 await LoadProductsAsync();
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Error deleting product: {ex.Message}", true);
+            SetStatus(string.Format(Res.Products_Msg_DeleteError, ex.Message), true);
         }
     }
 
@@ -269,12 +270,12 @@ public partial class ProductsViewModel : ViewModelBase
                 product.StockQuantity = entity.StockQuantity;
                 product.StockAdjustment = 0;
 
-                SetStatus($"Stock updated for {product.Description}: {entity.StockQuantity}", false);
+                SetStatus(string.Format(Res.Products_Msg_StockUpdated, product.Description, entity.StockQuantity), false);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Error adjusting stock: {ex.Message}", true);
+            SetStatus(string.Format(Res.Products_Msg_StockError, ex.Message), true);
         }
     }
 

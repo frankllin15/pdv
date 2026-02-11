@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.FiscalHistoryView"
              x:DataType="vm:FiscalHistoryViewModel"
              Background="#F0F0F0">
@@ -21,10 +22,10 @@
         <Border Grid.Row="0" Background="#9C27B0" Padding="16">
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel>
-                    <TextBlock Text="Historico Fiscal"
+                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Title}"
                                FontSize="24" FontWeight="Bold"
                                Foreground="White" />
-                    <TextBlock Text="Consulta e reimpressao de NFC-e"
+                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Subtitle}"
                                FontSize="14" Foreground="White" Opacity="0.9" />
                 </StackPanel>
             </Grid>
@@ -36,36 +37,36 @@
             <Grid RowDefinitions="Auto,Auto">
                 <!-- Search by Access Key -->
                 <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12">
-                    <TextBlock Text="Chave de Acesso:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_AccessKey}" VerticalAlignment="Center" Margin="0,0,8,0" />
                     <TextBox Grid.Column="1" Text="{Binding SearchText}"
-                             Watermark="Digite a chave de acesso (44 digitos) ou deixe vazio para buscar por data"
+                             Watermark="{i18n:Localize FiscalHist_Wm_AccessKey}"
                              Margin="0,0,8,0" />
-                    <Button Grid.Column="2" Content="Limpar" Command="{Binding ClearSearchCommand}" Padding="8,6" />
+                    <Button Grid.Column="2" Content="{i18n:Localize Global_Btn_Clear}" Command="{Binding ClearSearchCommand}" Padding="8,6" />
                 </Grid>
 
                 <!-- Date Range and Status Filters -->
                 <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto">
                     <!-- Date Range -->
                     <StackPanel Grid.Column="0" Margin="0,0,16,0">
-                        <TextBlock Text="Data Inicio" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                        <TextBlock Text="{i18n:Localize Global_Lbl_StartDate}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
                         <DatePicker SelectedDate="{Binding StartDate}" Width="140" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Margin="0,0,16,0">
-                        <TextBlock Text="Data Fim" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                        <TextBlock Text="{i18n:Localize Global_Lbl_EndDate}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
                         <DatePicker SelectedDate="{Binding EndDate}" Width="140" />
                     </StackPanel>
 
                     <!-- Quick Filters -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="4" Margin="0,0,16,0">
-                        <Button Content="Hoje" Command="{Binding SetTodayCommand}" Padding="8,6" />
-                        <Button Content="Semana" Command="{Binding SetThisWeekCommand}" Padding="8,6" />
-                        <Button Content="Mes" Command="{Binding SetThisMonthCommand}" Padding="8,6" />
+                        <Button Content="{i18n:Localize Global_Lbl_Today}" Command="{Binding SetTodayCommand}" Padding="8,6" />
+                        <Button Content="{i18n:Localize Global_Lbl_ThisWeek}" Command="{Binding SetThisWeekCommand}" Padding="8,6" />
+                        <Button Content="{i18n:Localize Global_Lbl_ThisMonth}" Command="{Binding SetThisMonthCommand}" Padding="8,6" />
                     </StackPanel>
 
                     <!-- Status Filter -->
                     <StackPanel Grid.Column="3" Margin="0,0,16,0">
-                        <TextBlock Text="Status" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                        <TextBlock Text="{i18n:Localize Global_Lbl_Status}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
                         <ComboBox ItemsSource="{Binding StatusOptions}"
                                   SelectedValue="{Binding SelectedStatus}"
                                   SelectedValueBinding="{Binding Value}"
@@ -74,7 +75,7 @@
                     </StackPanel>
 
                     <!-- Search Button -->
-                    <Button Grid.Column="5" Content="Buscar (F5)"
+                    <Button Grid.Column="5" Content="{i18n:Localize FiscalHist_Btn_Search}"
                             Command="{Binding SearchCommand}"
                             Background="#9C27B0"
                             Foreground="White"
@@ -95,25 +96,25 @@
                     <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,8">
                         <Border Background="#E1BEE7" CornerRadius="4" Padding="12" Margin="0,0,4,0">
                             <StackPanel>
-                                <TextBlock Text="Total" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize Global_Lbl_Total}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding TotalTransactions}" FontSize="20" FontWeight="Bold" Foreground="#7B1FA2" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="1" Background="#C8E6C9" CornerRadius="4" Padding="12" Margin="4,0">
                             <StackPanel>
-                                <TextBlock Text="Autorizadas" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Authorized}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding AuthorizedCount}" FontSize="20" FontWeight="Bold" Foreground="#388E3C" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="2" Background="#FFE0B2" CornerRadius="4" Padding="12" Margin="4,0">
                             <StackPanel>
-                                <TextBlock Text="Contingencia" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Contingency}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding ContingencyCount}" FontSize="20" FontWeight="Bold" Foreground="#F57C00" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="3" Background="#FFCDD2" CornerRadius="4" Padding="12" Margin="4,0,0,0">
                             <StackPanel>
-                                <TextBlock Text="Canceladas" FontSize="11" Foreground="#666" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Cancelled}" FontSize="11" Foreground="#666" />
                                 <TextBlock Text="{Binding CancelledCount}" FontSize="20" FontWeight="Bold" Foreground="#D32F2F" />
                             </StackPanel>
                         </Border>
@@ -129,19 +130,19 @@
                               GridLinesVisibility="Horizontal"
                               BorderThickness="0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="NFC-e" Binding="{Binding Number}" Width="70" />
-                            <DataGridTextColumn Header="Serie" Binding="{Binding Series}" Width="50" />
-                            <DataGridTextColumn Header="Data" Binding="{Binding CreatedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="130" />
-                            <DataGridTextColumn Header="Valor" Binding="{Binding SaleTotal, StringFormat='{}{0:C}'}" Width="100" />
-                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="90" />
-                            <DataGridTextColumn Header="Chave" Binding="{Binding FormattedAccessKey}" Width="*" />
+                            <DataGridTextColumn Header="{i18n:Localize FiscalHist_Col_Nfce}" Binding="{Binding Number}" Width="70" />
+                            <DataGridTextColumn Header="{i18n:Localize FiscalHist_Col_Series}" Binding="{Binding Series}" Width="50" />
+                            <DataGridTextColumn Header="{i18n:Localize FiscalHist_Col_Date}" Binding="{Binding CreatedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="130" />
+                            <DataGridTextColumn Header="{i18n:Localize FiscalHist_Col_Value}" Binding="{Binding SaleTotal, StringFormat='{}{0:C}'}" Width="100" />
+                            <DataGridTextColumn Header="{i18n:Localize FiscalHist_Col_Status}" Binding="{Binding StatusText}" Width="90" />
+                            <DataGridTextColumn Header="{i18n:Localize FiscalHist_Col_Key}" Binding="{Binding FormattedAccessKey}" Width="*" />
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <!-- Pagination -->
                     <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" Margin="4,8,4,4">
                         <Button Grid.Column="0"
-                                Content="&lt; Anterior"
+                                Content="{i18n:Localize Global_Btn_Previous}"
                                 Command="{Binding Pagination.PreviousPageCommand}"
                                 IsEnabled="{Binding Pagination.HasPreviousPage}"
                                 Background="Transparent"
@@ -150,16 +151,10 @@
                         <TextBlock Grid.Column="1"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   Foreground="#666" FontSize="13">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="Pagina {0} de {1}">
-                                    <Binding Path="Pagination.CurrentPage" />
-                                    <Binding Path="Pagination.TotalPages" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
+                                   Foreground="#666" FontSize="13"
+                                   Text="{Binding Pagination.PageInfo}" />
                         <Button Grid.Column="2"
-                                Content="Proxima &gt;"
+                                Content="{i18n:Localize Global_Btn_Next}"
                                 Command="{Binding Pagination.NextPageCommand}"
                                 IsEnabled="{Binding Pagination.HasNextPage}"
                                 Background="Transparent"
@@ -177,10 +172,10 @@
                     <!-- When no transaction selected -->
                     <StackPanel IsVisible="{Binding TransactionDetail, Converter={x:Static ObjectConverters.IsNull}}"
                                 VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="Selecione uma transacao"
+                        <TextBlock Text="{i18n:Localize FiscalHist_Lbl_SelectTransaction}"
                                    Foreground="#999" FontSize="14"
                                    HorizontalAlignment="Center" />
-                        <TextBlock Text="para ver detalhes"
+                        <TextBlock Text="{i18n:Localize FiscalHist_Lbl_ToViewDetails}"
                                    Foreground="#999" FontSize="14"
                                    HorizontalAlignment="Center" />
                     </StackPanel>
@@ -190,7 +185,7 @@
                         <StackPanel DataContext="{Binding TransactionDetail}" Spacing="12">
                             <!-- Header -->
                             <StackPanel>
-                                <TextBlock Text="{Binding Number, StringFormat='NFC-e #{0}'}"
+                                <TextBlock Text="{Binding NfceNumberDisplay}"
                                            FontSize="20" FontWeight="Bold" />
                                 <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:dddd, dd MMMM yyyy HH:mm}'}"
                                            Foreground="#666" />
@@ -200,7 +195,7 @@
 
                             <!-- Status -->
                             <Grid ColumnDefinitions="Auto,*">
-                                <TextBlock Text="Status:" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_StatusLabel}" FontWeight="SemiBold" Margin="0,0,8,0" />
                                 <TextBlock Grid.Column="1" Text="{Binding StatusText}" />
                             </Grid>
 
@@ -208,20 +203,20 @@
                             <Border Background="#FFF3E0" CornerRadius="4" Padding="8"
                                     IsVisible="{Binding IsContingency}">
                                 <StackPanel>
-                                    <TextBlock Text="EMITIDA EM CONTINGENCIA" FontWeight="Bold" Foreground="#E65100" />
-                                    <TextBlock Text="Pendente de transmissao a SEFAZ" Foreground="#E65100" FontSize="12" />
+                                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_ContingencyWarning}" FontWeight="Bold" Foreground="#E65100" />
+                                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_PendingTransmission}" Foreground="#E65100" FontSize="12" />
                                 </StackPanel>
                             </Border>
 
                             <!-- Protocol -->
                             <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding Protocol, Converter={x:Static ObjectConverters.IsNotNull}}">
-                                <TextBlock Text="Protocolo:" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Protocol}" FontWeight="SemiBold" Margin="0,0,8,0" />
                                 <TextBlock Grid.Column="1" Text="{Binding Protocol}" />
                             </Grid>
 
                             <!-- Authorization Date -->
                             <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding AuthorizationDate, Converter={x:Static ObjectConverters.IsNotNull}}">
-                                <TextBlock Text="Autorizado em:" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_AuthorizedAt}" FontWeight="SemiBold" Margin="0,0,8,0" />
                                 <TextBlock Grid.Column="1" Text="{Binding AuthorizationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm:ss}'}" />
                             </Grid>
 
@@ -229,7 +224,7 @@
 
                             <!-- Access Key -->
                             <StackPanel>
-                                <TextBlock Text="Chave de Acesso" FontWeight="SemiBold" FontSize="14" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_AccessKeyTitle}" FontWeight="SemiBold" FontSize="14" />
                                 <Border Background="#F5F5F5" CornerRadius="4" Padding="8" Margin="0,4,0,0">
                                     <TextBlock Text="{Binding FormattedAccessKey}"
                                                FontFamily="Consolas"
@@ -243,8 +238,8 @@
                             <!-- Reprint Info -->
                             <StackPanel>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Text="Reimpressoes" FontWeight="SemiBold" FontSize="14" />
-                                    <TextBlock Grid.Column="1" Text="{Binding ReprintCount, StringFormat='Total: {0}'}" Foreground="#666" />
+                                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_Reprints}" FontWeight="SemiBold" FontSize="14" />
+                                    <TextBlock Grid.Column="1" Text="{Binding ReprintTotalDisplay}" Foreground="#666" />
                                 </Grid>
 
                                 <ItemsControl ItemsSource="{Binding ReprintHistory}" Margin="0,8,0,0">
@@ -257,7 +252,7 @@
                                                                VerticalAlignment="Top" Margin="0,0,8,0" />
                                                     <StackPanel Grid.Column="1">
                                                         <TextBlock Text="{Binding ReprintedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontSize="12" />
-                                                        <TextBlock Text="{Binding OperatorName, StringFormat='Por: {0}'}" Foreground="#666" FontSize="11" />
+                                                        <TextBlock Text="{Binding OperatorNameDisplay}" Foreground="#666" FontSize="11" />
                                                         <TextBlock Text="{Binding Reason}" Foreground="#999" FontSize="11"
                                                                    IsVisible="{Binding Reason, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                                     </StackPanel>
@@ -272,7 +267,7 @@
 
                             <!-- Action Buttons -->
                             <StackPanel Spacing="8">
-                                <Button Content="Reimprimir DANFE (F4)"
+                                <Button Content="{i18n:Localize FiscalHist_Btn_ReprintDanfe}"
                                         Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).OpenReprintDialogCommand}"
                                         Background="#9C27B0"
                                         Foreground="White"
@@ -281,7 +276,7 @@
                                         HorizontalContentAlignment="Center"
                                         FontWeight="SemiBold" />
 
-                                <Button Content="Abrir como PDF (com QR Code)"
+                                <Button Content="{i18n:Localize FiscalHist_Btn_OpenAsPdf}"
                                         Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).ReprintAsPdfCommand}"
                                         Background="#673AB7"
                                         Foreground="White"
@@ -289,7 +284,7 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Center" />
 
-                                <Button Content="Salvar PDF"
+                                <Button Content="{i18n:Localize FiscalHist_Btn_SavePdf}"
                                         Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).SavePdfCommand}"
                                         Padding="16,10"
                                         HorizontalAlignment="Stretch"
@@ -298,28 +293,28 @@
                                 <Separator Margin="0,8" />
 
                                 <!-- Thermal Printer Section -->
-                                <TextBlock Text="Impressora Termica (ESC/POS)" FontWeight="SemiBold" FontSize="12" />
+                                <TextBlock Text="{i18n:Localize FiscalHist_Lbl_ThermalPrinter}" FontWeight="SemiBold" FontSize="12" />
 
                                 <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                                     <ComboBox Grid.Column="0"
                                               ItemsSource="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).AvailablePrinters}"
                                               SelectedItem="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).SelectedThermalPrinter}"
-                                              PlaceholderText="Selecione a impressora"
+                                              PlaceholderText="{i18n:Localize FiscalHist_Wm_SelectPrinter}"
                                               HorizontalAlignment="Stretch" />
-                                    <Button Grid.Column="1" Content="Atualizar"
+                                    <Button Grid.Column="1" Content="{i18n:Localize Global_Btn_Refresh}"
                                             Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).LoadPrintersCommand}"
                                             Margin="4,0,0,0" Padding="8,6" />
                                 </Grid>
 
                                 <Grid ColumnDefinitions="Auto,*" Margin="0,4,0,0">
-                                    <TextBlock Text="Tamanho QR:" VerticalAlignment="Center" FontSize="12" Margin="0,0,8,0" />
+                                    <TextBlock Text="{i18n:Localize FiscalHist_Lbl_QrCodeSize}" VerticalAlignment="Center" FontSize="12" Margin="0,0,8,0" />
                                     <NumericUpDown Grid.Column="1"
                                                    Value="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).QrCodeSize}"
                                                    Minimum="1" Maximum="16"
                                                    Width="80" />
                                 </Grid>
 
-                                <Button Content="Imprimir Termica (QR Code Nativo)"
+                                <Button Content="{i18n:Localize FiscalHist_Btn_PrintThermal}"
                                         Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).ReprintThermalCommand}"
                                         Background="#FF5722"
                                         Foreground="White"
@@ -329,7 +324,7 @@
                                         FontWeight="SemiBold"
                                         Margin="0,4,0,0" />
 
-                                <Button Content="Testar QR Code"
+                                <Button Content="{i18n:Localize FiscalHist_Btn_TestQrCode}"
                                         Command="{Binding $parent[UserControl].((vm:FiscalHistoryViewModel)DataContext).TestQrCodeCommand}"
                                         Padding="8,6"
                                         HorizontalAlignment="Stretch"
@@ -358,29 +353,29 @@
                     HorizontalAlignment="Center" VerticalAlignment="Center"
                     Width="400">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="Reimprimir DANFE" FontSize="18" FontWeight="Bold" />
+                    <TextBlock Text="{i18n:Localize FiscalHist_Dlg_ReprintTitle}" FontSize="18" FontWeight="Bold" />
 
-                    <TextBlock Text="Informe o motivo da reimpressao (opcional):" />
+                    <TextBlock Text="{i18n:Localize FiscalHist_Dlg_ReprintReasonPrompt}" />
 
                     <TextBox Text="{Binding ReprintReason}"
-                             Watermark="Ex: Cliente solicitou 2a via"
+                             Watermark="{i18n:Localize FiscalHist_Wm_ReprintReason}"
                              AcceptsReturn="True"
                              Height="80"
                              TextWrapping="Wrap" />
 
-                    <TextBlock Text="Um registro de auditoria sera criado com seu usuario e a data/hora da reimpressao."
+                    <TextBlock Text="{i18n:Localize FiscalHist_Dlg_AuditInfo}"
                                TextWrapping="Wrap"
                                Foreground="#666"
                                FontSize="12" />
 
                     <Grid ColumnDefinitions="*,*" Margin="0,8,0,0">
-                        <Button Grid.Column="0" Content="Cancelar"
+                        <Button Grid.Column="0" Content="{i18n:Localize Global_Btn_Cancel}"
                                 Command="{Binding CancelReprintDialogCommand}"
                                 Margin="0,0,8,0"
                                 Padding="16,10"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Center" />
-                        <Button Grid.Column="1" Content="Confirmar"
+                        <Button Grid.Column="1" Content="{i18n:Localize Global_Btn_Confirm}"
                                 Command="{Binding ConfirmReprintCommand}"
                                 Background="#9C27B0"
                                 Foreground="White"

@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.HomeView"
              x:DataType="vm:HomeViewModel">
 
@@ -8,10 +9,10 @@
         <!-- Header -->
         <Border Grid.Row="0" Background="#2196F3" Padding="32,24">
             <StackPanel>
-                <TextBlock Text="{Binding OperatorName, StringFormat='Welcome, {0}!'}"
+                <TextBlock Text="{Binding WelcomeMessage}"
                            FontSize="28" FontWeight="Bold"
                            Foreground="White" />
-                <TextBlock Text="Select an option to get started"
+                <TextBlock Text="{i18n:Localize Home_Lbl_SelectOption}"
                            FontSize="14" Foreground="White" Opacity="0.9"
                            Margin="0,4,0,0" />
             </StackPanel>
@@ -23,7 +24,7 @@
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Spacing="24" Margin="32">
                 <!-- Quick Stats -->
-                <TextBlock Text="Today's Summary" FontSize="18" FontWeight="SemiBold" Foreground="#333" />
+                <TextBlock Text="{i18n:Localize Home_Lbl_TodaySummary}" FontSize="18" FontWeight="SemiBold" Foreground="#333" />
 
                 <!-- Summary Cards - Horizontal StackPanel -->
                 <StackPanel Orientation="Horizontal" Spacing="16">
@@ -32,11 +33,11 @@
                             BorderBrush="#E0E0E0" BorderThickness="1"
                             MinWidth="180">
                         <StackPanel>
-                            <TextBlock Text="Pending Sales" Foreground="#666" FontSize="13" />
+                            <TextBlock Text="{i18n:Localize Home_Lbl_PendingSales}" Foreground="#666" FontSize="13" />
                             <TextBlock Text="{Binding PendingSalesCount}"
                                        FontSize="32" FontWeight="Bold" Foreground="#FF9800"
                                        Margin="0,4,0,0" />
-                            <TextBlock Text="In Progress" Foreground="#999" FontSize="12" />
+                            <TextBlock Text="{i18n:Localize Home_Lbl_InProgress}" Foreground="#999" FontSize="12" />
                         </StackPanel>
                     </Border>
 
@@ -45,11 +46,11 @@
                             BorderBrush="#E0E0E0" BorderThickness="1"
                             MinWidth="180">
                         <StackPanel>
-                            <TextBlock Text="Completed Sales" Foreground="#666" FontSize="13" />
+                            <TextBlock Text="{i18n:Localize Home_Lbl_CompletedSales}" Foreground="#666" FontSize="13" />
                             <TextBlock Text="{Binding TodaySalesCount}"
                                        FontSize="32" FontWeight="Bold" Foreground="#4CAF50"
                                        Margin="0,4,0,0" />
-                            <TextBlock Text="Today" Foreground="#999" FontSize="12" />
+                            <TextBlock Text="{i18n:Localize Global_Lbl_Today}" Foreground="#999" FontSize="12" />
                         </StackPanel>
                     </Border>
 
@@ -58,17 +59,17 @@
                             BorderBrush="#E0E0E0" BorderThickness="1"
                             MinWidth="180">
                         <StackPanel>
-                            <TextBlock Text="Today's Revenue" Foreground="#666" FontSize="13" />
+                            <TextBlock Text="{i18n:Localize Home_Lbl_TodaysRevenue}" Foreground="#666" FontSize="13" />
                             <TextBlock Text="{Binding TodayTotal, StringFormat='{}{0:C}'}"
                                        FontSize="32" FontWeight="Bold" Foreground="#2196F3"
                                        Margin="0,4,0,0" />
-                            <TextBlock Text="Total" Foreground="#999" FontSize="12" />
+                            <TextBlock Text="{i18n:Localize Global_Lbl_Total}" Foreground="#999" FontSize="12" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
 
                 <!-- Quick Actions -->
-                <TextBlock Text="Quick Actions" FontSize="18" FontWeight="SemiBold" Foreground="#333"
+                <TextBlock Text="{i18n:Localize Home_Lbl_QuickActions}" FontSize="18" FontWeight="SemiBold" Foreground="#333"
                            Margin="0,8,0,0" />
 
                 <!-- Action Buttons - 2x2 Grid -->
@@ -83,9 +84,9 @@
                             <Border Background="#4CAF50" CornerRadius="8" Padding="32,24"
                                     MinWidth="280">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="New Sale" FontSize="20" FontWeight="SemiBold"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_NewSale}" FontSize="20" FontWeight="SemiBold"
                                                Foreground="White" HorizontalAlignment="Center" />
-                                    <TextBlock Text="Start a new checkout (F1)"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_NewSaleHint}"
                                                Foreground="White" Opacity="0.9" FontSize="13"
                                                HorizontalAlignment="Center" Margin="0,4,0,0" />
                                 </StackPanel>
@@ -100,9 +101,9 @@
                             <Border Background="#2196F3" CornerRadius="8" Padding="32,24"
                                     MinWidth="280">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="Products" FontSize="20" FontWeight="SemiBold"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_Products}" FontSize="20" FontWeight="SemiBold"
                                                Foreground="White" HorizontalAlignment="Center" />
-                                    <TextBlock Text="Manage product catalog (F4)"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_ProductsHint}"
                                                Foreground="White" Opacity="0.9" FontSize="13"
                                                HorizontalAlignment="Center" Margin="0,4,0,0" />
                                 </StackPanel>
@@ -120,9 +121,9 @@
                             <Border Background="#9C27B0" CornerRadius="8" Padding="32,24"
                                     MinWidth="280">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="Sales History" FontSize="20" FontWeight="SemiBold"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_SalesHistory}" FontSize="20" FontWeight="SemiBold"
                                                Foreground="White" HorizontalAlignment="Center" />
-                                    <TextBlock Text="View past transactions (F6)"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_SalesHistoryHint}"
                                                Foreground="White" Opacity="0.9" FontSize="13"
                                                HorizontalAlignment="Center" Margin="0,4,0,0" />
                                 </StackPanel>
@@ -137,9 +138,9 @@
                             <Border Background="#757575" CornerRadius="8" Padding="32,24"
                                     MinWidth="280">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="Settings" FontSize="20" FontWeight="SemiBold"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_Settings}" FontSize="20" FontWeight="SemiBold"
                                                Foreground="White" HorizontalAlignment="Center" />
-                                    <TextBlock Text="Fiscal configuration"
+                                    <TextBlock Text="{i18n:Localize Home_Btn_SettingsHint}"
                                                Foreground="White" Opacity="0.9" FontSize="13"
                                                HorizontalAlignment="Center" Margin="0,4,0,0" />
                                 </StackPanel>
@@ -153,27 +154,27 @@
                         BorderBrush="#E0E0E0" BorderThickness="1"
                         Margin="0,8,0,0">
                     <StackPanel>
-                        <TextBlock Text="Keyboard Shortcuts" FontWeight="SemiBold" Foreground="#333"
+                        <TextBlock Text="{i18n:Localize Home_Lbl_KeyboardShortcuts}" FontWeight="SemiBold" Foreground="#333"
                                    Margin="0,0,0,12" />
                         <StackPanel Spacing="4">
                             <StackPanel Orientation="Horizontal" Spacing="24">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="F1" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
-                                    <TextBlock Text="Open Checkout" Foreground="#666" />
+                                    <TextBlock Text="{i18n:Localize Home_Lbl_OpenCheckout}" Foreground="#666" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="F4" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
-                                    <TextBlock Text="Open Products" Foreground="#666" />
+                                    <TextBlock Text="{i18n:Localize Home_Lbl_OpenProducts}" Foreground="#666" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Spacing="24">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="F6" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
-                                    <TextBlock Text="Sales History" Foreground="#666" />
+                                    <TextBlock Text="{i18n:Localize Home_Lbl_SalesHistoryShort}" Foreground="#666" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Home" FontWeight="SemiBold" Foreground="#2196F3" Width="50" />
-                                    <TextBlock Text="Return to Home" Foreground="#666" />
+                                    <TextBlock Text="{i18n:Localize Home_Lbl_ReturnToHome}" Foreground="#666" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -184,7 +185,7 @@
 
         <!-- Loading Overlay -->
         <Border Grid.Row="1" Background="#80FFFFFF" IsVisible="{Binding IsLoading}">
-            <TextBlock Text="Loading..."
+            <TextBlock Text="{i18n:Localize Global_Lbl_Loading}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="16" Foreground="#666" />

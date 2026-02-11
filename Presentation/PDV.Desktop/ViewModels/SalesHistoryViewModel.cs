@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Interfaces.Queries;
 using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -17,7 +18,7 @@ public partial class SalesHistoryViewModel : ViewModelBase
 
     [ObservableProperty] private SaleStatus? _selectedStatus;
 
-    [ObservableProperty] private string _statusMessage = "Select a date range and click Search";
+    [ObservableProperty] private string _statusMessage = Res.Sales_Msg_SelectAndSearch;
 
     [ObservableProperty] private bool _isError;
 
@@ -44,10 +45,10 @@ public partial class SalesHistoryViewModel : ViewModelBase
 
     public List<SaleStatusOption> StatusOptions { get; } = new()
     {
-        new SaleStatusOption(null, "All"),
-        new SaleStatusOption(SaleStatus.Completed, "Completed"),
-        new SaleStatusOption(SaleStatus.Cancelled, "Cancelled"),
-        new SaleStatusOption(SaleStatus.InProgress, "In Progress")
+        new SaleStatusOption(null, Res.Sales_Status_All),
+        new SaleStatusOption(SaleStatus.Completed, Res.Sales_Status_Completed),
+        new SaleStatusOption(SaleStatus.Cancelled, Res.Sales_Status_Cancelled),
+        new SaleStatusOption(SaleStatus.InProgress, Res.Sales_Status_InProgress)
     };
 
     public SalesHistoryViewModel(ISaleQuery saleQuery)
@@ -76,7 +77,7 @@ public partial class SalesHistoryViewModel : ViewModelBase
         {
             IsLoading = true;
             IsError = false;
-            SetStatus("Searching...", false);
+            SetStatus(Res.Sales_Msg_Searching, false);
 
             Sales.Clear();
             SaleDetail = null;
@@ -110,11 +111,11 @@ public partial class SalesHistoryViewModel : ViewModelBase
             CompletedSales = summary.CompletedSales;
             CancelledSales = summary.CancelledSales;
 
-            SetStatus($"{Pagination.TotalCount} sale(s) found", false);
+            SetStatus(string.Format(Res.Sales_Msg_FoundCount, Pagination.TotalCount), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Error: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_Error, ex.Message), true);
         }
         finally
         {
@@ -132,7 +133,7 @@ public partial class SalesHistoryViewModel : ViewModelBase
             var saleDto = await _saleQuery.GetByIdAsync(sale.Id);
             if (saleDto == null)
             {
-                SetStatus("Sale not found", true);
+                SetStatus(Res.Sales_Msg_SaleNotFound, true);
                 return;
             }
 
@@ -175,7 +176,7 @@ public partial class SalesHistoryViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Error loading sale: {ex.Message}", true);
+            SetStatus(string.Format(Res.Sales_Msg_LoadError, ex.Message), true);
         }
     }
 
@@ -245,10 +246,10 @@ public partial class SaleHistoryItemViewModel : ObservableObject
 
     public string StatusText => Status switch
     {
-        SaleStatus.Completed => "Completed",
-        SaleStatus.Cancelled => "Cancelled",
-        SaleStatus.InProgress => "In Progress",
-        _ => "Unknown"
+        SaleStatus.Completed => Res.Sales_Status_Completed,
+        SaleStatus.Cancelled => Res.Sales_Status_Cancelled,
+        SaleStatus.InProgress => Res.Sales_Status_InProgress,
+        _ => Res.Global_Lbl_Unknown
     };
 }
 
@@ -267,6 +268,10 @@ public partial class SaleDetailViewModel : ObservableObject
     [ObservableProperty] private SaleStatus _status;
 
     [ObservableProperty] private string? _customerDocument;
+
+    public string SaleNumberDisplay => string.Format(Res.Sales_Lbl_SaleNumber, SaleNumber);
+
+    partial void OnSaleNumberChanged(int value) => OnPropertyChanged(nameof(SaleNumberDisplay));
 
     public ObservableCollection<SaleDetailItemViewModel> Items { get; } = new();
     public ObservableCollection<SaleDetailPaymentViewModel> Payments { get; } = new();
@@ -299,12 +304,12 @@ public partial class SaleDetailPaymentViewModel : ObservableObject
 
     public string MethodText => Method switch
     {
-        PaymentMethod.Cash => "Cash",
-        PaymentMethod.CreditCard => "Credit Card",
-        PaymentMethod.DebitCard => "Debit Card",
-        PaymentMethod.Pix => "PIX",
-        PaymentMethod.FoodVoucher => "Food Voucher",
-        PaymentMethod.MealVoucher => "Meal Voucher",
-        _ => "Other"
+        PaymentMethod.Cash => Res.Sales_Payment_Cash,
+        PaymentMethod.CreditCard => Res.Sales_Payment_CreditCard,
+        PaymentMethod.DebitCard => Res.Sales_Payment_DebitCard,
+        PaymentMethod.Pix => Res.Sales_Payment_Pix,
+        PaymentMethod.FoodVoucher => Res.Sales_Payment_FoodVoucher,
+        PaymentMethod.MealVoucher => Res.Sales_Payment_MealVoucher,
+        _ => Res.Sales_Payment_Other
     };
 }

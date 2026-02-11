@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Entities;
 using PDV.Core.Interfaces.Repositories;
 using PDV.Core.Interfaces.Services;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -15,7 +16,7 @@ public partial class FiscalConfigViewModel : ViewModelBase
     private FiscalConfiguration? _currentConfig;
 
     [ObservableProperty]
-    private string _statusMessage = "Carregando configuração...";
+    private string _statusMessage = Res.Fiscal_Msg_Loading;
 
     [ObservableProperty]
     private bool _isError;
@@ -89,9 +90,9 @@ public partial class FiscalConfigViewModel : ViewModelBase
     // Tax Regime options for combo box
     public List<TaxRegimeOption> TaxRegimeOptions { get; } = new()
     {
-        new TaxRegimeOption(1, "Simples Nacional"),
-        new TaxRegimeOption(2, "Simples Nacional - Excesso"),
-        new TaxRegimeOption(3, "Regime Normal")
+        new TaxRegimeOption(1, Res.Fiscal_TaxRegime_SimplesNacional),
+        new TaxRegimeOption(2, Res.Fiscal_TaxRegime_SimplesExcesso),
+        new TaxRegimeOption(3, Res.Fiscal_TaxRegime_Normal)
     };
 
     // Brazilian states for combo box
@@ -119,25 +120,25 @@ public partial class FiscalConfigViewModel : ViewModelBase
 
         try
         {
-            SetStatus("Carregando configuração...", false);
+            SetStatus(Res.Fiscal_Msg_Loading, false);
 
             _currentConfig = await _configRepository.GetActiveAsync();
 
             if (_currentConfig != null)
             {
                 MapFromEntity(_currentConfig);
-                SetStatus("Configuração carregada", false);
+                SetStatus(Res.Fiscal_Msg_Loaded, false);
             }
             else
             {
-                SetStatus("Nenhuma configuração encontrada. Preencha os dados para criar.", false);
+                SetStatus(Res.Fiscal_Msg_NoConfig, false);
             }
 
             IsLoaded = true;
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao carregar: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_LoadError, ex.Message), true);
         }
     }
 
@@ -149,7 +150,7 @@ public partial class FiscalConfigViewModel : ViewModelBase
         try
         {
             IsSaving = true;
-            SetStatus("Salvando configuração...", false);
+            SetStatus(Res.Fiscal_Msg_Saving, false);
 
             if (_currentConfig == null)
             {
@@ -195,11 +196,11 @@ public partial class FiscalConfigViewModel : ViewModelBase
             }
 
             await _unitOfWork.SaveChangesAsync();
-            SetStatus("Configuração salva com sucesso!", false);
+            SetStatus(Res.Fiscal_Msg_Saved, false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao salvar: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_SaveError, ex.Message), true);
         }
         finally
         {
@@ -213,22 +214,22 @@ public partial class FiscalConfigViewModel : ViewModelBase
         try
         {
             IsTesting = true;
-            SetStatus("Testando conexão com SEFAZ...", false);
+            SetStatus(Res.Fiscal_Msg_TestingConnection, false);
 
             var isAvailable = await _fiscalManager.IsSefazAvailableAsync();
 
             if (isAvailable)
             {
-                SetStatus("Conexão com SEFAZ OK!", false);
+                SetStatus(Res.Fiscal_Msg_ConnectionOk, false);
             }
             else
             {
-                SetStatus("SEFAZ indisponível no momento", true);
+                SetStatus(Res.Fiscal_Msg_SefazUnavailable, true);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro no teste: {ex.Message}", true);
+            SetStatus(string.Format(Res.Fiscal_Msg_TestError, ex.Message), true);
         }
         finally
         {
@@ -240,61 +241,61 @@ public partial class FiscalConfigViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(TaxId))
         {
-            SetStatus("CNPJ é obrigatório", true);
+            SetStatus(Res.Fiscal_Msg_TaxIdRequired, true);
             return false;
         }
 
         if (TaxId.Replace(".", "").Replace("/", "").Replace("-", "").Length != 14)
         {
-            SetStatus("CNPJ deve ter 14 dígitos", true);
+            SetStatus(Res.Fiscal_Msg_TaxIdLength, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(LegalName))
         {
-            SetStatus("Razão Social é obrigatória", true);
+            SetStatus(Res.Fiscal_Msg_LegalNameRequired, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(TradeName))
         {
-            SetStatus("Nome Fantasia é obrigatório", true);
+            SetStatus(Res.Fiscal_Msg_TradeNameRequired, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(State) || State.Length != 2)
         {
-            SetStatus("UF é obrigatória (2 caracteres)", true);
+            SetStatus(Res.Fiscal_Msg_StateRequired, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(CityCode) || CityCode.Length != 7)
         {
-            SetStatus("Código IBGE deve ter 7 dígitos", true);
+            SetStatus(Res.Fiscal_Msg_CityCodeLength, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(Address))
         {
-            SetStatus("Endereço é obrigatório", true);
+            SetStatus(Res.Fiscal_Msg_AddressRequired, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(AddressNumber))
         {
-            SetStatus("Número é obrigatório", true);
+            SetStatus(Res.Fiscal_Msg_NumberRequired, true);
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(ZipCode))
         {
-            SetStatus("CEP é obrigatório", true);
+            SetStatus(Res.Fiscal_Msg_ZipCodeRequired, true);
             return false;
         }
 
         if (Series < 1)
         {
-            SetStatus("Série deve ser maior que zero", true);
+            SetStatus(Res.Fiscal_Msg_SeriesRequired, true);
             return false;
         }
 

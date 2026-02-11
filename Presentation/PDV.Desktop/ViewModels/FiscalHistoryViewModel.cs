@@ -5,6 +5,7 @@ using PDV.Core.Interfaces.Repositories;
 using PDV.Core.Interfaces.Services;
 using PDV.Desktop.Services;
 using PDV.Shared.Enums;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -30,7 +31,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     private FiscalStatus? _selectedStatus;
 
     [ObservableProperty]
-    private string _statusMessage = "Selecione um periodo e clique em Buscar";
+    private string _statusMessage = Res.FiscalHist_Msg_SelectPeriod;
 
     [ObservableProperty]
     private bool _isError;
@@ -81,11 +82,11 @@ public partial class FiscalHistoryViewModel : ViewModelBase
 
     public List<FiscalStatusOption> StatusOptions { get; } = new()
     {
-        new FiscalStatusOption(null, "Todos"),
-        new FiscalStatusOption(FiscalStatus.Authorized, "Autorizado"),
-        new FiscalStatusOption(FiscalStatus.Contingency, "Contingencia"),
-        new FiscalStatusOption(FiscalStatus.Cancelled, "Cancelado"),
-        new FiscalStatusOption(FiscalStatus.Rejected, "Rejeitado")
+        new FiscalStatusOption(null, Res.FiscalHist_StatusOpt_All),
+        new FiscalStatusOption(FiscalStatus.Authorized, Res.FiscalHist_StatusOpt_Authorized),
+        new FiscalStatusOption(FiscalStatus.Contingency, Res.FiscalHist_StatusOpt_Contingency),
+        new FiscalStatusOption(FiscalStatus.Cancelled, Res.FiscalHist_StatusOpt_Cancelled),
+        new FiscalStatusOption(FiscalStatus.Rejected, Res.FiscalHist_StatusOpt_Rejected)
     };
 
     public FiscalHistoryViewModel(
@@ -125,7 +126,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
         {
             IsLoading = true;
             IsError = false;
-            SetStatus("Buscando...", false);
+            SetStatus(Res.FiscalHist_Msg_Searching, false);
 
             Transactions.Clear();
             TransactionDetail = null;
@@ -145,10 +146,10 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                         Transactions.Add(MapToViewModel(transaction));
                         Pagination.Update(1, 1, 20);
                         UpdateSummary();
-                        SetStatus("1 transacao encontrada", false);
+                        SetStatus(Res.FiscalHist_Msg_FoundOne, false);
                         return;
                     }
-                    SetStatus("Transacao nao encontrada com a chave informada", true);
+                    SetStatus(Res.FiscalHist_Msg_NotFoundByKey, true);
                     return;
                 }
             }
@@ -163,11 +164,11 @@ public partial class FiscalHistoryViewModel : ViewModelBase
             Pagination.Update(totalCount, Pagination.CurrentPage, 20);
 
             UpdateSummary();
-            SetStatus($"{Pagination.TotalCount} transacao(oes) encontrada(s)", false);
+            SetStatus(string.Format(Res.FiscalHist_Msg_FoundCount, Pagination.TotalCount), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_Error, ex.Message), true);
         }
         finally
         {
@@ -185,7 +186,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
             var transaction = await _transactionRepository.GetByIdAsync(item.Id);
             if (transaction == null)
             {
-                SetStatus("Transacao nao encontrada", true);
+                SetStatus(Res.FiscalHist_Msg_TransactionNotFound, true);
                 return;
             }
 
@@ -215,14 +216,14 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                 {
                     ReprintNumber = log.ReprintNumber,
                     ReprintedAt = log.ReprintedAt,
-                    OperatorName = log.Operator?.Name ?? "Desconhecido",
+                    OperatorName = log.Operator?.Name ?? Res.FiscalHist_Lbl_UnknownOperator,
                     Reason = log.Reason
                 });
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao carregar detalhes: {ex.Message}", true);
+            SetStatus(string.Format(Res.FiscalHist_Msg_DetailError, ex.Message), true);
         }
     }
 
@@ -231,7 +232,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     {
         if (TransactionDetail == null)
         {
-            SetStatus("Selecione uma transacao primeiro", true);
+            SetStatus(Res.FiscalHist_Msg_SelectFirst, true);
             return;
         }
 
@@ -283,7 +284,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao carregar impressoras: {ex.Message}", true);
+            SetStatus(string.Format(Res.Global_Msg_LoadPrintersError, ex.Message), true);
         }
     }
 
@@ -292,35 +293,35 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     {
         if (_thermalPrinterService == null)
         {
-            SetStatus("Servico de impressora termica nao disponivel", true);
+            SetStatus(Res.FiscalHist_Msg_ThermalNotAvailable, true);
             return;
         }
 
         if (string.IsNullOrEmpty(SelectedThermalPrinter))
         {
-            SetStatus("Selecione uma impressora primeiro", true);
+            SetStatus(Res.FiscalHist_Msg_SelectPrinterFirst, true);
             return;
         }
 
         try
         {
             IsLoading = true;
-            SetStatus("Imprimindo teste de QR Code...", false);
+            SetStatus(Res.FiscalHist_Msg_TestingQr, false);
 
             var success = await _thermalPrinterService.TestQrCodeSupportAsync(SelectedThermalPrinter);
 
             if (success)
             {
-                SetStatus("Teste enviado! Verifique se o QR Code esta visivel na impressao.", false);
+                SetStatus(Res.FiscalHist_Msg_TestQrSuccess, false);
             }
             else
             {
-                SetStatus("Falha ao enviar teste. Verifique a conexao da impressora.", true);
+                SetStatus(Res.FiscalHist_Msg_TestQrFailed, true);
             }
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao testar QR Code: {ex.Message}", true);
+            SetStatus(string.Format(Res.FiscalHist_Msg_TestQrError, ex.Message), true);
         }
         finally
         {
@@ -332,14 +333,14 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     {
         if (TransactionDetail == null)
         {
-            SetStatus("Nenhuma transacao selecionada", true);
+            SetStatus(Res.FiscalHist_Msg_NoTransaction, true);
             return;
         }
 
         var operatorId = _sessionService.CurrentOperator?.Id;
         if (operatorId == null)
         {
-            SetStatus("Operador nao logado", true);
+            SetStatus(Res.FiscalHist_Msg_NotLoggedIn, true);
             return;
         }
 
@@ -355,7 +356,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
 
             if (!result.Success)
             {
-                SetStatus($"Erro na reimpressao: {result.StatusMessage}", true);
+                SetStatus(string.Format(Res.FiscalHist_Msg_ReprintError, result.StatusMessage), true);
                 return;
             }
 
@@ -367,7 +368,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                 // ESC/POS thermal printing with native QR Code
                 if (string.IsNullOrEmpty(SelectedThermalPrinter))
                 {
-                    SetStatus("Selecione uma impressora termica primeiro", true);
+                    SetStatus(Res.FiscalHist_Msg_SelectThermal, true);
                     return;
                 }
 
@@ -381,12 +382,12 @@ public partial class FiscalHistoryViewModel : ViewModelBase
 
                     if (printSuccess)
                     {
-                        var qrCodeInfo = result.HasQrCode ? " com QR Code nativo" : "";
-                        SetStatus($"Reimpressao #{result.ReprintNumber} enviada via ESC/POS{qrCodeInfo}", false);
+                        var qrCodeInfo = result.HasQrCode ? Res.FiscalHist_Msg_WithNativeQr : "";
+                        SetStatus(string.Format(Res.FiscalHist_Msg_ReprintEscPos, result.ReprintNumber, qrCodeInfo), false);
                     }
                     else
                     {
-                        SetStatus("Falha ao imprimir via ESC/POS. Verifique a impressora.", true);
+                        SetStatus(Res.FiscalHist_Msg_EscPosFailed, true);
                     }
                 }
             }
@@ -397,11 +398,11 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                 {
                     var fileName = $"DANFE_NFC-e_{TransactionDetail.Number}_Reprint{result.ReprintNumber}.pdf";
                     var pdfPath = await _printerService.OpenPdfAsync(result.PdfContent, fileName);
-                    SetStatus($"PDF aberto: {pdfPath}", false);
+                    SetStatus(string.Format(Res.FiscalHist_Msg_PdfOpened, pdfPath), false);
                 }
                 else
                 {
-                    SetStatus("PDF nao disponivel, gerando apenas texto", true);
+                    SetStatus(Res.FiscalHist_Msg_PdfUnavailable, true);
                     if (!string.IsNullOrEmpty(result.DanfeContent))
                     {
                         await _printerService.PrintAsync(result.DanfeContent);
@@ -416,8 +417,8 @@ public partial class FiscalHistoryViewModel : ViewModelBase
                     await _printerService.PrintAsync(result.DanfeContent);
                 }
 
-                var qrCodeInfo = result.HasQrCode ? " (QR Code disponivel no PDF)" : "";
-                SetStatus($"Reimpressao #{result.ReprintNumber} enviada para impressora{qrCodeInfo}", false);
+                var qrCodeInfo = result.HasQrCode ? Res.FiscalHist_Msg_QrCodeAvailPdf : "";
+                SetStatus(string.Format(Res.FiscalHist_Msg_ReprintSentToPrinter, result.ReprintNumber, qrCodeInfo), false);
             }
 
             // Reload detail to show new reprint in history
@@ -425,7 +426,7 @@ public partial class FiscalHistoryViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao reimprimir: {ex.Message}", true);
+            SetStatus(string.Format(Res.FiscalHist_Msg_ReprintFinalError, ex.Message), true);
         }
         finally
         {
@@ -439,14 +440,14 @@ public partial class FiscalHistoryViewModel : ViewModelBase
     {
         if (TransactionDetail == null)
         {
-            SetStatus("Nenhuma transacao selecionada", true);
+            SetStatus(Res.FiscalHist_Msg_NoTransaction, true);
             return;
         }
 
         var operatorId = _sessionService.CurrentOperator?.Id;
         if (operatorId == null)
         {
-            SetStatus("Operador nao logado", true);
+            SetStatus(Res.FiscalHist_Msg_NotLoggedIn, true);
             return;
         }
 
@@ -458,11 +459,11 @@ public partial class FiscalHistoryViewModel : ViewModelBase
             var result = await _fiscalManager.ReprintDanfeAsync(
                 TransactionDetail.AccessKey,
                 operatorId.Value,
-                "Salvar PDF para consulta");
+                Res.FiscalHist_Msg_SavePdfConsult);
 
             if (!result.Success || result.PdfContent == null)
             {
-                SetStatus("Erro ao gerar PDF", true);
+                SetStatus(Res.FiscalHist_Msg_PdfError, true);
                 return;
             }
 
@@ -473,11 +474,11 @@ public partial class FiscalHistoryViewModel : ViewModelBase
 
             await _printerService.SavePdfAsync(result.PdfContent, filePath);
 
-            SetStatus($"PDF salvo em: {filePath}", false);
+            SetStatus(string.Format(Res.FiscalHist_Msg_PdfSaved, filePath), false);
         }
         catch (Exception ex)
         {
-            SetStatus($"Erro ao salvar PDF: {ex.Message}", true);
+            SetStatus(string.Format(Res.FiscalHist_Msg_PdfSaveError, ex.Message), true);
         }
         finally
         {
@@ -556,12 +557,12 @@ public partial class FiscalHistoryViewModel : ViewModelBase
 
     private static string GetStatusText(FiscalStatus status) => status switch
     {
-        FiscalStatus.Pending => "Pendente",
-        FiscalStatus.Authorized => "Autorizado",
-        FiscalStatus.Rejected => "Rejeitado",
-        FiscalStatus.Cancelled => "Cancelado",
-        FiscalStatus.Contingency => "Contingencia",
-        _ => "Desconhecido"
+        FiscalStatus.Pending => Res.FiscalHist_Status_Pending,
+        FiscalStatus.Authorized => Res.FiscalHist_Status_Authorized,
+        FiscalStatus.Rejected => Res.FiscalHist_Status_Rejected,
+        FiscalStatus.Cancelled => Res.FiscalHist_Status_Cancelled,
+        FiscalStatus.Contingency => Res.FiscalHist_Status_Contingency,
+        _ => Res.Global_Lbl_Unknown
     };
 
     private void SetStatus(string message, bool isError)
@@ -653,6 +654,12 @@ public partial class FiscalTransactionDetailViewModel : ObservableObject
     [ObservableProperty]
     private string? _cancellationJustification;
 
+    public string NfceNumberDisplay => string.Format(Res.FiscalHist_Lbl_NfceNumber, Number);
+    public string ReprintTotalDisplay => string.Format(Res.FiscalHist_Lbl_ReprintTotal, ReprintCount);
+
+    partial void OnNumberChanged(int value) => OnPropertyChanged(nameof(NfceNumberDisplay));
+    partial void OnReprintCountChanged(int value) => OnPropertyChanged(nameof(ReprintTotalDisplay));
+
     public ObservableCollection<ReprintLogItemViewModel> ReprintHistory { get; } = new();
 
     public string FormattedAccessKey
@@ -686,4 +693,8 @@ public partial class ReprintLogItemViewModel : ObservableObject
 
     [ObservableProperty]
     private string? _reason;
+
+    public string OperatorNameDisplay => string.Format(Res.FiscalHist_Lbl_ReprintBy, OperatorName);
+
+    partial void OnOperatorNameChanged(string value) => OnPropertyChanged(nameof(OperatorNameDisplay));
 }

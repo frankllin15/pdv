@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ==================== GLOBAL ==================== -->
+  <data name="Global_Btn_Save" xml:space="preserve"><value>Salvar</value></data>
+  <data name="Global_Btn_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Global_Btn_Close" xml:space="preserve"><value>Fechar</value></data>
+  <data name="Global_Btn_Search" xml:space="preserve"><value>Buscar</value></data>
+  <data name="Global_Btn_Confirm" xml:space="preserve"><value>Confirmar</value></data>
+  <data name="Global_Btn_Edit" xml:space="preserve"><value>Editar</value></data>
+  <data name="Global_Btn_Delete" xml:space="preserve"><value>Excluir</value></data>
+  <data name="Global_Btn_Refresh" xml:space="preserve"><value>Atualizar</value></data>
+  <data name="Global_Btn_Print" xml:space="preserve"><value>Imprimir</value></data>
+  <data name="Global_Btn_Previous" xml:space="preserve"><value>&lt; Anterior</value></data>
+  <data name="Global_Btn_Next" xml:space="preserve"><value>Proxima &gt;</value></data>
+  <data name="Global_Btn_Clear" xml:space="preserve"><value>Limpar</value></data>
+  <data name="Global_Lbl_Loading" xml:space="preserve"><value>Carregando...</value></data>
+  <data name="Global_Lbl_Ready" xml:space="preserve"><value>Pronto</value></data>
+  <data name="Global_Lbl_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Global_Lbl_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Global_Lbl_Date" xml:space="preserve"><value>Data</value></data>
+  <data name="Global_Lbl_Actions" xml:space="preserve"><value>Acoes</value></data>
+  <data name="Global_Lbl_PageOf" xml:space="preserve"><value>Pagina {0} de {1}</value></data>
+  <data name="Global_Lbl_Today" xml:space="preserve"><value>Hoje</value></data>
+  <data name="Global_Lbl_ThisWeek" xml:space="preserve"><value>Semana</value></data>
+  <data name="Global_Lbl_ThisMonth" xml:space="preserve"><value>Mes</value></data>
+  <data name="Global_Msg_Error" xml:space="preserve"><value>Erro: {0}</value></data>
+  <data name="Global_Msg_NotFound" xml:space="preserve"><value>Nao encontrado</value></data>
+  <data name="Global_Lbl_Unknown" xml:space="preserve"><value>Desconhecido</value></data>
+  <data name="Global_Lbl_Yes" xml:space="preserve"><value>Sim</value></data>
+  <data name="Global_Lbl_No" xml:space="preserve"><value>Nao</value></data>
+  <data name="Global_Lbl_All" xml:space="preserve"><value>Todos</value></data>
+  <data name="Global_Lbl_StartDate" xml:space="preserve"><value>Data Inicio</value></data>
+  <data name="Global_Lbl_EndDate" xml:space="preserve"><value>Data Fim</value></data>
+  <data name="Global_Lbl_Printer" xml:space="preserve"><value>Impressora:</value></data>
+  <data name="Global_Msg_PrintSent" xml:space="preserve"><value>Impressao enviada com sucesso!</value></data>
+  <data name="Global_Msg_PrintFailed" xml:space="preserve"><value>Falha ao enviar impressao</value></data>
+  <data name="Global_Msg_Printing" xml:space="preserve"><value>Imprimindo...</value></data>
+  <data name="Global_Msg_PrintError" xml:space="preserve"><value>Erro ao imprimir: {0}</value></data>
+  <data name="Global_Msg_SavedAt" xml:space="preserve"><value>Salvo em: {0}</value></data>
+  <data name="Global_Msg_SaveError" xml:space="preserve"><value>Erro ao salvar: {0}</value></data>
+  <data name="Global_Msg_LoadError" xml:space="preserve"><value>Erro ao carregar: {0}</value></data>
+  <data name="Global_Msg_LoadPrintersError" xml:space="preserve"><value>Erro ao carregar impressoras: {0}</value></data>
+  <data name="Global_Lbl_Language" xml:space="preserve"><value>Idioma</value></data>
+
+  <!-- ==================== LOGIN ==================== -->
+  <data name="Login_Lbl_Title" xml:space="preserve"><value>PDV</value></data>
+  <data name="Login_Lbl_Subtitle" xml:space="preserve"><value>Sistema Ponto de Venda</value></data>
+  <data name="Login_Lbl_OperatorCode" xml:space="preserve"><value>Codigo do Operador</value></data>
+  <data name="Login_Lbl_Pin" xml:space="preserve"><value>PIN</value></data>
+  <data name="Login_Wm_OperatorCode" xml:space="preserve"><value>Digite seu codigo</value></data>
+  <data name="Login_Wm_Pin" xml:space="preserve"><value>Digite seu PIN</value></data>
+  <data name="Login_Btn_Login" xml:space="preserve"><value>Entrar</value></data>
+  <data name="Login_Msg_Authenticating" xml:space="preserve"><value>Autenticando...</value></data>
+  <data name="Login_Msg_Footer" xml:space="preserve"><value>Digite e pressione Enter ou clique Entrar</value></data>
+  <data name="Login_Msg_EnterCode" xml:space="preserve"><value>Digite o codigo do operador</value></data>
+  <data name="Login_Msg_EnterPin" xml:space="preserve"><value>Digite o PIN</value></data>
+  <data name="Login_Msg_InvalidCredentials" xml:space="preserve"><value>Codigo ou PIN invalido</value></data>
+  <data name="Login_Msg_LoginError" xml:space="preserve"><value>Erro no login: {0}</value></data>
+
+  <!-- ==================== HOME ==================== -->
+  <data name="Home_Lbl_Welcome" xml:space="preserve"><value>Bem-vindo, {0}!</value></data>
+  <data name="Home_Lbl_SelectOption" xml:space="preserve"><value>Selecione uma opcao para comecar</value></data>
+  <data name="Home_Lbl_TodaySummary" xml:space="preserve"><value>Resumo do Dia</value></data>
+  <data name="Home_Lbl_PendingSales" xml:space="preserve"><value>Vendas Pendentes</value></data>
+  <data name="Home_Lbl_InProgress" xml:space="preserve"><value>Em Andamento</value></data>
+  <data name="Home_Lbl_CompletedSales" xml:space="preserve"><value>Vendas Concluidas</value></data>
+  <data name="Home_Lbl_TodaysRevenue" xml:space="preserve"><value>Receita do Dia</value></data>
+  <data name="Home_Lbl_QuickActions" xml:space="preserve"><value>Acoes Rapidas</value></data>
+  <data name="Home_Btn_NewSale" xml:space="preserve"><value>Nova Venda</value></data>
+  <data name="Home_Btn_NewSaleHint" xml:space="preserve"><value>Iniciar novo checkout (F1)</value></data>
+  <data name="Home_Btn_Products" xml:space="preserve"><value>Produtos</value></data>
+  <data name="Home_Btn_ProductsHint" xml:space="preserve"><value>Gerenciar catalogo de produtos (F4)</value></data>
+  <data name="Home_Btn_SalesHistory" xml:space="preserve"><value>Historico de Vendas</value></data>
+  <data name="Home_Btn_SalesHistoryHint" xml:space="preserve"><value>Visualizar transacoes anteriores (F6)</value></data>
+  <data name="Home_Btn_Settings" xml:space="preserve"><value>Configuracoes</value></data>
+  <data name="Home_Btn_SettingsHint" xml:space="preserve"><value>Configuracao fiscal</value></data>
+  <data name="Home_Lbl_KeyboardShortcuts" xml:space="preserve"><value>Atalhos de Teclado</value></data>
+  <data name="Home_Lbl_OpenCheckout" xml:space="preserve"><value>Abrir Checkout</value></data>
+  <data name="Home_Lbl_OpenProducts" xml:space="preserve"><value>Abrir Produtos</value></data>
+  <data name="Home_Lbl_SalesHistoryShort" xml:space="preserve"><value>Historico de Vendas</value></data>
+  <data name="Home_Lbl_ReturnToHome" xml:space="preserve"><value>Voltar ao Inicio</value></data>
+  <data name="Home_Lbl_Operator" xml:space="preserve"><value>Operador</value></data>
+
+  <!-- ==================== NAV (MainWindow Sidebar) ==================== -->
+  <data name="Nav_Lbl_PointOfSale" xml:space="preserve"><value>Ponto de Venda</value></data>
+  <data name="Nav_Btn_Home" xml:space="preserve"><value>Inicio</value></data>
+  <data name="Nav_Btn_Checkout" xml:space="preserve"><value>Checkout (F1)</value></data>
+  <data name="Nav_Btn_Cadastros" xml:space="preserve"><value>Cadastros</value></data>
+  <data name="Nav_Btn_Products" xml:space="preserve"><value>Produtos (F4)</value></data>
+  <data name="Nav_Btn_Financeiro" xml:space="preserve"><value>Financeiro</value></data>
+  <data name="Nav_Btn_SalesHistory" xml:space="preserve"><value>Historico de Vendas (F6)</value></data>
+  <data name="Nav_Btn_FiscalHistory" xml:space="preserve"><value>Historico Fiscal</value></data>
+  <data name="Nav_Btn_Settings" xml:space="preserve"><value>Configuracoes</value></data>
+  <data name="Nav_Btn_FiscalConfig" xml:space="preserve"><value>Config Fiscal</value></data>
+  <data name="Nav_Tip_Logout" xml:space="preserve"><value>Sair</value></data>
+  <data name="Nav_Dlg_SaleInProgress" xml:space="preserve"><value>Venda em Andamento</value></data>
+  <data name="Nav_Dlg_SaleInProgressMsg" xml:space="preserve"><value>Voce tem uma venda em andamento. Tem certeza que deseja sair? A venda permanecera aberta.</value></data>
+  <data name="Nav_Btn_LeaveAnyway" xml:space="preserve"><value>Sair Mesmo Assim</value></data>
+  <data name="Nav_Lbl_WindowTitle" xml:space="preserve"><value>PDV - Ponto de Venda</value></data>
+
+  <!-- ==================== PDV (Checkout) ==================== -->
+  <data name="PDV_Lbl_Title" xml:space="preserve"><value>PDV - Ponto de Venda</value></data>
+  <data name="PDV_Lbl_SaleInfo" xml:space="preserve"><value>Venda #{0} | Itens: {1}</value></data>
+  <data name="PDV_Tip_BackToMenu" xml:space="preserve"><value>Voltar ao Menu</value></data>
+  <data name="PDV_Btn_Menu" xml:space="preserve"><value>Menu</value></data>
+  <data name="PDV_Wm_Barcode" xml:space="preserve"><value>Escanear codigo de barras ou digitar codigo...</value></data>
+  <data name="PDV_Btn_Add" xml:space="preserve"><value>Adicionar</value></data>
+  <data name="PDV_Btn_Search" xml:space="preserve"><value>Buscar (F5)</value></data>
+  <data name="PDV_Col_Seq" xml:space="preserve"><value>#</value></data>
+  <data name="PDV_Col_Barcode" xml:space="preserve"><value>Codigo</value></data>
+  <data name="PDV_Col_Description" xml:space="preserve"><value>Descricao</value></data>
+  <data name="PDV_Col_Qty" xml:space="preserve"><value>Qtd</value></data>
+  <data name="PDV_Col_Price" xml:space="preserve"><value>Preco</value></data>
+  <data name="PDV_Col_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="PDV_Lbl_OrderSummary" xml:space="preserve"><value>Resumo do Pedido</value></data>
+  <data name="PDV_Lbl_Subtotal" xml:space="preserve"><value>Subtotal:</value></data>
+  <data name="PDV_Lbl_Discount" xml:space="preserve"><value>Desconto:</value></data>
+  <data name="PDV_Lbl_Total" xml:space="preserve"><value>TOTAL:</value></data>
+  <data name="PDV_Lbl_AmountReceived" xml:space="preserve"><value>Valor Recebido:</value></data>
+  <data name="PDV_Lbl_Change" xml:space="preserve"><value>Troco: {0:C}</value></data>
+  <data name="PDV_Btn_Cash" xml:space="preserve"><value>Dinheiro (F2)</value></data>
+  <data name="PDV_Btn_CreditCard" xml:space="preserve"><value>Cartao de Credito</value></data>
+  <data name="PDV_Btn_DebitCard" xml:space="preserve"><value>Cartao de Debito (F3)</value></data>
+  <data name="PDV_Btn_Pix" xml:space="preserve"><value>PIX</value></data>
+  <data name="PDV_Btn_CancelSale" xml:space="preserve"><value>Cancelar Venda (Esc)</value></data>
+  <data name="PDV_Btn_NewSale" xml:space="preserve"><value>Nova Venda (F12)</value></data>
+  <data name="PDV_Lbl_Shortcuts" xml:space="preserve"><value>F2: Dinheiro | F3: Debito | F5: Buscar Produtos | Esc: Cancelar | F12: Nova Venda</value></data>
+  <data name="PDV_Msg_Ready" xml:space="preserve"><value>Pronto</value></data>
+  <data name="PDV_Msg_ReadyScan" xml:space="preserve"><value>Pronto - escaneie um produto para iniciar</value></data>
+  <data name="PDV_Msg_NoOperator" xml:space="preserve"><value>Nenhum operador logado</value></data>
+  <data name="PDV_Msg_PendingSalesCount" xml:space="preserve"><value>Voce tem {0} venda(s) pendente(s)</value></data>
+  <data name="PDV_Msg_InitError" xml:space="preserve"><value>Erro na inicializacao: {0}</value></data>
+  <data name="PDV_Msg_SaleNotFound" xml:space="preserve"><value>Venda nao encontrada</value></data>
+  <data name="PDV_Msg_ResumedSale" xml:space="preserve"><value>Venda #{0} retomada</value></data>
+  <data name="PDV_Msg_ResumeError" xml:space="preserve"><value>Erro ao retomar venda: {0}</value></data>
+  <data name="PDV_Msg_DiscardedSales" xml:space="preserve"><value>{0} venda(s) pendente(s) descartada(s). Escaneie um produto para iniciar.</value></data>
+  <data name="PDV_Msg_DiscardError" xml:space="preserve"><value>Erro ao descartar vendas: {0}</value></data>
+  <data name="PDV_Msg_ReadyNewSale" xml:space="preserve"><value>Pronto - escaneie um produto para iniciar nova venda</value></data>
+  <data name="PDV_Msg_NewSaleStarted" xml:space="preserve"><value>Nova venda iniciada</value></data>
+  <data name="PDV_Msg_StartSaleError" xml:space="preserve"><value>Erro ao iniciar venda: {0}</value></data>
+  <data name="PDV_Msg_ProductNotFound" xml:space="preserve"><value>Produto nao encontrado: {0}</value></data>
+  <data name="PDV_Msg_ProductNotInDb" xml:space="preserve"><value>Produto nao encontrado no banco de dados</value></data>
+  <data name="PDV_Msg_Added" xml:space="preserve"><value>Adicionado: {0}</value></data>
+  <data name="PDV_Msg_ItemRemoved" xml:space="preserve"><value>Item removido</value></data>
+  <data name="PDV_Msg_RemoveError" xml:space="preserve"><value>Erro ao remover item: {0}</value></data>
+  <data name="PDV_Msg_QtyUpdated" xml:space="preserve"><value>Quantidade atualizada</value></data>
+  <data name="PDV_Msg_QtyError" xml:space="preserve"><value>Erro ao atualizar quantidade: {0}</value></data>
+  <data name="PDV_Msg_NoItems" xml:space="preserve"><value>Nenhum item na venda</value></data>
+  <data name="PDV_Msg_SelectPayment" xml:space="preserve"><value>Selecione a forma de pagamento</value></data>
+  <data name="PDV_Msg_InvalidPayment" xml:space="preserve"><value>Metodo de pagamento invalido</value></data>
+  <data name="PDV_Msg_SaleCompleted" xml:space="preserve"><value>Venda #{0} concluida!</value></data>
+  <data name="PDV_Msg_SaleCompletedChange" xml:space="preserve"><value>Venda #{0} concluida! - Troco: {1:C}</value></data>
+  <data name="PDV_Msg_Remaining" xml:space="preserve"><value>Restante: {0:C}</value></data>
+  <data name="PDV_Msg_PaymentError" xml:space="preserve"><value>Erro no pagamento: {0}</value></data>
+  <data name="PDV_Msg_SaleCancelled" xml:space="preserve"><value>Venda cancelada</value></data>
+  <data name="PDV_Msg_CancelError" xml:space="preserve"><value>Erro ao cancelar: {0}</value></data>
+  <data name="PDV_Msg_ReturnedToSale" xml:space="preserve"><value>Retornou a venda</value></data>
+  <data name="PDV_Msg_CancelCurrentError" xml:space="preserve"><value>Erro ao cancelar venda atual: {0}</value></data>
+  <data name="PDV_Msg_SearchError" xml:space="preserve"><value>Erro na busca: {0}</value></data>
+  <data name="PDV_Msg_NfceContingency" xml:space="preserve"><value>NFC-e {0} em contingencia</value></data>
+  <data name="PDV_Msg_NfceAuthorized" xml:space="preserve"><value>NFC-e {0} autorizada</value></data>
+  <data name="PDV_Msg_FiscalError" xml:space="preserve"><value>Erro fiscal: {0}</value></data>
+  <data name="PDV_Msg_FiscalProcessError" xml:space="preserve"><value>Erro ao processar fiscal: {0}</value></data>
+  <data name="PDV_Msg_ReceiptError" xml:space="preserve"><value>Erro ao gerar recibo: {0}</value></data>
+  <data name="PDV_Msg_PrintSent" xml:space="preserve"><value>Impressao enviada!</value></data>
+  <data name="PDV_Msg_PrintFailed" xml:space="preserve"><value>Falha ao imprimir</value></data>
+
+  <!-- PDV Dialogs -->
+  <data name="PDV_Dlg_PendingSalesTitle" xml:space="preserve"><value>Vendas Pendentes Encontradas</value></data>
+  <data name="PDV_Dlg_PendingSalesMsg" xml:space="preserve"><value>Voce tem vendas em andamento. Escolha uma acao:</value></data>
+  <data name="PDV_Btn_Resume" xml:space="preserve"><value>Retomar</value></data>
+  <data name="PDV_Btn_DiscardAll" xml:space="preserve"><value>Descartar Todas e Iniciar Nova Venda</value></data>
+  <data name="PDV_Btn_StartNewKeep" xml:space="preserve"><value>Iniciar Nova Venda (Manter Pendentes)</value></data>
+  <data name="PDV_Dlg_CancelSaleTitle" xml:space="preserve"><value>Cancelar Venda?</value></data>
+  <data name="PDV_Dlg_CancelSaleMsg" xml:space="preserve"><value>Tem certeza que deseja cancelar esta venda? Todos os itens serao removidos e esta acao nao pode ser desfeita.</value></data>
+  <data name="PDV_Btn_NoKeepSale" xml:space="preserve"><value>Nao, Manter Venda</value></data>
+  <data name="PDV_Btn_YesCancelSale" xml:space="preserve"><value>Sim, Cancelar Venda</value></data>
+  <data name="PDV_Dlg_NewSaleTitle" xml:space="preserve"><value>Iniciar Nova Venda?</value></data>
+  <data name="PDV_Dlg_NewSaleMsg" xml:space="preserve"><value>Voce tem uma venda ativa com itens. Iniciar uma nova venda ira cancelar a atual. Deseja continuar?</value></data>
+  <data name="PDV_Btn_NoKeepCurrent" xml:space="preserve"><value>Nao, Manter Atual</value></data>
+  <data name="PDV_Btn_YesStartNew" xml:space="preserve"><value>Sim, Iniciar Nova</value></data>
+
+  <!-- PDV Product Search Dialog -->
+  <data name="PDV_Search_Title" xml:space="preserve"><value>Produtos</value></data>
+  <data name="PDV_Search_ResultCount" xml:space="preserve"><value>{0} produto(s) encontrado(s)</value></data>
+  <data name="PDV_Search_Watermark" xml:space="preserve"><value>Filtrar por nome ou codigo de barras...</value></data>
+  <data name="PDV_Search_NoResults" xml:space="preserve"><value>Nenhum produto encontrado</value></data>
+  <data name="PDV_Search_ClickToAdd" xml:space="preserve"><value>Clique em um produto para adicionar a venda</value></data>
+  <data name="PDV_Search_Code" xml:space="preserve"><value>Codigo: {0}</value></data>
+  <data name="PDV_Search_Stock" xml:space="preserve"><value>Estoque: {0:N0}</value></data>
+  <data name="PDV_Search_CodeLabel" xml:space="preserve"><value>Codigo: </value></data>
+  <data name="PDV_Search_StockLabel" xml:space="preserve"><value>Estoque: </value></data>
+
+  <!-- PDV Receipt Preview -->
+  <data name="PDV_Receipt_Title" xml:space="preserve"><value>Comprovante de Venda</value></data>
+  <data name="PDV_Receipt_SaleNumber" xml:space="preserve"><value>Venda #{0}</value></data>
+  <data name="PDV_Receipt_NfceNumber" xml:space="preserve"><value>NFC-e {0}</value></data>
+  <data name="PDV_Receipt_Contingency" xml:space="preserve"><value>Contingencia</value></data>
+  <data name="PDV_Receipt_Authorized" xml:space="preserve"><value>Autorizada</value></data>
+  <data name="PDV_Receipt_BtnSave" xml:space="preserve"><value>Salvar</value></data>
+  <data name="PDV_Receipt_BtnPrintAndClose" xml:space="preserve"><value>Imprimir e Fechar</value></data>
+
+  <!-- PDV Pending Sale Info -->
+  <data name="PDV_Pending_SaleInfo" xml:space="preserve"><value>Venda #{0} - {1:C}</value></data>
+  <data name="PDV_Pending_ItemsAge" xml:space="preserve"><value>{0} itens | {1:hh\:mm} atras</value></data>
+
+  <!-- ==================== PRODUCTS ==================== -->
+  <data name="Products_Lbl_Title" xml:space="preserve"><value>Gerenciamento de Produtos</value></data>
+  <data name="Products_Lbl_Subtitle" xml:space="preserve"><value>Adicionar, editar e gerenciar produtos</value></data>
+  <data name="Products_Btn_NewProduct" xml:space="preserve"><value>+ Novo Produto (Ctrl+N)</value></data>
+  <data name="Products_Wm_Search" xml:space="preserve"><value>Buscar por codigo de barras ou descricao...</value></data>
+  <data name="Products_Btn_Refresh" xml:space="preserve"><value>Atualizar (F5)</value></data>
+  <data name="Products_Col_Barcode" xml:space="preserve"><value>Codigo de Barras</value></data>
+  <data name="Products_Col_Description" xml:space="preserve"><value>Descricao</value></data>
+  <data name="Products_Col_Price" xml:space="preserve"><value>Preco</value></data>
+  <data name="Products_Col_Stock" xml:space="preserve"><value>Estoque</value></data>
+  <data name="Products_Col_Unit" xml:space="preserve"><value>Unidade</value></data>
+  <data name="Products_Col_Active" xml:space="preserve"><value>Ativo</value></data>
+  <data name="Products_Lbl_QuickStockAdj" xml:space="preserve"><value>Ajuste Rapido de Estoque</value></data>
+  <data name="Products_Lbl_CurrentStock" xml:space="preserve"><value>Estoque Atual:</value></data>
+  <data name="Products_Lbl_Adjustment" xml:space="preserve"><value>Ajuste (+/-):</value></data>
+  <data name="Products_Btn_ApplyAdjustment" xml:space="preserve"><value>Aplicar Ajuste</value></data>
+  <data name="Products_Msg_SelectToAdjust" xml:space="preserve"><value>Selecione um produto para ajustar estoque</value></data>
+  <data name="Products_Lbl_NewProduct" xml:space="preserve"><value>Novo Produto</value></data>
+  <data name="Products_Lbl_EditProduct" xml:space="preserve"><value>Editar Produto</value></data>
+  <data name="Products_Lbl_Barcode" xml:space="preserve"><value>Codigo de Barras *</value></data>
+  <data name="Products_Lbl_UnitOfMeasure" xml:space="preserve"><value>Unidade de Medida</value></data>
+  <data name="Products_Lbl_Description" xml:space="preserve"><value>Descricao *</value></data>
+  <data name="Products_Lbl_ShortDescription" xml:space="preserve"><value>Descricao Curta (para recibo)</value></data>
+  <data name="Products_Lbl_UnitPrice" xml:space="preserve"><value>Preco Unitario *</value></data>
+  <data name="Products_Lbl_StockQuantity" xml:space="preserve"><value>Quantidade em Estoque</value></data>
+  <data name="Products_Lbl_TaxCode" xml:space="preserve"><value>Codigo Fiscal (NCM)</value></data>
+  <data name="Products_Lbl_TaxRate" xml:space="preserve"><value>Aliquota % (ICMS)</value></data>
+  <data name="Products_Lbl_IsActive" xml:space="preserve"><value>Produto esta Ativo</value></data>
+  <data name="Products_Btn_CancelEdit" xml:space="preserve"><value>Cancelar (Esc)</value></data>
+  <data name="Products_Btn_SaveProduct" xml:space="preserve"><value>Salvar Produto</value></data>
+  <data name="Products_Msg_Loading" xml:space="preserve"><value>Carregando produtos...</value></data>
+  <data name="Products_Msg_FoundCount" xml:space="preserve"><value>{0} produto(s) encontrado(s)</value></data>
+  <data name="Products_Msg_LoadError" xml:space="preserve"><value>Erro ao carregar produtos: {0}</value></data>
+  <data name="Products_Msg_CreatingNew" xml:space="preserve"><value>Criando novo produto</value></data>
+  <data name="Products_Msg_Editing" xml:space="preserve"><value>Editando: {0}</value></data>
+  <data name="Products_Msg_BarcodeRequired" xml:space="preserve"><value>Codigo de barras e obrigatorio</value></data>
+  <data name="Products_Msg_DescriptionRequired" xml:space="preserve"><value>Descricao e obrigatoria</value></data>
+  <data name="Products_Msg_PriceNegative" xml:space="preserve"><value>Preco unitario nao pode ser negativo</value></data>
+  <data name="Products_Msg_SaveError" xml:space="preserve"><value>Erro ao salvar produto: {0}</value></data>
+  <data name="Products_Msg_BarcodeExists" xml:space="preserve"><value>Codigo de barras {0} ja existe</value></data>
+  <data name="Products_Msg_Created" xml:space="preserve"><value>Produto criado: {0}</value></data>
+  <data name="Products_Msg_ProductNotFound" xml:space="preserve"><value>Produto nao encontrado</value></data>
+  <data name="Products_Msg_Updated" xml:space="preserve"><value>Produto atualizado: {0}</value></data>
+  <data name="Products_Msg_EditCancelled" xml:space="preserve"><value>Edicao cancelada</value></data>
+  <data name="Products_Msg_Deactivated" xml:space="preserve"><value>Produto desativado: {0}</value></data>
+  <data name="Products_Msg_DeleteError" xml:space="preserve"><value>Erro ao desativar produto: {0}</value></data>
+  <data name="Products_Msg_StockUpdated" xml:space="preserve"><value>Estoque atualizado para {0}: {1}</value></data>
+  <data name="Products_Msg_StockError" xml:space="preserve"><value>Erro ao ajustar estoque: {0}</value></data>
+
+  <!-- ==================== SALES HISTORY ==================== -->
+  <data name="Sales_Lbl_Title" xml:space="preserve"><value>Historico de Vendas</value></data>
+  <data name="Sales_Lbl_Subtitle" xml:space="preserve"><value>Visualizar e analisar vendas anteriores</value></data>
+  <data name="Sales_Btn_Search" xml:space="preserve"><value>Buscar (F5)</value></data>
+  <data name="Sales_Lbl_TotalSales" xml:space="preserve"><value>Total de Vendas</value></data>
+  <data name="Sales_Lbl_Revenue" xml:space="preserve"><value>Receita</value></data>
+  <data name="Sales_Lbl_AvgTicket" xml:space="preserve"><value>Ticket Medio</value></data>
+  <data name="Sales_Lbl_Completed" xml:space="preserve"><value>Concluidas</value></data>
+  <data name="Sales_Lbl_Cancelled" xml:space="preserve"><value>Canceladas</value></data>
+  <data name="Sales_Col_Number" xml:space="preserve"><value>#</value></data>
+  <data name="Sales_Col_Date" xml:space="preserve"><value>Data</value></data>
+  <data name="Sales_Col_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Sales_Col_Items" xml:space="preserve"><value>Itens</value></data>
+  <data name="Sales_Col_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Sales_Col_Customer" xml:space="preserve"><value>Cliente</value></data>
+  <data name="Sales_Lbl_SelectToView" xml:space="preserve"><value>Selecione uma venda para ver detalhes</value></data>
+  <data name="Sales_Lbl_SaleNumber" xml:space="preserve"><value>Venda #{0}</value></data>
+  <data name="Sales_Lbl_Items" xml:space="preserve"><value>Itens</value></data>
+  <data name="Sales_Lbl_Subtotal" xml:space="preserve"><value>Subtotal</value></data>
+  <data name="Sales_Lbl_Discount" xml:space="preserve"><value>Desconto</value></data>
+  <data name="Sales_Lbl_Total" xml:space="preserve"><value>TOTAL</value></data>
+  <data name="Sales_Lbl_Payments" xml:space="preserve"><value>Pagamentos</value></data>
+  <data name="Sales_Msg_SelectAndSearch" xml:space="preserve"><value>Selecione um periodo e clique em Buscar</value></data>
+  <data name="Sales_Msg_Searching" xml:space="preserve"><value>Buscando...</value></data>
+  <data name="Sales_Msg_FoundCount" xml:space="preserve"><value>{0} venda(s) encontrada(s)</value></data>
+  <data name="Sales_Msg_SaleNotFound" xml:space="preserve"><value>Venda nao encontrada</value></data>
+  <data name="Sales_Msg_LoadError" xml:space="preserve"><value>Erro ao carregar venda: {0}</value></data>
+  <data name="Sales_Status_Completed" xml:space="preserve"><value>Concluida</value></data>
+  <data name="Sales_Status_Cancelled" xml:space="preserve"><value>Cancelada</value></data>
+  <data name="Sales_Status_InProgress" xml:space="preserve"><value>Em Andamento</value></data>
+  <data name="Sales_Status_All" xml:space="preserve"><value>Todos</value></data>
+  <data name="Sales_Payment_Cash" xml:space="preserve"><value>Dinheiro</value></data>
+  <data name="Sales_Payment_CreditCard" xml:space="preserve"><value>Cartao de Credito</value></data>
+  <data name="Sales_Payment_DebitCard" xml:space="preserve"><value>Cartao de Debito</value></data>
+  <data name="Sales_Payment_Pix" xml:space="preserve"><value>PIX</value></data>
+  <data name="Sales_Payment_FoodVoucher" xml:space="preserve"><value>Vale Alimentacao</value></data>
+  <data name="Sales_Payment_MealVoucher" xml:space="preserve"><value>Vale Refeicao</value></data>
+  <data name="Sales_Payment_Other" xml:space="preserve"><value>Outro</value></data>
+
+  <!-- ==================== FISCAL CONFIG ==================== -->
+  <data name="Fiscal_Lbl_Title" xml:space="preserve"><value>Configuracao Fiscal</value></data>
+  <data name="Fiscal_Lbl_Subtitle" xml:space="preserve"><value>Configurar dados para emissao de NFC-e</value></data>
+  <data name="Fiscal_Lbl_CompanyData" xml:space="preserve"><value>Dados da Empresa</value></data>
+  <data name="Fiscal_Lbl_TaxId" xml:space="preserve"><value>CNPJ *</value></data>
+  <data name="Fiscal_Wm_TaxId" xml:space="preserve"><value>00.000.000/0000-00</value></data>
+  <data name="Fiscal_Lbl_StateRegistration" xml:space="preserve"><value>Inscricao Estadual</value></data>
+  <data name="Fiscal_Lbl_LegalName" xml:space="preserve"><value>Razao Social *</value></data>
+  <data name="Fiscal_Lbl_TradeName" xml:space="preserve"><value>Nome Fantasia *</value></data>
+  <data name="Fiscal_Lbl_State" xml:space="preserve"><value>UF *</value></data>
+  <data name="Fiscal_Lbl_TaxRegime" xml:space="preserve"><value>Regime Tributario *</value></data>
+  <data name="Fiscal_Lbl_Address" xml:space="preserve"><value>Endereco</value></data>
+  <data name="Fiscal_Lbl_Street" xml:space="preserve"><value>Logradouro *</value></data>
+  <data name="Fiscal_Lbl_AddressNumber" xml:space="preserve"><value>Numero *</value></data>
+  <data name="Fiscal_Lbl_Neighborhood" xml:space="preserve"><value>Bairro</value></data>
+  <data name="Fiscal_Lbl_ZipCode" xml:space="preserve"><value>CEP *</value></data>
+  <data name="Fiscal_Wm_ZipCode" xml:space="preserve"><value>00000-000</value></data>
+  <data name="Fiscal_Lbl_CityCode" xml:space="preserve"><value>Codigo IBGE do Municipio * (7 digitos)</value></data>
+  <data name="Fiscal_Wm_CityCode" xml:space="preserve"><value>3550308</value></data>
+  <data name="Fiscal_Lbl_NfceParams" xml:space="preserve"><value>Parametros NFC-e</value></data>
+  <data name="Fiscal_Lbl_Series" xml:space="preserve"><value>Serie *</value></data>
+  <data name="Fiscal_Lbl_NextNumber" xml:space="preserve"><value>Proximo Numero</value></data>
+  <data name="Fiscal_Lbl_Environment" xml:space="preserve"><value>Ambiente</value></data>
+  <data name="Fiscal_Lbl_Homologation" xml:space="preserve"><value>Homologacao (Teste)</value></data>
+  <data name="Fiscal_Lbl_Production" xml:space="preserve"><value>Producao</value></data>
+  <data name="Fiscal_Lbl_CscId" xml:space="preserve"><value>CSC ID</value></data>
+  <data name="Fiscal_Lbl_CscToken" xml:space="preserve"><value>CSC Token</value></data>
+  <data name="Fiscal_Lbl_CertPath" xml:space="preserve"><value>Caminho do Certificado Digital (A1)</value></data>
+  <data name="Fiscal_Wm_CertPath" xml:space="preserve"><value>C:\certificados\certificado.pfx</value></data>
+  <data name="Fiscal_Lbl_CertPassword" xml:space="preserve"><value>Senha do Certificado</value></data>
+  <data name="Fiscal_Btn_TestConnection" xml:space="preserve"><value>Testar Conexao SEFAZ</value></data>
+  <data name="Fiscal_Btn_SaveConfig" xml:space="preserve"><value>Salvar Configuracao</value></data>
+  <data name="Fiscal_Msg_Loading" xml:space="preserve"><value>Carregando configuracao...</value></data>
+  <data name="Fiscal_Msg_Loaded" xml:space="preserve"><value>Configuracao carregada</value></data>
+  <data name="Fiscal_Msg_NoConfig" xml:space="preserve"><value>Nenhuma configuracao encontrada. Preencha os dados para criar.</value></data>
+  <data name="Fiscal_Msg_Saving" xml:space="preserve"><value>Salvando configuracao...</value></data>
+  <data name="Fiscal_Msg_Saved" xml:space="preserve"><value>Configuracao salva com sucesso!</value></data>
+  <data name="Fiscal_Msg_TestingConnection" xml:space="preserve"><value>Testando conexao com SEFAZ...</value></data>
+  <data name="Fiscal_Msg_ConnectionOk" xml:space="preserve"><value>Conexao com SEFAZ OK!</value></data>
+  <data name="Fiscal_Msg_SefazUnavailable" xml:space="preserve"><value>SEFAZ indisponivel no momento</value></data>
+  <data name="Fiscal_Msg_TestError" xml:space="preserve"><value>Erro no teste: {0}</value></data>
+  <data name="Fiscal_Msg_TaxIdRequired" xml:space="preserve"><value>CNPJ e obrigatorio</value></data>
+  <data name="Fiscal_Msg_TaxIdLength" xml:space="preserve"><value>CNPJ deve ter 14 digitos</value></data>
+  <data name="Fiscal_Msg_LegalNameRequired" xml:space="preserve"><value>Razao Social e obrigatoria</value></data>
+  <data name="Fiscal_Msg_TradeNameRequired" xml:space="preserve"><value>Nome Fantasia e obrigatorio</value></data>
+  <data name="Fiscal_Msg_StateRequired" xml:space="preserve"><value>UF e obrigatoria (2 caracteres)</value></data>
+  <data name="Fiscal_Msg_CityCodeLength" xml:space="preserve"><value>Codigo IBGE deve ter 7 digitos</value></data>
+  <data name="Fiscal_Msg_AddressRequired" xml:space="preserve"><value>Endereco e obrigatorio</value></data>
+  <data name="Fiscal_Msg_NumberRequired" xml:space="preserve"><value>Numero e obrigatorio</value></data>
+  <data name="Fiscal_Msg_ZipCodeRequired" xml:space="preserve"><value>CEP e obrigatorio</value></data>
+  <data name="Fiscal_Msg_SeriesRequired" xml:space="preserve"><value>Serie deve ser maior que zero</value></data>
+  <data name="Fiscal_TaxRegime_SimplesNacional" xml:space="preserve"><value>Simples Nacional</value></data>
+  <data name="Fiscal_TaxRegime_SimplesExcesso" xml:space="preserve"><value>Simples Nacional - Excesso</value></data>
+  <data name="Fiscal_TaxRegime_Normal" xml:space="preserve"><value>Regime Normal</value></data>
+
+  <!-- ==================== FISCAL HISTORY ==================== -->
+  <data name="FiscalHist_Lbl_Title" xml:space="preserve"><value>Historico Fiscal</value></data>
+  <data name="FiscalHist_Lbl_Subtitle" xml:space="preserve"><value>Consulta e reimpressao de NFC-e</value></data>
+  <data name="FiscalHist_Lbl_AccessKey" xml:space="preserve"><value>Chave de Acesso:</value></data>
+  <data name="FiscalHist_Wm_AccessKey" xml:space="preserve"><value>Digite a chave de acesso (44 digitos) ou deixe vazio para buscar por data</value></data>
+  <data name="FiscalHist_Btn_Search" xml:space="preserve"><value>Buscar (F5)</value></data>
+  <data name="FiscalHist_Col_Nfce" xml:space="preserve"><value>NFC-e</value></data>
+  <data name="FiscalHist_Col_Series" xml:space="preserve"><value>Serie</value></data>
+  <data name="FiscalHist_Col_Date" xml:space="preserve"><value>Data</value></data>
+  <data name="FiscalHist_Col_Value" xml:space="preserve"><value>Valor</value></data>
+  <data name="FiscalHist_Col_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="FiscalHist_Col_Key" xml:space="preserve"><value>Chave</value></data>
+  <data name="FiscalHist_Lbl_Authorized" xml:space="preserve"><value>Autorizadas</value></data>
+  <data name="FiscalHist_Lbl_Contingency" xml:space="preserve"><value>Contingencia</value></data>
+  <data name="FiscalHist_Lbl_Cancelled" xml:space="preserve"><value>Canceladas</value></data>
+  <data name="FiscalHist_Lbl_SelectTransaction" xml:space="preserve"><value>Selecione uma transacao</value></data>
+  <data name="FiscalHist_Lbl_ToViewDetails" xml:space="preserve"><value>para ver detalhes</value></data>
+  <data name="FiscalHist_Lbl_NfceNumber" xml:space="preserve"><value>NFC-e #{0}</value></data>
+  <data name="FiscalHist_Lbl_StatusLabel" xml:space="preserve"><value>Status:</value></data>
+  <data name="FiscalHist_Lbl_ContingencyWarning" xml:space="preserve"><value>EMITIDA EM CONTINGENCIA</value></data>
+  <data name="FiscalHist_Lbl_PendingTransmission" xml:space="preserve"><value>Pendente de transmissao a SEFAZ</value></data>
+  <data name="FiscalHist_Lbl_Protocol" xml:space="preserve"><value>Protocolo:</value></data>
+  <data name="FiscalHist_Lbl_AuthorizedAt" xml:space="preserve"><value>Autorizado em:</value></data>
+  <data name="FiscalHist_Lbl_AccessKeyTitle" xml:space="preserve"><value>Chave de Acesso</value></data>
+  <data name="FiscalHist_Lbl_Reprints" xml:space="preserve"><value>Reimpressoes</value></data>
+  <data name="FiscalHist_Lbl_ReprintTotal" xml:space="preserve"><value>Total: {0}</value></data>
+  <data name="FiscalHist_Lbl_ReprintBy" xml:space="preserve"><value>Por: {0}</value></data>
+  <data name="FiscalHist_Btn_ReprintDanfe" xml:space="preserve"><value>Reimprimir DANFE (F4)</value></data>
+  <data name="FiscalHist_Btn_OpenAsPdf" xml:space="preserve"><value>Abrir como PDF (com QR Code)</value></data>
+  <data name="FiscalHist_Btn_SavePdf" xml:space="preserve"><value>Salvar PDF</value></data>
+  <data name="FiscalHist_Lbl_ThermalPrinter" xml:space="preserve"><value>Impressora Termica (ESC/POS)</value></data>
+  <data name="FiscalHist_Wm_SelectPrinter" xml:space="preserve"><value>Selecione a impressora</value></data>
+  <data name="FiscalHist_Lbl_QrCodeSize" xml:space="preserve"><value>Tamanho QR:</value></data>
+  <data name="FiscalHist_Btn_PrintThermal" xml:space="preserve"><value>Imprimir Termica (QR Code Nativo)</value></data>
+  <data name="FiscalHist_Btn_TestQrCode" xml:space="preserve"><value>Testar QR Code</value></data>
+  <data name="FiscalHist_Dlg_ReprintTitle" xml:space="preserve"><value>Reimprimir DANFE</value></data>
+  <data name="FiscalHist_Dlg_ReprintReasonPrompt" xml:space="preserve"><value>Informe o motivo da reimpressao (opcional):</value></data>
+  <data name="FiscalHist_Wm_ReprintReason" xml:space="preserve"><value>Ex: Cliente solicitou 2a via</value></data>
+  <data name="FiscalHist_Dlg_AuditInfo" xml:space="preserve"><value>Um registro de auditoria sera criado com seu usuario e a data/hora da reimpressao.</value></data>
+  <data name="FiscalHist_Msg_SelectPeriod" xml:space="preserve"><value>Selecione um periodo e clique em Buscar</value></data>
+  <data name="FiscalHist_Msg_Searching" xml:space="preserve"><value>Buscando...</value></data>
+  <data name="FiscalHist_Msg_FoundOne" xml:space="preserve"><value>1 transacao encontrada</value></data>
+  <data name="FiscalHist_Msg_NotFoundByKey" xml:space="preserve"><value>Transacao nao encontrada com a chave informada</value></data>
+  <data name="FiscalHist_Msg_FoundCount" xml:space="preserve"><value>{0} transacao(oes) encontrada(s)</value></data>
+  <data name="FiscalHist_Msg_TransactionNotFound" xml:space="preserve"><value>Transacao nao encontrada</value></data>
+  <data name="FiscalHist_Msg_DetailError" xml:space="preserve"><value>Erro ao carregar detalhes: {0}</value></data>
+  <data name="FiscalHist_Msg_SelectFirst" xml:space="preserve"><value>Selecione uma transacao primeiro</value></data>
+  <data name="FiscalHist_Msg_NoTransaction" xml:space="preserve"><value>Nenhuma transacao selecionada</value></data>
+  <data name="FiscalHist_Msg_NotLoggedIn" xml:space="preserve"><value>Operador nao logado</value></data>
+  <data name="FiscalHist_Msg_ReprintError" xml:space="preserve"><value>Erro na reimpressao: {0}</value></data>
+  <data name="FiscalHist_Msg_ReprintEscPos" xml:space="preserve"><value>Reimpressao #{0} enviada via ESC/POS{1}</value></data>
+  <data name="FiscalHist_Msg_WithNativeQr" xml:space="preserve"><value> com QR Code nativo</value></data>
+  <data name="FiscalHist_Msg_EscPosFailed" xml:space="preserve"><value>Falha ao imprimir via ESC/POS. Verifique a impressora.</value></data>
+  <data name="FiscalHist_Msg_SelectThermal" xml:space="preserve"><value>Selecione uma impressora termica primeiro</value></data>
+  <data name="FiscalHist_Msg_PdfOpened" xml:space="preserve"><value>PDF aberto: {0}</value></data>
+  <data name="FiscalHist_Msg_PdfUnavailable" xml:space="preserve"><value>PDF nao disponivel, gerando apenas texto</value></data>
+  <data name="FiscalHist_Msg_ReprintSentToPrinter" xml:space="preserve"><value>Reimpressao #{0} enviada para impressora{1}</value></data>
+  <data name="FiscalHist_Msg_QrCodeAvailPdf" xml:space="preserve"><value> (QR Code disponivel no PDF)</value></data>
+  <data name="FiscalHist_Msg_ReprintFinalError" xml:space="preserve"><value>Erro ao reimprimir: {0}</value></data>
+  <data name="FiscalHist_Msg_PdfError" xml:space="preserve"><value>Erro ao gerar PDF</value></data>
+  <data name="FiscalHist_Msg_PdfSaved" xml:space="preserve"><value>PDF salvo em: {0}</value></data>
+  <data name="FiscalHist_Msg_PdfSaveError" xml:space="preserve"><value>Erro ao salvar PDF: {0}</value></data>
+  <data name="FiscalHist_Msg_ThermalNotAvailable" xml:space="preserve"><value>Servico de impressora termica nao disponivel</value></data>
+  <data name="FiscalHist_Msg_SelectPrinterFirst" xml:space="preserve"><value>Selecione uma impressora primeiro</value></data>
+  <data name="FiscalHist_Msg_TestingQr" xml:space="preserve"><value>Imprimindo teste de QR Code...</value></data>
+  <data name="FiscalHist_Msg_TestQrSuccess" xml:space="preserve"><value>Teste enviado! Verifique se o QR Code esta visivel na impressao.</value></data>
+  <data name="FiscalHist_Msg_TestQrFailed" xml:space="preserve"><value>Falha ao enviar teste. Verifique a conexao da impressora.</value></data>
+  <data name="FiscalHist_Msg_TestQrError" xml:space="preserve"><value>Erro ao testar QR Code: {0}</value></data>
+  <data name="FiscalHist_Status_Pending" xml:space="preserve"><value>Pendente</value></data>
+  <data name="FiscalHist_Status_Authorized" xml:space="preserve"><value>Autorizado</value></data>
+  <data name="FiscalHist_Status_Rejected" xml:space="preserve"><value>Rejeitado</value></data>
+  <data name="FiscalHist_Status_Cancelled" xml:space="preserve"><value>Cancelado</value></data>
+  <data name="FiscalHist_Status_Contingency" xml:space="preserve"><value>Contingencia</value></data>
+  <data name="FiscalHist_StatusOpt_All" xml:space="preserve"><value>Todos</value></data>
+  <data name="FiscalHist_StatusOpt_Authorized" xml:space="preserve"><value>Autorizado</value></data>
+  <data name="FiscalHist_StatusOpt_Contingency" xml:space="preserve"><value>Contingencia</value></data>
+  <data name="FiscalHist_StatusOpt_Cancelled" xml:space="preserve"><value>Cancelado</value></data>
+  <data name="FiscalHist_StatusOpt_Rejected" xml:space="preserve"><value>Rejeitado</value></data>
+  <data name="FiscalHist_Lbl_UnknownOperator" xml:space="preserve"><value>Desconhecido</value></data>
+  <data name="FiscalHist_Msg_SavePdfConsult" xml:space="preserve"><value>Salvar PDF para consulta</value></data>
+
+  <!-- ==================== RECEIPT ==================== -->
+  <data name="Receipt_Lbl_Title" xml:space="preserve"><value>Comprovante de Venda</value></data>
+  <data name="Receipt_Lbl_SaleNumber" xml:space="preserve"><value>Venda #{0}</value></data>
+  <data name="Receipt_Lbl_TotalFormat" xml:space="preserve"><value>Total: R$ {0:N2}</value></data>
+  <data name="Receipt_Lbl_Contingency" xml:space="preserve"><value>Contingencia</value></data>
+  <data name="Receipt_Lbl_Authorized" xml:space="preserve"><value>Autorizada</value></data>
+  <data name="Receipt_Btn_SaveFile" xml:space="preserve"><value>Salvar Arquivo</value></data>
+  <data name="Receipt_Btn_PrintAndClose" xml:space="preserve"><value>Imprimir e Fechar</value></data>
+  <data name="Receipt_Msg_NfceContingency" xml:space="preserve"><value>NFC-e {0} (Contingencia)</value></data>
+  <data name="Receipt_Msg_NfceNormal" xml:space="preserve"><value>NFC-e {0}</value></data>
+  <data name="Receipt_Msg_NoContent" xml:space="preserve"><value>Nenhum conteudo para imprimir</value></data>
+</root>

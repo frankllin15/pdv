@@ -3,6 +3,7 @@
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
              xmlns:dto="using:PDV.Shared.DTOs"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.CheckoutView"
              x:DataType="vm:CheckoutViewModel">
 
@@ -25,24 +26,18 @@
                         Padding="12,8" CornerRadius="4"
                         VerticalAlignment="Center"
                         Margin="0,0,12,0"
-                        ToolTip.Tip="Voltar ao Menu">
+                        ToolTip.Tip="{i18n:Localize PDV_Tip_BackToMenu}">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <TextBlock Text="&#x2190;" FontSize="16" VerticalAlignment="Center" />
-                        <TextBlock Text="Menu" FontSize="13" VerticalAlignment="Center" />
+                        <TextBlock Text="{i18n:Localize PDV_Btn_Menu}" FontSize="13" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="PDV - Point of Sale"
+                    <TextBlock Text="{i18n:Localize PDV_Lbl_Title}"
                                FontSize="24" FontWeight="Bold"
                                Foreground="White" />
-                    <TextBlock FontSize="14" Foreground="White" Opacity="0.9">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="Sale #{0} | Items: {1}">
-                                <Binding Path="SaleNumber" />
-                                <Binding Path="ItemCount" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                    <TextBlock Text="{Binding SaleInfoHeader}"
+                               FontSize="14" Foreground="White" Opacity="0.9" />
                 </StackPanel>
                 <TextBlock Grid.Column="2"
                            Text="{Binding Total, StringFormat='{}{0:C}'}"
@@ -61,7 +56,7 @@
                     <!-- Barcode Input -->
                     <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
                         <TextBox Text="{Binding BarcodeInput}"
-                                 Watermark="Scan barcode or type product code..."
+                                 Watermark="{i18n:Localize PDV_Wm_Barcode}"
                                  FontSize="16"
                                  Height="44"
                                  IsEnabled="{Binding !IsPaymentMode}">
@@ -69,12 +64,12 @@
                                 <KeyBinding Gesture="Enter" Command="{Binding SearchProductCommand}" />
                             </TextBox.KeyBindings>
                         </TextBox>
-                        <Button Grid.Column="1" Content="Add"
+                        <Button Grid.Column="1" Content="{i18n:Localize PDV_Btn_Add}"
                                 Command="{Binding SearchProductCommand}"
                                 Margin="8,0,0,0"
                                 Height="44" Width="80"
                                 IsEnabled="{Binding !IsPaymentMode}" />
-                        <Button Grid.Column="2" Content="Search (F5)"
+                        <Button Grid.Column="2" Content="{i18n:Localize PDV_Btn_Search}"
                                 Command="{Binding OpenProductSearchCommand}"
                                 Margin="8,0,0,0"
                                 Height="44"
@@ -93,12 +88,12 @@
                               GridLinesVisibility="Horizontal"
                               BorderThickness="0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="#" Binding="{Binding Sequence}" Width="50" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="120" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Qty" Binding="{Binding Quantity, StringFormat='{}{0:N2}'}" Width="70" />
-                            <DataGridTextColumn Header="Price" Binding="{Binding UnitPrice, StringFormat='{}{0:C}'}" Width="90" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='{}{0:C}'}" Width="100" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{i18n:Localize PDV_Col_Seq}" Binding="{Binding Sequence}" Width="50" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{i18n:Localize PDV_Col_Barcode}" Binding="{Binding Barcode}" Width="120" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{i18n:Localize PDV_Col_Description}" Binding="{Binding Description}" Width="*" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{i18n:Localize PDV_Col_Qty}" Binding="{Binding Quantity, StringFormat='{}{0:N2}'}" Width="70" />
+                            <DataGridTextColumn Header="{i18n:Localize PDV_Col_Price}" Binding="{Binding UnitPrice, StringFormat='{}{0:C}'}" Width="90" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{i18n:Localize PDV_Col_Total}" Binding="{Binding Total, StringFormat='{}{0:C}'}" Width="100" IsReadOnly="True" />
                             <DataGridTemplateColumn Header="" Width="40">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -122,7 +117,7 @@
                     Padding="16" Margin="16,0,0,0"
                     BorderBrush="#E0E0E0" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Order Summary" FontWeight="SemiBold" FontSize="16"
+                    <TextBlock Text="{i18n:Localize PDV_Lbl_OrderSummary}" FontWeight="SemiBold" FontSize="16"
                                Margin="0,0,0,16" />
 
                     <!-- Totals -->
@@ -132,12 +127,12 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Subtotal:" Grid.Row="0" Foreground="#666" />
+                        <TextBlock Text="{i18n:Localize PDV_Lbl_Subtotal}" Grid.Row="0" Foreground="#666" />
                         <TextBlock Text="{Binding Subtotal, StringFormat='{}{0:C}'}"
                                    Grid.Row="0" Grid.Column="1"
                                    HorizontalAlignment="Right" />
 
-                        <TextBlock Text="Discount:" Grid.Row="1" Foreground="#666" Margin="0,4,0,0" />
+                        <TextBlock Text="{i18n:Localize PDV_Lbl_Discount}" Grid.Row="1" Foreground="#666" Margin="0,4,0,0" />
                         <TextBlock Text="{Binding Discount, StringFormat='-{0:C}'}"
                                    Grid.Row="1" Grid.Column="1"
                                    HorizontalAlignment="Right"
@@ -145,7 +140,7 @@
 
                         <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8" />
 
-                        <TextBlock Text="TOTAL:" Grid.Row="3" FontWeight="Bold" FontSize="18" />
+                        <TextBlock Text="{i18n:Localize PDV_Lbl_Total}" Grid.Row="3" FontWeight="Bold" FontSize="18" />
                         <TextBlock Text="{Binding Total, StringFormat='{}{0:C}'}"
                                    Grid.Row="3" Grid.Column="1"
                                    FontWeight="Bold" FontSize="18"
@@ -155,13 +150,13 @@
 
                     <!-- Payment Section (visible when in payment mode) -->
                     <StackPanel IsVisible="{Binding IsPaymentMode}">
-                        <TextBlock Text="Amount Received:" Margin="0,0,0,4" />
+                        <TextBlock Text="{i18n:Localize PDV_Lbl_AmountReceived}" Margin="0,0,0,4" />
                         <TextBox Text="{Binding AmountPaid}"
                                  FontSize="18"
                                  Height="40"
                                  Margin="0,0,0,8" />
 
-                        <TextBlock Text="{Binding Change, StringFormat='Change: {0:C}'}"
+                        <TextBlock Text="{Binding ChangeDisplay}"
                                    FontSize="16" FontWeight="SemiBold"
                                    Foreground="#4CAF50"
                                    IsVisible="{Binding Change}"
@@ -170,7 +165,7 @@
 
                     <!-- Payment Buttons -->
                     <StackPanel Spacing="8">
-                        <Button Content="Cash (F2)"
+                        <Button Content="{i18n:Localize PDV_Btn_Cash}"
                                 Command="{Binding ProcessPaymentCommand}"
                                 CommandParameter="Cash"
                                 Height="48"
@@ -180,7 +175,7 @@
                                 FontSize="14" FontWeight="SemiBold"
                                 IsEnabled="{Binding ItemCount}" />
 
-                        <Button Content="Credit Card"
+                        <Button Content="{i18n:Localize PDV_Btn_CreditCard}"
                                 Command="{Binding ProcessPaymentCommand}"
                                 CommandParameter="CreditCard"
                                 Height="40"
@@ -189,7 +184,7 @@
                                 Foreground="White"
                                 IsEnabled="{Binding ItemCount}" />
 
-                        <Button Content="Debit Card (F3)"
+                        <Button Content="{i18n:Localize PDV_Btn_DebitCard}"
                                 Command="{Binding ProcessPaymentCommand}"
                                 CommandParameter="DebitCard"
                                 Height="40"
@@ -198,7 +193,7 @@
                                 Foreground="White"
                                 IsEnabled="{Binding ItemCount}" />
 
-                        <Button Content="PIX"
+                        <Button Content="{i18n:Localize PDV_Btn_Pix}"
                                 Command="{Binding ProcessPaymentCommand}"
                                 CommandParameter="Pix"
                                 Height="40"
@@ -209,14 +204,14 @@
 
                         <Separator Margin="0,8" />
 
-                        <Button Content="Cancel Sale (Esc)"
+                        <Button Content="{i18n:Localize PDV_Btn_CancelSale}"
                                 Command="{Binding RequestCancelSaleCommand}"
                                 Height="40"
                                 HorizontalAlignment="Stretch"
                                 Background="#FF5252"
                                 Foreground="White" />
 
-                        <Button Content="New Sale (F12)"
+                        <Button Content="{i18n:Localize PDV_Btn_NewSale}"
                                 Command="{Binding RequestNewSaleCommand}"
                                 Height="40"
                                 HorizontalAlignment="Stretch" />
@@ -236,7 +231,7 @@
         <!-- Keyboard Shortcuts Info -->
         <Border Grid.Row="2" Background="#FAFAFA" Padding="16,8"
                 BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
-            <TextBlock Text="F2: Cash | F3: Debit | F5: Search Products | Esc: Cancel | F12: New Sale"
+            <TextBlock Text="{i18n:Localize PDV_Lbl_Shortcuts}"
                        Foreground="#757575" FontSize="12"
                        HorizontalAlignment="Center" />
         </Border>
@@ -251,12 +246,12 @@
                 Padding="24" Margin="32">
             <Grid RowDefinitions="Auto,Auto,*,Auto">
                 <TextBlock Grid.Row="0"
-                           Text="Pending Sales Found"
+                           Text="{i18n:Localize PDV_Dlg_PendingSalesTitle}"
                            FontSize="20" FontWeight="Bold"
                            Margin="0,0,0,8" />
 
                 <TextBlock Grid.Row="1"
-                           Text="You have sales in progress. Choose an action:"
+                           Text="{i18n:Localize PDV_Dlg_PendingSalesMsg}"
                            Foreground="#666"
                            Margin="0,0,0,16" />
 
@@ -292,7 +287,7 @@
                                                 </TextBlock>
                                             </StackPanel>
                                             <Button Grid.Column="1"
-                                                    Content="Resume"
+                                                    Content="{i18n:Localize PDV_Btn_Resume}"
                                                     Command="{Binding $parent[ItemsControl].((vm:CheckoutViewModel)DataContext).ResumeSaleCommand}"
                                                     CommandParameter="{Binding}"
                                                     Background="#2196F3"
@@ -309,7 +304,7 @@
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Row="3" Spacing="8">
-                    <Button Content="Discard All and Start New Sale"
+                    <Button Content="{i18n:Localize PDV_Btn_DiscardAll}"
                             Command="{Binding DiscardPendingSalesCommand}"
                             HorizontalAlignment="Stretch"
                             Height="40"
@@ -317,7 +312,7 @@
                             Foreground="White"
                             HorizontalContentAlignment="Center" />
 
-                    <Button Content="Start New Sale (Keep Pending)"
+                    <Button Content="{i18n:Localize PDV_Btn_StartNewKeep}"
                             Command="{Binding StartNewKeepPendingCommand}"
                             HorizontalAlignment="Stretch"
                             Height="40"
@@ -335,19 +330,19 @@
                 MinWidth="350" MaxWidth="400"
                 Padding="24">
             <StackPanel Spacing="16">
-                <TextBlock Text="Cancel Sale?"
+                <TextBlock Text="{i18n:Localize PDV_Dlg_CancelSaleTitle}"
                            FontSize="20" FontWeight="Bold" />
 
-                <TextBlock Text="Are you sure you want to cancel this sale? All items will be removed and this action cannot be undone."
+                <TextBlock Text="{i18n:Localize PDV_Dlg_CancelSaleMsg}"
                            TextWrapping="Wrap"
                            Foreground="#666" />
 
                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                    <Button Content="No, Keep Sale"
+                    <Button Content="{i18n:Localize PDV_Btn_NoKeepSale}"
                             Command="{Binding DismissCancelDialogCommand}"
                             Padding="16,8" />
 
-                    <Button Content="Yes, Cancel Sale"
+                    <Button Content="{i18n:Localize PDV_Btn_YesCancelSale}"
                             Command="{Binding ConfirmCancelSaleCommand}"
                             Background="#FF5252"
                             Foreground="White"
@@ -365,19 +360,19 @@
                 MinWidth="350" MaxWidth="400"
                 Padding="24">
             <StackPanel Spacing="16">
-                <TextBlock Text="Start New Sale?"
+                <TextBlock Text="{i18n:Localize PDV_Dlg_NewSaleTitle}"
                            FontSize="20" FontWeight="Bold" />
 
-                <TextBlock Text="You have an active sale with items. Starting a new sale will cancel the current one. Do you want to continue?"
+                <TextBlock Text="{i18n:Localize PDV_Dlg_NewSaleMsg}"
                            TextWrapping="Wrap"
                            Foreground="#666" />
 
                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                    <Button Content="No, Keep Current"
+                    <Button Content="{i18n:Localize PDV_Btn_NoKeepCurrent}"
                             Command="{Binding DismissNewSaleDialogCommand}"
                             Padding="16,8" />
 
-                    <Button Content="Yes, Start New"
+                    <Button Content="{i18n:Localize PDV_Btn_YesStartNew}"
                             Command="{Binding ConfirmNewSaleCommand}"
                             Background="#2196F3"
                             Foreground="White"
@@ -398,7 +393,7 @@
                 <!-- Header -->
                 <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
                     <StackPanel>
-                        <TextBlock Text="Products"
+                        <TextBlock Text="{i18n:Localize PDV_Search_Title}"
                                    FontSize="20" FontWeight="Bold" />
                         <TextBlock Text="{Binding ProductSearchPagination.TotalCount, StringFormat='{}{0} product(s) found'}"
                                    Foreground="#666" FontSize="12" />
@@ -414,14 +409,14 @@
                 <!-- Search Input -->
                 <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
                     <TextBox Text="{Binding ProductSearchText}"
-                             Watermark="Filter by name or barcode..."
+                             Watermark="{i18n:Localize PDV_Search_Watermark}"
                              FontSize="16"
                              Height="44">
                         <TextBox.KeyBindings>
                             <KeyBinding Gesture="Enter" Command="{Binding SearchProductsByDescriptionCommand}" />
                         </TextBox.KeyBindings>
                     </TextBox>
-                    <Button Grid.Column="1" Content="Search"
+                    <Button Grid.Column="1" Content="{i18n:Localize Global_Btn_Search}"
                             Command="{Binding SearchProductsByDescriptionCommand}"
                             Margin="8,0,0,0"
                             Height="44"
@@ -436,14 +431,14 @@
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <Panel>
                         <!-- Loading Indicator -->
-                        <TextBlock Text="Loading..."
+                        <TextBlock Text="{i18n:Localize Global_Lbl_Loading}"
                                    IsVisible="{Binding IsSearching}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Foreground="#666" />
 
                         <!-- Empty State -->
-                        <TextBlock Text="No products found"
+                        <TextBlock Text="{i18n:Localize PDV_Search_NoResults}"
                                    IsVisible="{Binding !ProductSearchResults.Count}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -471,10 +466,14 @@
                                                                    FontWeight="SemiBold"
                                                                    TextTrimming="CharacterEllipsis" />
                                                         <StackPanel Orientation="Horizontal" Spacing="16">
-                                                            <TextBlock Text="{Binding Barcode, StringFormat='Code: {0}'}"
-                                                                       Foreground="#666" FontSize="12" />
-                                                            <TextBlock Text="{Binding StockQuantity, StringFormat='Stock: {0:N0}'}"
-                                                                       Foreground="#666" FontSize="12" />
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{i18n:Localize PDV_Search_CodeLabel}" Foreground="#666" FontSize="12" />
+                                                                <TextBlock Text="{Binding Barcode}" Foreground="#666" FontSize="12" />
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{i18n:Localize PDV_Search_StockLabel}" Foreground="#666" FontSize="12" />
+                                                                <TextBlock Text="{Binding StockQuantity, StringFormat='{}{0:N0}'}" Foreground="#666" FontSize="12" />
+                                                            </StackPanel>
                                                         </StackPanel>
                                                     </StackPanel>
                                                     <TextBlock Grid.Column="1"
@@ -496,25 +495,19 @@
                 <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" Margin="0,12,0,0"
                       IsVisible="{Binding ProductSearchResults.Count}">
                     <Button Grid.Column="0"
-                            Content="&lt; Previous"
+                            Content="{i18n:Localize Global_Btn_Previous}"
                             Command="{Binding ProductSearchPagination.PreviousPageCommand}"
                             IsEnabled="{Binding ProductSearchPagination.HasPreviousPage}"
                             Background="Transparent"
                             Foreground="#2196F3"
                             Padding="8,6" />
                     <TextBlock Grid.Column="1"
+                               Text="{Binding ProductSearchPagination.PageInfo}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Foreground="#666" FontSize="13">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="Page {0} of {1}">
-                                <Binding Path="ProductSearchPagination.CurrentPage" />
-                                <Binding Path="ProductSearchPagination.TotalPages" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                               Foreground="#666" FontSize="13" />
                     <Button Grid.Column="2"
-                            Content="Next &gt;"
+                            Content="{i18n:Localize Global_Btn_Next}"
                             Command="{Binding ProductSearchPagination.NextPageCommand}"
                             IsEnabled="{Binding ProductSearchPagination.HasNextPage}"
                             Background="Transparent"
@@ -524,7 +517,7 @@
 
                 <!-- Footer -->
                 <TextBlock Grid.Row="4"
-                           Text="Click on a product to add it to the sale"
+                           Text="{i18n:Localize PDV_Search_ClickToAdd}"
                            Foreground="#666" FontSize="12"
                            HorizontalAlignment="Center"
                            Margin="0,8,0,0" />
@@ -544,21 +537,23 @@
                 <Border Grid.Row="0" Background="#673AB7" Padding="16" CornerRadius="8,8,0,0">
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel>
-                            <TextBlock Text="Comprovante de Venda"
+                            <TextBlock Text="{i18n:Localize PDV_Receipt_Title}"
                                        FontSize="18" FontWeight="Bold"
                                        Foreground="White" />
                             <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,4,0,0">
-                                <TextBlock Text="{Binding SaleNumber, StringFormat='Venda #{0}'}"
+                                <TextBlock Text="{Binding ReceiptSaleNumberDisplay}"
                                            Foreground="White" Opacity="0.9" FontSize="13" />
-                                <TextBlock Text="{Binding ReceiptFiscalNumber, StringFormat='NFC-e {0}'}"
+                                <TextBlock Text="{Binding ReceiptNfceDisplay}"
                                            Foreground="White" Opacity="0.9" FontSize="13" />
                             </StackPanel>
                         </StackPanel>
                         <Border Grid.Column="1" CornerRadius="4" Padding="8,4"
                                 VerticalAlignment="Center"
                                 Background="{Binding ReceiptIsContingency, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#FF9800|#4CAF50'}">
-                            <TextBlock Text="{Binding ReceiptIsContingency, Converter={x:Static conv:BoolToStringConverter.Instance}, ConverterParameter='Contingencia|Autorizada'}"
-                                       Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                            <Panel>
+                                <TextBlock Text="{i18n:Localize PDV_Receipt_Contingency}" IsVisible="{Binding ReceiptIsContingency}" Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                                <TextBlock Text="{i18n:Localize PDV_Receipt_Authorized}" IsVisible="{Binding !ReceiptIsContingency}" Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                            </Panel>
                         </Border>
                     </Grid>
                 </Border>
@@ -592,22 +587,22 @@
 
                         <!-- Buttons -->
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                            <Button Content="Salvar"
+                            <Button Content="{i18n:Localize PDV_Receipt_BtnSave}"
                                     Command="{Binding SaveReceiptToFileCommand}"
                                     Background="#E0E0E0"
                                     Foreground="#333"
                                     Padding="16,10" />
-                            <Button Content="Fechar"
+                            <Button Content="{i18n:Localize Global_Btn_Close}"
                                     Command="{Binding CloseReceiptPreviewCommand}"
                                     Background="#757575"
                                     Foreground="White"
                                     Padding="16,10" />
-                            <Button Content="Imprimir"
+                            <Button Content="{i18n:Localize Global_Btn_Print}"
                                     Command="{Binding PrintReceiptCommand}"
                                     Background="#2196F3"
                                     Foreground="White"
                                     Padding="16,10" />
-                            <Button Content="Imprimir e Fechar"
+                            <Button Content="{i18n:Localize PDV_Receipt_BtnPrintAndClose}"
                                     Command="{Binding PrintReceiptAndCloseCommand}"
                                     Background="#673AB7"
                                     Foreground="White"

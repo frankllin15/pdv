@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDV.Shared.DTOs;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -22,6 +23,11 @@ public partial class PaginationState : ObservableObject
 
     [ObservableProperty]
     private bool _hasPreviousPage;
+
+    public string PageInfo => string.Format(Res.Global_Lbl_PageOf, CurrentPage, TotalPages);
+
+    partial void OnCurrentPageChanged(int value) => OnPropertyChanged(nameof(PageInfo));
+    partial void OnTotalPagesChanged(int value) => OnPropertyChanged(nameof(PageInfo));
 
     public PaginationState(Func<Task> loadPage)
     {

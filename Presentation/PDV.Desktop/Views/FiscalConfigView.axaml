@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.FiscalConfigView"
              x:DataType="vm:FiscalConfigViewModel"
              Background="#F0F0F0"
@@ -11,10 +12,10 @@
         <!-- Header -->
         <Border Grid.Row="0" Background="#673AB7" Padding="16">
             <StackPanel>
-                <TextBlock Text="Configuracao Fiscal"
+                <TextBlock Text="{i18n:Localize Fiscal_Lbl_Title}"
                            FontSize="24" FontWeight="Bold"
                            Foreground="White" />
-                <TextBlock Text="Configurar dados para emissao de NFC-e"
+                <TextBlock Text="{i18n:Localize Fiscal_Lbl_Subtitle}"
                            FontSize="14" Foreground="White" Opacity="0.9" />
             </StackPanel>
         </Border>
@@ -27,46 +28,46 @@
                 <Border Background="White" CornerRadius="8" Padding="16"
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="Dados da Empresa" FontSize="18" FontWeight="SemiBold"
+                        <TextBlock Text="{i18n:Localize Fiscal_Lbl_CompanyData}" FontSize="18" FontWeight="SemiBold"
                                    Foreground="#673AB7" Margin="0,0,0,8" />
 
                         <!-- CNPJ and IE -->
                         <Grid ColumnDefinitions="*,16,*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="CNPJ *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_TaxId}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding TaxId}"
-                                         Watermark="00.000.000/0000-00"
+                                         Watermark="{i18n:Localize Fiscal_Wm_TaxId}"
                                          Height="40" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Inscricao Estadual" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_StateRegistration}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding StateRegistration}" Height="40" />
                             </StackPanel>
                         </Grid>
 
                         <!-- Legal Name -->
                         <StackPanel>
-                            <TextBlock Text="Razao Social *" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Fiscal_Lbl_LegalName}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding LegalName}" Height="40" />
                         </StackPanel>
 
                         <!-- Trade Name -->
                         <StackPanel>
-                            <TextBlock Text="Nome Fantasia *" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Fiscal_Lbl_TradeName}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding TradeName}" Height="40" />
                         </StackPanel>
 
                         <!-- State and Tax Regime -->
                         <Grid ColumnDefinitions="*,16,2*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="UF *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_State}" Margin="0,0,0,4" />
                                 <ComboBox ItemsSource="{Binding StateOptions}"
                                           SelectedItem="{Binding State}"
                                           Height="40"
                                           HorizontalAlignment="Stretch" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Regime Tributario *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_TaxRegime}" Margin="0,0,0,4" />
                                 <ComboBox ItemsSource="{Binding TaxRegimeOptions}"
                                           SelectedValue="{Binding TaxRegime}"
                                           SelectedValueBinding="{Binding Value}"
@@ -82,17 +83,17 @@
                 <Border Background="White" CornerRadius="8" Padding="16"
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="Endereco" FontSize="18" FontWeight="SemiBold"
+                        <TextBlock Text="{i18n:Localize Fiscal_Lbl_Address}" FontSize="18" FontWeight="SemiBold"
                                    Foreground="#673AB7" Margin="0,0,0,8" />
 
                         <!-- Address and Number -->
                         <Grid ColumnDefinitions="2*,16,*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Logradouro *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_Street}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding Address}" Height="40" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Numero *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_AddressNumber}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding AddressNumber}" Height="40" />
                             </StackPanel>
                         </Grid>
@@ -100,22 +101,22 @@
                         <!-- Neighborhood and ZipCode -->
                         <Grid ColumnDefinitions="2*,16,*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Bairro" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_Neighborhood}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding Neighborhood}" Height="40" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="CEP *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_ZipCode}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding ZipCode}"
-                                         Watermark="00000-000"
+                                         Watermark="{i18n:Localize Fiscal_Wm_ZipCode}"
                                          Height="40" />
                             </StackPanel>
                         </Grid>
 
                         <!-- City Code -->
                         <StackPanel>
-                            <TextBlock Text="Codigo IBGE do Municipio * (7 digitos)" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Fiscal_Lbl_CityCode}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding CityCode}"
-                                     Watermark="3550308"
+                                     Watermark="{i18n:Localize Fiscal_Wm_CityCode}"
                                      MaxWidth="200"
                                      HorizontalAlignment="Left"
                                      Height="40" />
@@ -127,31 +128,31 @@
                 <Border Background="White" CornerRadius="8" Padding="16"
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="Parametros NFC-e" FontSize="18" FontWeight="SemiBold"
+                        <TextBlock Text="{i18n:Localize Fiscal_Lbl_NfceParams}" FontSize="18" FontWeight="SemiBold"
                                    Foreground="#673AB7" Margin="0,0,0,8" />
 
                         <!-- Series and Next Number -->
                         <Grid ColumnDefinitions="*,16,*,16,2*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Serie *" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_Series}" Margin="0,0,0,4" />
                                 <NumericUpDown Value="{Binding Series}"
                                                Minimum="1" Maximum="999"
                                                Height="40" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Proximo Numero" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_NextNumber}" Margin="0,0,0,4" />
                                 <NumericUpDown Value="{Binding NextNumber}"
                                                Minimum="1"
                                                Height="40"
                                                IsEnabled="False" />
                             </StackPanel>
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="Ambiente" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_Environment}" Margin="0,0,0,4" />
                                 <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,8,0,0">
-                                    <RadioButton Content="Homologacao (Teste)"
+                                    <RadioButton Content="{i18n:Localize Fiscal_Lbl_Homologation}"
                                                  IsChecked="{Binding !IsProduction}"
                                                  GroupName="Ambiente" />
-                                    <RadioButton Content="Producao"
+                                    <RadioButton Content="{i18n:Localize Fiscal_Lbl_Production}"
                                                  IsChecked="{Binding IsProduction}"
                                                  GroupName="Ambiente" />
                                 </StackPanel>
@@ -161,11 +162,11 @@
                         <!-- CSC -->
                         <Grid ColumnDefinitions="*,16,2*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="CSC ID" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_CscId}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding CscId}" Height="40" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="CSC Token" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_CscToken}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding CscToken}" Height="40" />
                             </StackPanel>
                         </Grid>
@@ -173,13 +174,13 @@
                         <!-- Certificate -->
                         <Grid ColumnDefinitions="2*,16,*">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Caminho do Certificado Digital (A1)" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_CertPath}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding CertificatePath}"
-                                         Watermark="C:\certificados\certificado.pfx"
+                                         Watermark="{i18n:Localize Fiscal_Wm_CertPath}"
                                          Height="40" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Senha do Certificado" Margin="0,0,0,4" />
+                                <TextBlock Text="{i18n:Localize Fiscal_Lbl_CertPassword}" Margin="0,0,0,4" />
                                 <TextBox Text="{Binding CertificatePassword}"
                                          PasswordChar="*"
                                          Height="40" />
@@ -192,13 +193,13 @@
                 <Border Background="White" CornerRadius="8" Padding="16"
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-                        <Button Content="Testar Conexao SEFAZ"
+                        <Button Content="{i18n:Localize Fiscal_Btn_TestConnection}"
                                 Command="{Binding TestConnectionCommand}"
                                 IsEnabled="{Binding !IsTesting}"
                                 Background="#2196F3"
                                 Foreground="White"
                                 Height="44" Padding="24,0" />
-                        <Button Content="Salvar Configuracao"
+                        <Button Content="{i18n:Localize Fiscal_Btn_SaveConfig}"
                                 Command="{Binding SaveConfigCommand}"
                                 IsEnabled="{Binding !IsSaving}"
                                 Background="#673AB7"

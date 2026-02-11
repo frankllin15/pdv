@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Interfaces.Services;
+using Res = PDV.Desktop.I18n.Resources;
 
 namespace PDV.Desktop.ViewModels;
 
@@ -28,13 +29,13 @@ public partial class LoginViewModel(IOperatorSessionService sessionService) : Vi
     {
         if (string.IsNullOrWhiteSpace(OperatorCode))
         {
-            SetError("Enter operator code");
+            SetError(Res.Login_Msg_EnterCode);
             return;
         }
 
         if (string.IsNullOrWhiteSpace(Pin))
         {
-            SetError("Enter PIN");
+            SetError(Res.Login_Msg_EnterPin);
             return;
         }
 
@@ -52,12 +53,12 @@ public partial class LoginViewModel(IOperatorSessionService sessionService) : Vi
             }
             else
             {
-                SetError("Invalid code or PIN");
+                SetError(Res.Login_Msg_InvalidCredentials);
             }
         }
         catch (Exception ex)
         {
-            SetError($"Login error: {ex.Message}");
+            SetError(string.Format(Res.Login_Msg_LoginError, ex.Message));
         }
         finally
         {

@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.ProductsView"
              x:DataType="vm:ProductsViewModel"
              Background="#F0F0F0">
@@ -21,14 +22,14 @@
         <Border Grid.Row="0" Background="#673AB7" Padding="16">
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel>
-                    <TextBlock Text="Product Management"
+                    <TextBlock Text="{i18n:Localize Products_Lbl_Title}"
                                FontSize="24" FontWeight="Bold"
                                Foreground="White" />
-                    <TextBlock Text="Add, edit and manage products"
+                    <TextBlock Text="{i18n:Localize Products_Lbl_Subtitle}"
                                FontSize="14" Foreground="White" Opacity="0.9" />
                 </StackPanel>
                 <Button Grid.Column="1"
-                        Content="+ New Product (Ctrl+N)"
+                        Content="{i18n:Localize Products_Btn_NewProduct}"
                         Command="{Binding NewProductCommand}"
                         Background="#9C27B0"
                         Foreground="White"
@@ -49,18 +50,18 @@
                         <!-- Search -->
                         <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
                             <TextBox Text="{Binding SearchText}"
-                                     Watermark="Search by barcode or description..."
+                                     Watermark="{i18n:Localize Products_Wm_Search}"
                                      FontSize="14"
                                      Height="40">
                                 <TextBox.KeyBindings>
                                     <KeyBinding Gesture="Enter" Command="{Binding SearchCommand}" />
                                 </TextBox.KeyBindings>
                             </TextBox>
-                            <Button Grid.Column="1" Content="Search"
+                            <Button Grid.Column="1" Content="{i18n:Localize Global_Btn_Search}"
                                     Command="{Binding SearchCommand}"
                                     Margin="8,0,0,0"
                                     Height="40" Width="80" />
-                            <Button Grid.Column="2" Content="Refresh (F5)"
+                            <Button Grid.Column="2" Content="{i18n:Localize Products_Btn_Refresh}"
                                     Command="{Binding LoadProductsCommand}"
                                     Margin="8,0,0,0"
                                     Height="40" />
@@ -76,23 +77,23 @@
                                   GridLinesVisibility="Horizontal"
                                   BorderThickness="0">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="120" />
-                                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" />
-                                <DataGridTextColumn Header="Price" Binding="{Binding UnitPrice, StringFormat='{}{0:C}'}" Width="100" />
-                                <DataGridTextColumn Header="Stock" Binding="{Binding StockQuantity, StringFormat='{}{0:N2}'}" Width="80" />
-                                <DataGridTextColumn Header="Unit" Binding="{Binding UnitOfMeasure}" Width="60" />
-                                <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive}" Width="60" />
-                                <DataGridTemplateColumn Header="Actions" Width="120">
+                                <DataGridTextColumn Header="{i18n:Localize Products_Col_Barcode}" Binding="{Binding Barcode}" Width="120" />
+                                <DataGridTextColumn Header="{i18n:Localize Products_Col_Description}" Binding="{Binding Description}" Width="*" />
+                                <DataGridTextColumn Header="{i18n:Localize Products_Col_Price}" Binding="{Binding UnitPrice, StringFormat='{}{0:C}'}" Width="100" />
+                                <DataGridTextColumn Header="{i18n:Localize Products_Col_Stock}" Binding="{Binding StockQuantity, StringFormat='{}{0:N2}'}" Width="80" />
+                                <DataGridTextColumn Header="{i18n:Localize Products_Col_Unit}" Binding="{Binding UnitOfMeasure}" Width="60" />
+                                <DataGridCheckBoxColumn Header="{i18n:Localize Products_Col_Active}" Binding="{Binding IsActive}" Width="60" />
+                                <DataGridTemplateColumn Header="{i18n:Localize Global_Lbl_Actions}" Width="120">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <Button Content="Edit"
+                                                <Button Content="{i18n:Localize Global_Btn_Edit}"
                                                         Command="{Binding $parent[DataGrid].((vm:ProductsViewModel)DataContext).EditProductCommand}"
                                                         CommandParameter="{Binding}"
                                                         Background="#2196F3"
                                                         Foreground="White"
                                                         Padding="8,4" />
-                                                <Button Content="Del"
+                                                <Button Content="{i18n:Localize Global_Btn_Delete}"
                                                         Command="{Binding $parent[DataGrid].((vm:ProductsViewModel)DataContext).DeleteProductCommand}"
                                                         CommandParameter="{Binding}"
                                                         Background="#FF5252"
@@ -112,7 +113,7 @@
                         Padding="16" Margin="16,0,0,0"
                         BorderBrush="#E0E0E0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="Quick Stock Adjustment" FontWeight="SemiBold" FontSize="16"
+                        <TextBlock Text="{i18n:Localize Products_Lbl_QuickStockAdj}" FontWeight="SemiBold" FontSize="16"
                                    Margin="0,0,0,16" />
 
                         <StackPanel IsVisible="{Binding SelectedProduct, Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -121,17 +122,17 @@
                             <TextBlock Text="{Binding SelectedProduct.Barcode}" Foreground="#666"
                                        Margin="0,0,0,16" />
 
-                            <TextBlock Text="Current Stock:" Foreground="#666" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_CurrentStock}" Foreground="#666" />
                             <TextBlock Text="{Binding SelectedProduct.StockQuantity, StringFormat='{}{0:N2}'}"
                                        FontSize="24" FontWeight="Bold" Foreground="#673AB7"
                                        Margin="0,0,0,16" />
 
-                            <TextBlock Text="Adjustment (+/-):" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_Adjustment}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding SelectedProduct.StockAdjustment}"
                                      FontSize="16" Height="40"
                                      Margin="0,0,0,8" />
 
-                            <Button Content="Apply Adjustment"
+                            <Button Content="{i18n:Localize Products_Btn_ApplyAdjustment}"
                                     Command="{Binding AdjustStockCommand}"
                                     CommandParameter="{Binding SelectedProduct}"
                                     Background="#673AB7"
@@ -140,7 +141,7 @@
                                     HorizontalAlignment="Stretch" />
                         </StackPanel>
 
-                        <TextBlock Text="Select a product to adjust stock"
+                        <TextBlock Text="{i18n:Localize Products_Msg_SelectToAdjust}"
                                    Foreground="#999"
                                    IsVisible="{Binding SelectedProduct, Converter={x:Static ObjectConverters.IsNull}}"
                                    HorizontalAlignment="Center"
@@ -157,41 +158,43 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="{Binding IsNewProduct, Converter={x:Static conv:BoolToStringConverter.Instance}, ConverterParameter='New Product|Edit Product'}"
-                               FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+                    <Panel>
+                        <TextBlock Text="{i18n:Localize Products_Lbl_NewProduct}" IsVisible="{Binding IsNewProduct}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+                        <TextBlock Text="{i18n:Localize Products_Lbl_EditProduct}" IsVisible="{Binding !IsNewProduct}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+                    </Panel>
 
                     <!-- Barcode and Unit -->
                     <Grid ColumnDefinitions="*,16,*">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Barcode *" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_Barcode}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding EditingProduct.Barcode}" Height="40" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Unit of Measure" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_UnitOfMeasure}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding EditingProduct.UnitOfMeasure}" Height="40" />
                         </StackPanel>
                     </Grid>
 
                     <!-- Description -->
                     <StackPanel>
-                        <TextBlock Text="Description *" Margin="0,0,0,4" />
+                        <TextBlock Text="{i18n:Localize Products_Lbl_Description}" Margin="0,0,0,4" />
                         <TextBox Text="{Binding EditingProduct.Description}" Height="40" />
                     </StackPanel>
 
                     <!-- Short Description -->
                     <StackPanel>
-                        <TextBlock Text="Short Description (for receipt)" Margin="0,0,0,4" />
+                        <TextBlock Text="{i18n:Localize Products_Lbl_ShortDescription}" Margin="0,0,0,4" />
                         <TextBox Text="{Binding EditingProduct.ShortDescription}" Height="40" />
                     </StackPanel>
 
                     <!-- Price and Stock -->
                     <Grid ColumnDefinitions="*,16,*">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Unit Price *" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_UnitPrice}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding EditingProduct.UnitPrice}" Height="40" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Stock Quantity" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_StockQuantity}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding EditingProduct.StockQuantity}" Height="40" />
                         </StackPanel>
                     </Grid>
@@ -199,24 +202,24 @@
                     <!-- Tax Code and Rate -->
                     <Grid ColumnDefinitions="*,16,*">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Tax Code (NCM)" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_TaxCode}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding EditingProduct.TaxCode}" Height="40" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Tax Rate % (ICMS)" Margin="0,0,0,4" />
+                            <TextBlock Text="{i18n:Localize Products_Lbl_TaxRate}" Margin="0,0,0,4" />
                             <TextBox Text="{Binding EditingProduct.TaxRate}" Height="40" />
                         </StackPanel>
                     </Grid>
 
                     <!-- Active -->
-                    <CheckBox IsChecked="{Binding EditingProduct.IsActive}" Content="Product is Active" />
+                    <CheckBox IsChecked="{Binding EditingProduct.IsActive}" Content="{i18n:Localize Products_Lbl_IsActive}" />
 
                     <!-- Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
-                        <Button Content="Cancel (Esc)"
+                        <Button Content="{i18n:Localize Products_Btn_CancelEdit}"
                                 Command="{Binding CancelEditCommand}"
                                 Height="40" Width="120" />
-                        <Button Content="Save Product"
+                        <Button Content="{i18n:Localize Products_Btn_SaveProduct}"
                                 Command="{Binding SaveProductCommand}"
                                 Background="#673AB7"
                                 Foreground="White"

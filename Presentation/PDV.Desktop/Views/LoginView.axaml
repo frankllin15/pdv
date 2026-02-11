@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.LoginView"
              x:DataType="vm:LoginViewModel">
 
@@ -21,12 +22,12 @@
             <StackPanel Spacing="24">
                 <!-- Logo/Title -->
                 <StackPanel HorizontalAlignment="Center" Spacing="8">
-                    <TextBlock Text="PDV"
+                    <TextBlock Text="{i18n:Localize Login_Lbl_Title}"
                                FontSize="48"
                                FontWeight="Bold"
                                Foreground="#2196F3"
                                HorizontalAlignment="Center" />
-                    <TextBlock Text="Point of Sale System"
+                    <TextBlock Text="{i18n:Localize Login_Lbl_Subtitle}"
                                FontSize="14"
                                Foreground="#757575"
                                HorizontalAlignment="Center" />
@@ -36,26 +37,26 @@
                 <StackPanel Spacing="16">
                     <!-- Operator Code -->
                     <StackPanel Spacing="4">
-                        <TextBlock Text="Operator Code"
+                        <TextBlock Text="{i18n:Localize Login_Lbl_OperatorCode}"
                                    FontSize="14"
                                    Foreground="#424242" />
                         <TextBox Text="{Binding OperatorCode}"
                                  FontSize="18"
                                  Height="48"
-                                 Watermark="Enter your code"
+                                 Watermark="{i18n:Localize Login_Wm_OperatorCode}"
                                  IsEnabled="{Binding !IsLoading}" />
                     </StackPanel>
 
                     <!-- PIN -->
                     <StackPanel Spacing="4">
-                        <TextBlock Text="PIN"
+                        <TextBlock Text="{i18n:Localize Login_Lbl_Pin}"
                                    FontSize="14"
                                    Foreground="#424242" />
                         <TextBox Text="{Binding Pin}"
                                  FontSize="18"
                                  Height="48"
                                  PasswordChar="*"
-                                 Watermark="Enter your PIN"
+                                 Watermark="{i18n:Localize Login_Wm_Pin}"
                                  IsEnabled="{Binding !IsLoading}" />
                     </StackPanel>
 
@@ -81,21 +82,21 @@
                             IsEnabled="{Binding !IsLoading}"
                             HorizontalContentAlignment="Center">
                         <Panel>
-                            <TextBlock Text="Login"
+                            <TextBlock Text="{i18n:Localize Login_Btn_Login}"
                                        IsVisible="{Binding !IsLoading}"
                                        HorizontalAlignment="Center" />
                             <StackPanel Orientation="Horizontal"
                                         Spacing="8"
                                         IsVisible="{Binding IsLoading}"
                                         HorizontalAlignment="Center">
-                                <TextBlock Text="Authenticating..." />
+                                <TextBlock Text="{i18n:Localize Login_Msg_Authenticating}" />
                             </StackPanel>
                         </Panel>
                     </Button>
                 </StackPanel>
 
                 <!-- Footer -->
-                <TextBlock Text="Enter and press Enter or click Login"
+                <TextBlock Text="{i18n:Localize Login_Msg_Footer}"
                            FontSize="12"
                            Foreground="#9E9E9E"
                            HorizontalAlignment="Center" />

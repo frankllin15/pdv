@@ -2,9 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:PDV.Desktop.ViewModels"
         xmlns:views="using:PDV.Desktop.Views"
+        xmlns:i18n="using:PDV.Desktop.I18n"
         x:Class="PDV.Desktop.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        Title="PDV - Point of Sale"
+        Title="{i18n:Localize Nav_Lbl_WindowTitle}"
         Width="1024" Height="768"
         MinWidth="800" MinHeight="600"
         WindowStartupLocation="CenterScreen">
@@ -67,7 +68,7 @@
                                 Padding="16,10">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="&#x2699;" FontSize="16" VerticalAlignment="Center" />
-                                <TextBlock Text="Settings" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="{i18n:Localize Nav_Btn_Settings}" FontSize="14" VerticalAlignment="Center" />
                                 <TextBlock Text="&#x25BC;" FontSize="9" VerticalAlignment="Center"
                                            Foreground="#888" Margin="4,0,0,0" />
                             </StackPanel>
@@ -81,9 +82,19 @@
                                     CornerRadius="4"
                                     Margin="24,0,8,0"
                                     Padding="16,10">
-                                <TextBlock Text="Fiscal Config" FontSize="13" />
+                                <TextBlock Text="{i18n:Localize Nav_Btn_FiscalConfig}" FontSize="13" />
                             </Button>
-                        
+
+                            <!-- Language Selector -->
+                            <StackPanel Margin="24,8,8,0" Spacing="4">
+                                <TextBlock Text="{i18n:Localize Global_Lbl_Language}"
+                                           Foreground="#888" FontSize="11" Margin="0,0,0,2" />
+                                <ComboBox ItemsSource="{Binding Languages}"
+                                          SelectedIndex="{Binding SelectedLanguageIndex}"
+                                          HorizontalAlignment="Stretch"
+                                          FontSize="12"
+                                          Padding="8,6" />
+                            </StackPanel>
                         </StackPanel>
 
                         <!-- User Info + Logout -->
@@ -102,7 +113,7 @@
                                         CornerRadius="4"
                                         Padding="10,6"
                                         FontSize="12"
-                                        ToolTip.Tip="Logout">
+                                        ToolTip.Tip="{i18n:Localize Nav_Tip_Logout}">
                                     <TextBlock Text="&#x2190;" FontSize="14" />
                                 </Button>
                             </Grid>
@@ -114,7 +125,7 @@
                         <!-- Brand -->
                         <StackPanel Margin="16,16,16,4">
                             <TextBlock Text="PDV" FontSize="22" FontWeight="Bold" Foreground="#2196F3" />
-                            <TextBlock Text="Point of Sale" FontSize="11" Foreground="#888" Margin="0,-2,0,0" />
+                            <TextBlock Text="{i18n:Localize Nav_Lbl_PointOfSale}" FontSize="11" Foreground="#888" Margin="0,-2,0,0" />
                         </StackPanel>
                         <Border Height="1" Background="#444" Margin="8,8" />
 
@@ -129,7 +140,7 @@
                                 Padding="16,10">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="&#x2302;" FontSize="16" VerticalAlignment="Center" />
-                                <TextBlock Text="Home" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="{i18n:Localize Nav_Btn_Home}" FontSize="14" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -150,7 +161,7 @@
                                     Padding="16,10">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <TextBlock Text="$" FontSize="16" VerticalAlignment="Center" />
-                                    <TextBlock Text="Checkout (F1)" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Checkout}" FontSize="14" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
@@ -167,7 +178,7 @@
                                     Padding="16,10">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <TextBlock Text="&#x2630;" FontSize="16" VerticalAlignment="Center" />
-                                    <TextBlock Text="Cadastros" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Cadastros}" FontSize="14" VerticalAlignment="Center" />
                                     <TextBlock Text="&#x25BC;" FontSize="9" VerticalAlignment="Center"
                                                Foreground="#888" Margin="4,0,0,0" />
                                 </StackPanel>
@@ -181,7 +192,7 @@
                                         CornerRadius="4"
                                         Margin="24,0,8,0"
                                         Padding="16,10">
-                                    <TextBlock Text="Products (F4)" FontSize="13" />
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Products}" FontSize="13" />
                                 </Button>
                             </StackPanel>
 
@@ -196,7 +207,7 @@
                                     Padding="16,10">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <TextBlock Text="&#x2261;" FontSize="16" VerticalAlignment="Center" />
-                                    <TextBlock Text="Financeiro" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Financeiro}" FontSize="14" VerticalAlignment="Center" />
                                     <TextBlock Text="&#x25BC;" FontSize="9" VerticalAlignment="Center"
                                                Foreground="#888" Margin="4,0,0,0" />
                                 </StackPanel>
@@ -210,7 +221,7 @@
                                         CornerRadius="4"
                                         Margin="24,0,8,0"
                                         Padding="16,10">
-                                    <TextBlock Text="Sales History (F6)" FontSize="13" />
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_SalesHistory}" FontSize="13" />
                                 </Button>
                                 <Button Command="{Binding NavigateToFiscalHistoryCommand}"
                                         HorizontalAlignment="Stretch"
@@ -220,7 +231,7 @@
                                         CornerRadius="4"
                                         Margin="24,0,8,0"
                                         Padding="16,10">
-                                    <TextBlock Text="Fiscal History" FontSize="13" />
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_FiscalHistory}" FontSize="13" />
                                 </Button>
                             </StackPanel>
                         </StackPanel>
@@ -245,12 +256,12 @@
                     MinWidth="400"
                     BoxShadow="0 8 32 0 #60000000">
                 <StackPanel Spacing="20">
-                    <TextBlock Text="Sale in Progress"
+                    <TextBlock Text="{i18n:Localize Nav_Dlg_SaleInProgress}"
                                FontSize="20"
                                FontWeight="SemiBold"
                                HorizontalAlignment="Center" />
 
-                    <TextBlock Text="You have an ongoing sale. Are you sure you want to leave? The sale will remain open."
+                    <TextBlock Text="{i18n:Localize Nav_Dlg_SaleInProgressMsg}"
                                FontSize="14"
                                TextWrapping="Wrap"
                                TextAlignment="Center"
@@ -260,12 +271,12 @@
                                 Spacing="12"
                                 HorizontalAlignment="Center"
                                 Margin="0,8,0,0">
-                        <Button Content="Cancel"
+                        <Button Content="{i18n:Localize Global_Btn_Cancel}"
                                 Command="{Binding CancelNavigationCommand}"
                                 Padding="24,10"
                                 Background="#E0E0E0"
                                 Foreground="#333" />
-                        <Button Content="Leave Anyway"
+                        <Button Content="{i18n:Localize Nav_Btn_LeaveAnyway}"
                                 Command="{Binding ConfirmNavigationCommand}"
                                 Padding="24,10"
                                 Background="#F44336"

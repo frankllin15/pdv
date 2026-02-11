@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:PDV.Desktop.ViewModels"
              xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:i18n="using:PDV.Desktop.I18n"
              x:Class="PDV.Desktop.Views.ReceiptPreviewView"
              x:DataType="vm:ReceiptPreviewViewModel"
              Width="500"
@@ -16,13 +17,13 @@
             <Border Grid.Row="0" Background="#673AB7" Padding="16" CornerRadius="8,8,0,0">
                 <Grid ColumnDefinitions="*,Auto">
                     <StackPanel>
-                        <TextBlock Text="{Binding Title}"
+                        <TextBlock Text="{i18n:Localize Receipt_Lbl_Title}"
                                    FontSize="18" FontWeight="Bold"
                                    Foreground="White" />
                         <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,4,0,0">
-                            <TextBlock Text="{Binding SaleNumber, StringFormat='Venda #{0}'}"
+                            <TextBlock Text="{Binding SaleNumberDisplay}"
                                        Foreground="White" Opacity="0.9" FontSize="13" />
-                            <TextBlock Text="{Binding Total, StringFormat='Total: R$ {0:N2}'}"
+                            <TextBlock Text="{Binding TotalDisplay}"
                                        Foreground="White" Opacity="0.9" FontSize="13" FontWeight="SemiBold" />
                         </StackPanel>
                     </StackPanel>
@@ -31,8 +32,12 @@
                     <Border Grid.Column="1" CornerRadius="4" Padding="8,4"
                             VerticalAlignment="Center"
                             Background="{Binding IsContingency, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#FF9800|#4CAF50'}">
-                        <TextBlock Text="{Binding IsContingency, Converter={x:Static conv:BoolToStringConverter.Instance}, ConverterParameter='Contingencia|Autorizada'}"
-                                   Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                        <Panel>
+                            <TextBlock Text="{i18n:Localize Receipt_Lbl_Contingency}" IsVisible="{Binding IsContingency}"
+                                       Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="{i18n:Localize Receipt_Lbl_Authorized}" IsVisible="{Binding !IsContingency}"
+                                       Foreground="White" FontSize="12" FontWeight="SemiBold" />
+                        </Panel>
                     </Border>
                 </Grid>
             </Border>
@@ -55,7 +60,7 @@
             <!-- Printer Selection -->
             <Border Grid.Row="2" Padding="16,0,16,16">
                 <Grid ColumnDefinitions="Auto,*">
-                    <TextBlock Text="Impressora:"
+                    <TextBlock Text="{i18n:Localize Global_Lbl_Printer}"
                                VerticalAlignment="Center"
                                Margin="0,0,8,0"
                                Foreground="#666" />
@@ -81,25 +86,25 @@
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                        <Button Content="Salvar Arquivo"
+                        <Button Content="{i18n:Localize Receipt_Btn_SaveFile}"
                                 Command="{Binding SaveToFileCommand}"
                                 IsEnabled="{Binding !IsPrinting}"
                                 Background="#E0E0E0"
                                 Foreground="#333"
                                 Padding="16,10" />
-                        <Button Content="Fechar"
+                        <Button Content="{i18n:Localize Global_Btn_Close}"
                                 Command="{Binding CloseCommand}"
                                 IsEnabled="{Binding !IsPrinting}"
                                 Background="#757575"
                                 Foreground="White"
                                 Padding="16,10" />
-                        <Button Content="Imprimir"
+                        <Button Content="{i18n:Localize Global_Btn_Print}"
                                 Command="{Binding PrintCommand}"
                                 IsEnabled="{Binding !IsPrinting}"
                                 Background="#2196F3"
                                 Foreground="White"
                                 Padding="16,10" />
-                        <Button Content="Imprimir e Fechar"
+                        <Button Content="{i18n:Localize Receipt_Btn_PrintAndClose}"
                                 Command="{Binding PrintAndCloseCommand}"
                                 IsEnabled="{Binding !IsPrinting}"
                                 Background="#673AB7"
