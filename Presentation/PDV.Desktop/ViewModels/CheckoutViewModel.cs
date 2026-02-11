@@ -140,6 +140,9 @@ public partial class CheckoutViewModel : ViewModelBase
         _fiscalTransactionRepository = fiscalTransactionRepository;
         _backgroundSyncService = backgroundSyncService;
         ProductSearchPagination = new PaginationState(LoadProductPageAsync);
+        NotifyOnCultureChanged(
+            nameof(SaleInfoHeader), nameof(ChangeDisplay),
+            nameof(ReceiptSaleNumberDisplay), nameof(ReceiptNfceDisplay));
     }
 
     [RelayCommand]

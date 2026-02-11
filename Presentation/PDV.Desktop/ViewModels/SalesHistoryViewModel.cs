@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Interfaces.Queries;
+using PDV.Desktop.I18n;
 using PDV.Shared.DTOs;
 using PDV.Shared.Enums;
 using Res = PDV.Desktop.I18n.Resources;
@@ -255,6 +256,12 @@ public partial class SaleHistoryItemViewModel : ObservableObject
 
 public partial class SaleDetailViewModel : ObservableObject
 {
+    public SaleDetailViewModel()
+    {
+        LocalizationManager.Instance.PropertyChanged += (_, _) =>
+            OnPropertyChanged(nameof(SaleNumberDisplay));
+    }
+
     [ObservableProperty] private int _saleNumber;
 
     [ObservableProperty] private DateTime _saleDate;

@@ -123,7 +123,7 @@
   <data name="Home_Lbl_InProgress" xml:space="preserve"><value>Em Andamento</value></data>
   <data name="Home_Lbl_CompletedSales" xml:space="preserve"><value>Vendas Concluidas</value></data>
   <data name="Home_Lbl_TodaysRevenue" xml:space="preserve"><value>Receita do Dia</value></data>
-  <data name="Home_Lbl_QuickActions" xml:space="preserve"><value>Acoes Rapidas</value></data>
+  <data name="Home_Lbl_QuickActions" xml:space="preserve"><value>Ações Rápidas</value></data>
   <data name="Home_Btn_NewSale" xml:space="preserve"><value>Nova Venda</value></data>
   <data name="Home_Btn_NewSaleHint" xml:space="preserve"><value>Iniciar novo checkout (F1)</value></data>
   <data name="Home_Btn_Products" xml:space="preserve"><value>Produtos</value></data>
@@ -406,7 +406,7 @@
   <data name="Fiscal_TaxRegime_Normal" xml:space="preserve"><value>Regime Normal</value></data>
 
   <!-- ==================== FISCAL HISTORY ==================== -->
-  <data name="FiscalHist_Lbl_Title" xml:space="preserve"><value>Historico Fiscal</value></data>
+  <data name="FiscalHist_Lbl_Title" xml:space="preserve"><value>Histórico Fiscal</value></data>
   <data name="FiscalHist_Lbl_Subtitle" xml:space="preserve"><value>Consulta e reimpressao de NFC-e</value></data>
   <data name="FiscalHist_Lbl_AccessKey" xml:space="preserve"><value>Chave de Acesso:</value></data>
   <data name="FiscalHist_Wm_AccessKey" xml:space="preserve"><value>Digite a chave de acesso (44 digitos) ou deixe vazio para buscar por data</value></data>
@@ -420,7 +420,7 @@
   <data name="FiscalHist_Lbl_Authorized" xml:space="preserve"><value>Autorizadas</value></data>
   <data name="FiscalHist_Lbl_Contingency" xml:space="preserve"><value>Contingencia</value></data>
   <data name="FiscalHist_Lbl_Cancelled" xml:space="preserve"><value>Canceladas</value></data>
-  <data name="FiscalHist_Lbl_SelectTransaction" xml:space="preserve"><value>Selecione uma transacao</value></data>
+  <data name="FiscalHist_Lbl_SelectTransaction" xml:space="preserve"><value>Selecione uma transação</value></data>
   <data name="FiscalHist_Lbl_ToViewDetails" xml:space="preserve"><value>para ver detalhes</value></data>
   <data name="FiscalHist_Lbl_NfceNumber" xml:space="preserve"><value>NFC-e #{0}</value></data>
   <data name="FiscalHist_Lbl_StatusLabel" xml:space="preserve"><value>Status:</value></data>
@@ -429,13 +429,13 @@
   <data name="FiscalHist_Lbl_Protocol" xml:space="preserve"><value>Protocolo:</value></data>
   <data name="FiscalHist_Lbl_AuthorizedAt" xml:space="preserve"><value>Autorizado em:</value></data>
   <data name="FiscalHist_Lbl_AccessKeyTitle" xml:space="preserve"><value>Chave de Acesso</value></data>
-  <data name="FiscalHist_Lbl_Reprints" xml:space="preserve"><value>Reimpressoes</value></data>
+  <data name="FiscalHist_Lbl_Reprints" xml:space="preserve"><value>Reimpressões</value></data>
   <data name="FiscalHist_Lbl_ReprintTotal" xml:space="preserve"><value>Total: {0}</value></data>
   <data name="FiscalHist_Lbl_ReprintBy" xml:space="preserve"><value>Por: {0}</value></data>
   <data name="FiscalHist_Btn_ReprintDanfe" xml:space="preserve"><value>Reimprimir DANFE (F4)</value></data>
   <data name="FiscalHist_Btn_OpenAsPdf" xml:space="preserve"><value>Abrir como PDF (com QR Code)</value></data>
   <data name="FiscalHist_Btn_SavePdf" xml:space="preserve"><value>Salvar PDF</value></data>
-  <data name="FiscalHist_Lbl_ThermalPrinter" xml:space="preserve"><value>Impressora Termica (ESC/POS)</value></data>
+  <data name="FiscalHist_Lbl_ThermalPrinter" xml:space="preserve"><value>Impressora Térmica (ESC/POS)</value></data>
   <data name="FiscalHist_Wm_SelectPrinter" xml:space="preserve"><value>Selecione a impressora</value></data>
   <data name="FiscalHist_Lbl_QrCodeSize" xml:space="preserve"><value>Tamanho QR:</value></data>
   <data name="FiscalHist_Btn_PrintThermal" xml:space="preserve"><value>Imprimir Termica (QR Code Nativo)</value></data>

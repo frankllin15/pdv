@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PDV.Desktop.I18n;
 using PDV.Shared.DTOs;
 using Res = PDV.Desktop.I18n.Resources;
 
@@ -32,6 +33,8 @@ public partial class PaginationState : ObservableObject
     public PaginationState(Func<Task> loadPage)
     {
         _loadPage = loadPage;
+        LocalizationManager.Instance.PropertyChanged += (_, _) =>
+            OnPropertyChanged(nameof(PageInfo));
     }
 
     public void Update<T>(PagedResult<T> result)

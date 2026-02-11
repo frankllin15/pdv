@@ -36,6 +36,7 @@ public partial class HomeViewModel : ViewModelBase
         _saleQuery = saleQuery;
         _operatorSession = operatorSession;
         OperatorName = _operatorSession.CurrentOperator?.Name ?? Res.Home_Lbl_Operator;
+        NotifyOnCultureChanged(nameof(WelcomeMessage));
     }
 
     public async Task LoadDashboardDataAsync()

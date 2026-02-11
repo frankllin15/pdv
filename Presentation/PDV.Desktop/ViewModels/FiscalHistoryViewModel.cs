@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDV.Core.Interfaces.Repositories;
 using PDV.Core.Interfaces.Services;
+using PDV.Desktop.I18n;
 using PDV.Desktop.Services;
 using PDV.Shared.Enums;
 using Res = PDV.Desktop.I18n.Resources;
@@ -616,6 +617,15 @@ public partial class FiscalTransactionItemViewModel : ObservableObject
 
 public partial class FiscalTransactionDetailViewModel : ObservableObject
 {
+    public FiscalTransactionDetailViewModel()
+    {
+        LocalizationManager.Instance.PropertyChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(NfceNumberDisplay));
+            OnPropertyChanged(nameof(ReprintTotalDisplay));
+        };
+    }
+
     public Guid Id { get; set; }
 
     [ObservableProperty]
@@ -682,6 +692,12 @@ public partial class FiscalTransactionDetailViewModel : ObservableObject
 
 public partial class ReprintLogItemViewModel : ObservableObject
 {
+    public ReprintLogItemViewModel()
+    {
+        LocalizationManager.Instance.PropertyChanged += (_, _) =>
+            OnPropertyChanged(nameof(OperatorNameDisplay));
+    }
+
     [ObservableProperty]
     private int _reprintNumber;
 

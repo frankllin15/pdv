@@ -30,6 +30,7 @@ public sealed class LocalizationManager : INotifyPropertyChanged
         Resources.Culture = culture;
 
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
     }
 
     public static string Format(string key, params object[] args)

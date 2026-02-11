@@ -56,6 +56,7 @@ public partial class ReceiptPreviewViewModel : ViewModelBase
     public ReceiptPreviewViewModel(IReceiptPrinterService printerService)
     {
         _printerService = printerService;
+        NotifyOnCultureChanged(nameof(SaleNumberDisplay), nameof(TotalDisplay));
     }
 
     [RelayCommand]
