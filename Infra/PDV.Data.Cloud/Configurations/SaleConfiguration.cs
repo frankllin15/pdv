@@ -31,15 +31,23 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.Property(s => s.Total)
             .HasColumnType("decimal(18,2)");
 
+        builder.Property(s => s.Change)
+            .HasColumnType("decimal(18,2)")
+            .HasDefaultValue(0m);
+
         builder.Property(s => s.Status)
             .IsRequired();
 
         builder.Property(s => s.CustomerDocument)
             .HasMaxLength(20);
 
+        builder.Property(s => s.CashSessionId);
+
+        builder.HasIndex(s => s.CashSessionId);
+
         builder.Property(s => s.SyncState)
             .HasDefaultValue(SyncState.Pending);
-        
+
         builder.Property(s => s.FiscalStatus)
             .HasDefaultValue(FiscalStatus.None);
 

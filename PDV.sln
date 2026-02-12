@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{82108675-3
 	ProjectSection(SolutionItems) = preProject
 		Core\resume.md = Core\resume.md
 		Core\Fases\fase-1.md = Core\Fases\fase-1.md
+		Core\CAIXA_SESSAO.md = Core\CAIXA_SESSAO.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{C1971533-455D-43A4-9C5B-DE06C27A5D45}"

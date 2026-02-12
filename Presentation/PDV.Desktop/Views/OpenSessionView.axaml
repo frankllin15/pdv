@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:i18n="using:PDV.Desktop.I18n"
+             x:Class="PDV.Desktop.Views.OpenSessionView"
+             x:DataType="vm:OpenSessionViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding OpenSessionCommand}" />
+    </UserControl.KeyBindings>
+
+    <Grid Background="#F0F0F0">
+        <Border Background="White"
+                CornerRadius="12"
+                Padding="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="450"
+                BoxShadow="0 4 20 0 #40000000">
+            <StackPanel Spacing="24">
+                <!-- Title -->
+                <StackPanel HorizontalAlignment="Center" Spacing="8">
+                    <TextBlock Text="{i18n:Localize Session_Open_Title}"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#2196F3"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{i18n:Localize Session_Open_Subtitle}"
+                               FontSize="14"
+                               Foreground="#757575"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+
+                <!-- Opening Balance -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{i18n:Localize Session_Open_BalanceLabel}"
+                               FontSize="14"
+                               Foreground="#424242" />
+                    <TextBox Text="{Binding OpeningBalanceText}"
+                             FontSize="22"
+                             Height="52"
+                             Watermark="0,00"
+                             IsEnabled="{Binding !IsLoading}" />
+                </StackPanel>
+
+                <!-- Error Message -->
+                <Border Background="#FFEBEE"
+                        CornerRadius="4"
+                        Padding="12"
+                        IsVisible="{Binding HasError}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#C62828"
+                               FontSize="14"
+                               TextWrapping="Wrap" />
+                </Border>
+
+                <!-- Open Button -->
+                <Button Command="{Binding OpenSessionCommand}"
+                        Height="52"
+                        HorizontalAlignment="Stretch"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        IsEnabled="{Binding !IsLoading}"
+                        HorizontalContentAlignment="Center">
+                    <Panel>
+                        <TextBlock Text="{i18n:Localize Session_Open_Btn}"
+                                   IsVisible="{Binding !IsLoading}"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="{i18n:Localize Session_Open_Loading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   HorizontalAlignment="Center" />
+                    </Panel>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

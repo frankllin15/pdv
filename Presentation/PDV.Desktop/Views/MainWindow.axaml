@@ -15,6 +15,9 @@
         <KeyBinding Gesture="F1" Command="{Binding NavigateToCheckoutCommand}" />
         <KeyBinding Gesture="F4" Command="{Binding NavigateToProductsCommand}" />
         <KeyBinding Gesture="F6" Command="{Binding NavigateToSalesHistoryCommand}" />
+        <KeyBinding Gesture="F7" Command="{Binding NavigateToCloseSessionCommand}" />
+        <KeyBinding Gesture="F8" Command="{Binding OpenSupplyDialogCommand}" />
+        <KeyBinding Gesture="F9" Command="{Binding OpenBleedDialogCommand}" />
     </Window.KeyBindings>
 
     <Window.DataTemplates>
@@ -38,6 +41,12 @@
         </DataTemplate>
         <DataTemplate DataType="vm:FiscalHistoryViewModel">
             <views:FiscalHistoryView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:OpenSessionViewModel">
+            <views:OpenSessionView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:CloseSessionViewModel">
+            <views:CloseSessionView />
         </DataTemplate>
     </Window.DataTemplates>
 
@@ -96,6 +105,17 @@
                                           Padding="8,6" />
                             </StackPanel>
                         </StackPanel>
+
+                        <!-- Session Indicator -->
+                        <Border Margin="12,4,12,0" Padding="8,4"
+                                Background="#1B5E20"
+                                CornerRadius="4"
+                                IsVisible="{Binding HasOpenSession}">
+                            <TextBlock Text="{Binding SessionInfo}"
+                                       Foreground="#A5D6A7"
+                                       FontSize="11"
+                                       TextTrimming="CharacterEllipsis" />
+                        </Border>
 
                         <!-- User Info + Logout -->
                         <Border Margin="12,8" Padding="0">
@@ -233,6 +253,40 @@
                                         Padding="16,10">
                                     <TextBlock Text="{i18n:Localize Nav_Btn_FiscalHistory}" FontSize="13" />
                                 </Button>
+                                <Border Height="1" Background="#444" Margin="24,4,8,4" />
+                                <Button Command="{Binding OpenSupplyDialogCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="Transparent"
+                                        Foreground="#4CAF50"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10"
+                                        IsEnabled="{Binding HasOpenSession}">
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Supply}" FontSize="13" />
+                                </Button>
+                                <Button Command="{Binding OpenBleedDialogCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="Transparent"
+                                        Foreground="#FF9800"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10"
+                                        IsEnabled="{Binding HasOpenSession}">
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Bleed}" FontSize="13" />
+                                </Button>
+                                <Button Command="{Binding NavigateToCloseSessionCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="Transparent"
+                                        Foreground="#F44336"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10"
+                                        IsEnabled="{Binding HasOpenSession}">
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_CloseSession}" FontSize="13" />
+                                </Button>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
@@ -284,6 +338,34 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
+        </Border>
+
+        <!-- Supply Dialog Overlay -->
+        <Border Background="#80000000"
+                IsVisible="{Binding ShowSupplyDialog}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <ContentControl Content="{Binding SupplyViewModel}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="vm:CashTransactionViewModel">
+                        <views:CashTransactionView />
+                    </DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
+        </Border>
+
+        <!-- Bleed Dialog Overlay -->
+        <Border Background="#80000000"
+                IsVisible="{Binding ShowBleedDialog}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <ContentControl Content="{Binding BleedViewModel}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="vm:CashTransactionViewModel">
+                        <views:CashTransactionView />
+                    </DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
         </Border>
     </Panel>
 </Window>

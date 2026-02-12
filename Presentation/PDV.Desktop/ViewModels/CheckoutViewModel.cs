@@ -23,6 +23,7 @@ public partial class CheckoutViewModel : ViewModelBase
     private readonly IFiscalConfigurationRepository? _fiscalConfigRepository;
     private readonly IFiscalTransactionRepository? _fiscalTransactionRepository;
     private readonly BackgroundSyncService? _backgroundSyncService;
+    private readonly ICashSessionService? _cashSessionService;
 
     private Sale? _currentSale;
 
@@ -58,6 +59,12 @@ public partial class CheckoutViewModel : ViewModelBase
 
     [ObservableProperty]
     private decimal _change;
+
+    [ObservableProperty]
+    private bool _showChangeDialog;
+
+    [ObservableProperty]
+    private string _amountReceivedText = string.Empty;
 
     [ObservableProperty]
     private bool _showPendingSalesDialog;
@@ -128,7 +135,8 @@ public partial class CheckoutViewModel : ViewModelBase
         IReceiptPrinterService? printerService = null,
         IFiscalConfigurationRepository? fiscalConfigRepository = null,
         IFiscalTransactionRepository? fiscalTransactionRepository = null,
-        BackgroundSyncService? backgroundSyncService = null)
+        BackgroundSyncService? backgroundSyncService = null,
+        ICashSessionService? cashSessionService = null)
     {
         _productQuery = productQuery;
         _saleQuery = saleQuery;
@@ -139,6 +147,7 @@ public partial class CheckoutViewModel : ViewModelBase
         _fiscalConfigRepository = fiscalConfigRepository;
         _fiscalTransactionRepository = fiscalTransactionRepository;
         _backgroundSyncService = backgroundSyncService;
+        _cashSessionService = cashSessionService;
         ProductSearchPagination = new PaginationState(LoadProductPageAsync);
         NotifyOnCultureChanged(
             nameof(SaleInfoHeader), nameof(ChangeDisplay),
@@ -313,7 +322,7 @@ public partial class CheckoutViewModel : ViewModelBase
         {
             var operatorId = _operatorSession.CurrentOperator?.Id;
             var nextNumber = await _unitOfWork.Sales.GetNextSaleNumberAsync();
-            _currentSale = new Sale(nextNumber, operatorId);
+            _currentSale = new Sale(nextNumber, operatorId, _cashSessionService?.CurrentSession?.Id);
             await _unitOfWork.Sales.AddAsync(_currentSale);
             await _unitOfWork.SaveChangesAsync();
 
@@ -340,7 +349,9 @@ public partial class CheckoutViewModel : ViewModelBase
         UpdateTotals();
         IsPaymentMode = false;
         AmountPaid = 0;
+        AmountReceivedText = string.Empty;
         Change = 0;
+        ShowChangeDialog = false;
         BarcodeInput = string.Empty;
         SetStatus(Res.PDV_Msg_ReadyScan, false);
     }
@@ -485,12 +496,42 @@ public partial class CheckoutViewModel : ViewModelBase
     [RelayCommand]
     private async Task ProcessPaymentAsync(string paymentMethodStr)
     {
-        if (_currentSale == null) return;
+        if (_currentSale == null || !Items.Any()) return;
 
         if (!Enum.TryParse<PaymentMethod>(paymentMethodStr, out var paymentMethod))
         {
             SetStatus(Res.PDV_Msg_InvalidPayment, true);
             return;
+        }
+
+        // For cash: require entering amount received first
+        if (paymentMethod == PaymentMethod.Cash && !IsPaymentMode)
+        {
+            IsPaymentMode = true;
+            AmountReceivedText = string.Empty;
+            AmountPaid = 0;
+            Change = 0;
+            SetStatus(Res.PDV_Msg_EnterAmountReceived, false);
+            return;
+        }
+
+        // For cash: parse and validate amount received
+        if (paymentMethod == PaymentMethod.Cash)
+        {
+            var parsed = ParseAmountReceived();
+            if (parsed <= 0)
+            {
+                SetStatus(Res.PDV_Msg_InvalidAmount, true);
+                return;
+            }
+
+            AmountPaid = parsed;
+
+            if (AmountPaid < Total)
+            {
+                SetStatus(string.Format(Res.PDV_Msg_InsufficientCash, Total), true);
+                return;
+            }
         }
 
         try
@@ -514,28 +555,25 @@ public partial class CheckoutViewModel : ViewModelBase
             if (_currentSale.GetRemainingAmount() <= 0)
             {
                 _currentSale.Complete();
-                Change = _currentSale.GetChange();
+                Change = _currentSale.Change;
             }
 
             await _unitOfWork.SaveChangesAsync();
 
             if (_currentSale.Status == SaleStatus.Completed)
             {
-                SetStatus(Change > 0
-                    ? string.Format(Res.PDV_Msg_SaleCompletedChange, SaleNumber, Change)
-                    : string.Format(Res.PDV_Msg_SaleCompleted, SaleNumber), false);
                 IsPaymentMode = false;
 
-                // Process fiscal (NFC-e) after sale completion
-                await ProcessFiscalAsync();
-
-                // Trigger cloud sync in background (fire-and-forget)
-                _ = _backgroundSyncService?.SyncNowAsync();
-
-                // Reset state - new sale will be created when first item is added
-                if (!ShowReceiptPreview)
+                if (Change > 0)
                 {
-                    ResetCheckoutState();
+                    // Show prominent change dialog
+                    ShowChangeDialog = true;
+                    SetStatus(string.Format(Res.PDV_Msg_SaleCompletedChange, SaleNumber, Change), false);
+                }
+                else
+                {
+                    SetStatus(string.Format(Res.PDV_Msg_SaleCompleted, SaleNumber), false);
+                    await FinalizeSaleAsync();
                 }
             }
             else
@@ -546,6 +584,38 @@ public partial class CheckoutViewModel : ViewModelBase
         catch (Exception ex)
         {
             SetStatus(string.Format(Res.PDV_Msg_PaymentError, ex.Message), true);
+        }
+    }
+
+    private decimal ParseAmountReceived()
+    {
+        if (string.IsNullOrWhiteSpace(AmountReceivedText))
+            return 0;
+
+        var text = AmountReceivedText.Trim().Replace(",", ".");
+        return decimal.TryParse(text, System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out var value) ? value : 0;
+    }
+
+    [RelayCommand]
+    private async Task DismissChangeDialogAsync()
+    {
+        ShowChangeDialog = false;
+        await FinalizeSaleAsync();
+    }
+
+    private async Task FinalizeSaleAsync()
+    {
+        // Process fiscal (NFC-e) after sale completion
+        await ProcessFiscalAsync();
+
+        // Trigger cloud sync in background (fire-and-forget)
+        _ = _backgroundSyncService?.SyncNowAsync();
+
+        // Reset state - new sale will be created when first item is added
+        if (!ShowReceiptPreview)
+        {
+            ResetCheckoutState();
         }
     }
 

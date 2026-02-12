@@ -206,6 +206,16 @@
   <data name="PDV_Msg_NoItems" xml:space="preserve"><value>No items in sale</value></data>
   <data name="PDV_Msg_SelectPayment" xml:space="preserve"><value>Select payment method</value></data>
   <data name="PDV_Msg_InvalidPayment" xml:space="preserve"><value>Invalid payment method</value></data>
+  <data name="PDV_Msg_EnterAmountReceived" xml:space="preserve"><value>Enter the amount received from customer</value></data>
+  <data name="PDV_Msg_InvalidAmount" xml:space="preserve"><value>Invalid amount entered</value></data>
+  <data name="PDV_Msg_InsufficientCash" xml:space="preserve"><value>Insufficient amount. Sale total: {0:C}</value></data>
+  <data name="PDV_Dlg_ChangeTitle" xml:space="preserve"><value>CHANGE</value></data>
+  <data name="PDV_Dlg_AmountReceived" xml:space="preserve"><value>Amount Received:</value></data>
+  <data name="PDV_Dlg_SaleTotal" xml:space="preserve"><value>Sale Total:</value></data>
+  <data name="PDV_Dlg_ChangeValue" xml:space="preserve"><value>Change:</value></data>
+  <data name="PDV_Btn_ConfirmChange" xml:space="preserve"><value>OK - Confirm [Enter]</value></data>
+  <data name="PDV_Wm_AmountReceived" xml:space="preserve"><value>e.g. 50.00</value></data>
+  <data name="PDV_Btn_ConfirmCash" xml:space="preserve"><value>Confirm Payment [F2]</value></data>
   <data name="PDV_Msg_SaleCompleted" xml:space="preserve"><value>Sale #{0} completed!</value></data>
   <data name="PDV_Msg_SaleCompletedChange" xml:space="preserve"><value>Sale #{0} completed! - Change: {1:C}</value></data>
   <data name="PDV_Msg_Remaining" xml:space="preserve"><value>Remaining: {0:C}</value></data>
@@ -485,6 +495,63 @@
   <data name="FiscalHist_StatusOpt_Rejected" xml:space="preserve"><value>Rejected</value></data>
   <data name="FiscalHist_Lbl_UnknownOperator" xml:space="preserve"><value>Unknown</value></data>
   <data name="FiscalHist_Msg_SavePdfConsult" xml:space="preserve"><value>Save PDF for reference</value></data>
+
+  <!-- ==================== CASH SESSION ==================== -->
+  <!-- Open Session -->
+  <data name="Session_Open_Title" xml:space="preserve"><value>Open Cash Register</value></data>
+  <data name="Session_Open_Subtitle" xml:space="preserve"><value>Enter the opening cash balance</value></data>
+  <data name="Session_Open_BalanceLabel" xml:space="preserve"><value>Opening Balance ($)</value></data>
+  <data name="Session_Open_Btn" xml:space="preserve"><value>Open Register [Enter]</value></data>
+  <data name="Session_Open_Loading" xml:space="preserve"><value>Opening...</value></data>
+  <data name="Session_Open_InvalidBalance" xml:space="preserve"><value>Invalid opening balance.</value></data>
+  <data name="Session_Open_NoOperator" xml:space="preserve"><value>No operator logged in.</value></data>
+  <data name="Session_Open_Error" xml:space="preserve"><value>Error opening register: {0}</value></data>
+
+  <!-- Close Session -->
+  <data name="Session_Close_Title" xml:space="preserve"><value>Close Cash Register</value></data>
+  <data name="Session_Close_Subtitle" xml:space="preserve"><value>Count the cash in the register</value></data>
+  <data name="Session_Close_CountedLabel" xml:space="preserve"><value>Counted Cash Amount ($)</value></data>
+  <data name="Session_Close_Btn" xml:space="preserve"><value>Close Register [Enter]</value></data>
+  <data name="Session_Close_Loading" xml:space="preserve"><value>Closing...</value></data>
+  <data name="Session_Close_SummaryTitle" xml:space="preserve"><value>Closing Summary</value></data>
+  <data name="Session_Close_Opening" xml:space="preserve"><value>Opening:</value></data>
+  <data name="Session_Close_Supply" xml:space="preserve"><value>(+) Supplies:</value></data>
+  <data name="Session_Close_Bleed" xml:space="preserve"><value>(-) Bleeds:</value></data>
+  <data name="Session_Close_SalesCash" xml:space="preserve"><value>Cash Sales:</value></data>
+  <data name="Session_Close_SalesCard" xml:space="preserve"><value>Card Sales:</value></data>
+  <data name="Session_Close_SalesPix" xml:space="preserve"><value>Pix Sales:</value></data>
+  <data name="Session_Close_SalesOther" xml:space="preserve"><value>Other Sales:</value></data>
+  <data name="Session_Close_Expected" xml:space="preserve"><value>Expected Cash:</value></data>
+  <data name="Session_Close_Counted" xml:space="preserve"><value>Counted:</value></data>
+  <data name="Session_Close_Difference" xml:space="preserve"><value>Difference:</value></data>
+  <data name="Session_Close_Confirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Session_Close_NoSession" xml:space="preserve"><value>No session open.</value></data>
+  <data name="Session_Close_InvalidValue" xml:space="preserve"><value>Invalid counted value.</value></data>
+  <data name="Session_Close_Error" xml:space="preserve"><value>Error closing register: {0}</value></data>
+
+  <!-- Cash Transaction (Supply/Bleed) -->
+  <data name="CashTx_Supply" xml:space="preserve"><value>Supply</value></data>
+  <data name="CashTx_Bleed" xml:space="preserve"><value>Bleed</value></data>
+  <data name="CashTx_AmountLabel" xml:space="preserve"><value>Amount ($)</value></data>
+  <data name="CashTx_DescriptionLabel" xml:space="preserve"><value>Description (optional)</value></data>
+  <data name="CashTx_DescriptionWatermark" xml:space="preserve"><value>Reason for operation</value></data>
+  <data name="CashTx_AdminAuth" xml:space="preserve"><value>Administrator Authentication</value></data>
+  <data name="CashTx_AdminCode" xml:space="preserve"><value>Admin Code</value></data>
+  <data name="CashTx_AdminPin" xml:space="preserve"><value>Admin PIN</value></data>
+  <data name="CashTx_BtnCancel" xml:space="preserve"><value>Cancel [Esc]</value></data>
+  <data name="CashTx_BtnConfirm" xml:space="preserve"><value>Confirm [Enter]</value></data>
+  <data name="CashTx_InvalidAmount" xml:space="preserve"><value>Amount must be greater than zero.</value></data>
+  <data name="CashTx_NoSession" xml:space="preserve"><value>No cash session open.</value></data>
+  <data name="CashTx_AdminRequired" xml:space="preserve"><value>Administrator authentication required for bleed.</value></data>
+  <data name="CashTx_InvalidCredentials" xml:space="preserve"><value>Invalid administrator credentials.</value></data>
+  <data name="CashTx_NotAdmin" xml:space="preserve"><value>Operator is not an administrator.</value></data>
+  <data name="CashTx_NoOperator" xml:space="preserve"><value>No operator logged in.</value></data>
+  <data name="CashTx_Error" xml:space="preserve"><value>Error: {0}</value></data>
+
+  <!-- Sidebar Cash Session buttons -->
+  <data name="Nav_Btn_Supply" xml:space="preserve"><value>Supply [F8]</value></data>
+  <data name="Nav_Btn_Bleed" xml:space="preserve"><value>Bleed [F9]</value></data>
+  <data name="Nav_Btn_CloseSession" xml:space="preserve"><value>Close Register [F7]</value></data>
 
   <!-- ==================== RECEIPT ==================== -->
   <data name="Receipt_Lbl_Title" xml:space="preserve"><value>Sale Receipt</value></data>

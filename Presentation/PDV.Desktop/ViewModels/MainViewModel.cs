@@ -3,12 +3,14 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using PDV.Core.Interfaces.Services;
 using PDV.Desktop.I18n;
+using PDV.Shared.Enums;
 
 namespace PDV.Desktop.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IOperatorSessionService _sessionService;
+    private readonly ICashSessionService _cashSessionService;
     private CheckoutViewModel? _checkoutViewModel;
     private Action? _pendingNavigation;
 
@@ -57,6 +59,24 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private int _selectedLanguageIndex;
 
+    [ObservableProperty]
+    private bool _hasOpenSession;
+
+    [ObservableProperty]
+    private string _sessionInfo = string.Empty;
+
+    [ObservableProperty]
+    private bool _showSupplyDialog;
+
+    [ObservableProperty]
+    private bool _showBleedDialog;
+
+    [ObservableProperty]
+    private CashTransactionViewModel? _supplyViewModel;
+
+    [ObservableProperty]
+    private CashTransactionViewModel? _bleedViewModel;
+
     public List<string> Languages { get; } = ["Portugues (BR)", "English (US)"];
 
     private static readonly string[] CultureCodes = ["pt-BR", "en-US"];
@@ -69,10 +89,12 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public MainViewModel(IOperatorSessionService sessionService)
+    public MainViewModel(IOperatorSessionService sessionService, ICashSessionService cashSessionService)
     {
         _sessionService = sessionService;
+        _cashSessionService = cashSessionService;
         _sessionService.OperatorChanged += OnOperatorChanged;
+        _cashSessionService.SessionChanged += OnSessionChanged;
 
         // Start with login view
         var loginViewModel = App.Services?.GetRequiredService<LoginViewModel>();
@@ -134,12 +156,31 @@ public partial class MainViewModel : ViewModelBase
         CurrentOperatorName = operatorDto?.Name ?? string.Empty;
     }
 
-    private void OnLoginSuccessful()
+    private void OnSessionChanged(PDV.Shared.DTOs.CashSessionDto? session)
+    {
+        HasOpenSession = session != null;
+        SessionInfo = session != null
+            ? $"Caixa aberto - {session.TerminalId}"
+            : string.Empty;
+    }
+
+    private async void OnLoginSuccessful()
     {
         IsLoggedIn = true;
         IsSidebarVisible = true;
         CurrentOperatorName = _sessionService.CurrentOperator?.Name ?? string.Empty;
-        NavigateToHome();
+
+        var terminalId = Environment.MachineName;
+        await _cashSessionService.LoadCurrentSessionAsync(terminalId);
+
+        if (!_cashSessionService.HasOpenSession)
+        {
+            NavigateToOpenSession();
+        }
+        else
+        {
+            NavigateToHome();
+        }
     }
 
     private void ResetActiveStates()
@@ -174,6 +215,11 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToCheckout()
     {
+        if (!HasOpenSession)
+        {
+            NavigateToOpenSession();
+            return;
+        }
         DoNavigateToCheckout();
     }
 
@@ -264,6 +310,76 @@ public partial class MainViewModel : ViewModelBase
         ResetActiveStates();
         IsFiscalHistoryActive = true;
         IsSidebarVisible = true;
+    }
+
+    [RelayCommand]
+    private void NavigateToOpenSession()
+    {
+        if (!TryNavigateWithConfirmation(DoNavigateToOpenSession))
+            return;
+    }
+
+    private void DoNavigateToOpenSession()
+    {
+        _checkoutViewModel = null;
+        var viewModel = App.Services?.GetRequiredService<OpenSessionViewModel>()
+            ?? throw new InvalidOperationException("OpenSessionViewModel not registered");
+
+        viewModel.SessionOpened += () =>
+        {
+            DoNavigateToHome();
+        };
+
+        CurrentView = viewModel;
+        ResetActiveStates();
+        IsSidebarVisible = true;
+    }
+
+    [RelayCommand]
+    private void NavigateToCloseSession()
+    {
+        if (!TryNavigateWithConfirmation(DoNavigateToCloseSession))
+            return;
+    }
+
+    private void DoNavigateToCloseSession()
+    {
+        _checkoutViewModel = null;
+        var viewModel = App.Services?.GetRequiredService<CloseSessionViewModel>()
+            ?? throw new InvalidOperationException("CloseSessionViewModel not registered");
+
+        viewModel.SessionClosed += () =>
+        {
+            DoNavigateToOpenSession();
+        };
+
+        CurrentView = viewModel;
+        ResetActiveStates();
+        IsSidebarVisible = true;
+    }
+
+    [RelayCommand]
+    private void OpenSupplyDialog()
+    {
+        var vm = App.Services?.GetRequiredService<CashTransactionViewModel>()
+            ?? throw new InvalidOperationException("CashTransactionViewModel not registered");
+        vm.Initialize(CashTransactionType.Supply);
+        vm.TransactionCompleted += () => ShowSupplyDialog = false;
+        vm.TransactionCancelled += () => ShowSupplyDialog = false;
+        SupplyViewModel = vm;
+        ShowSupplyDialog = true;
+    }
+
+    [RelayCommand]
+    private void OpenBleedDialog()
+    {
+        var vm = App.Services?.GetRequiredService<CashTransactionViewModel>()
+            ?? throw new InvalidOperationException("CashTransactionViewModel not registered");
+        vm.Initialize(CashTransactionType.Bleed);
+        vm.TransactionCompleted += () => ShowBleedDialog = false;
+        vm.TransactionCancelled += () => ShowBleedDialog = false;
+        BleedViewModel = vm;
+        ShowBleedDialog = true;
     }
 
     [RelayCommand]

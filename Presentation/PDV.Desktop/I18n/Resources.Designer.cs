@@ -2470,7 +2470,97 @@ namespace PDV.Desktop.I18n {
                 return ResourceManager.GetString("PDV_Msg_InvalidPayment", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Informe o valor recebido do cliente.
+        /// </summary>
+        internal static string PDV_Msg_EnterAmountReceived {
+            get {
+                return ResourceManager.GetString("PDV_Msg_EnterAmountReceived", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Valor informado invalido.
+        /// </summary>
+        internal static string PDV_Msg_InvalidAmount {
+            get {
+                return ResourceManager.GetString("PDV_Msg_InvalidAmount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Valor insuficiente. Total da venda: {0:C}.
+        /// </summary>
+        internal static string PDV_Msg_InsufficientCash {
+            get {
+                return ResourceManager.GetString("PDV_Msg_InsufficientCash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TROCO.
+        /// </summary>
+        internal static string PDV_Dlg_ChangeTitle {
+            get {
+                return ResourceManager.GetString("PDV_Dlg_ChangeTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Valor Recebido:.
+        /// </summary>
+        internal static string PDV_Dlg_AmountReceived {
+            get {
+                return ResourceManager.GetString("PDV_Dlg_AmountReceived", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Total da Venda:.
+        /// </summary>
+        internal static string PDV_Dlg_SaleTotal {
+            get {
+                return ResourceManager.GetString("PDV_Dlg_SaleTotal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Troco:.
+        /// </summary>
+        internal static string PDV_Dlg_ChangeValue {
+            get {
+                return ResourceManager.GetString("PDV_Dlg_ChangeValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OK - Confirmar [Enter].
+        /// </summary>
+        internal static string PDV_Btn_ConfirmChange {
+            get {
+                return ResourceManager.GetString("PDV_Btn_ConfirmChange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ex: 50.00.
+        /// </summary>
+        internal static string PDV_Wm_AmountReceived {
+            get {
+                return ResourceManager.GetString("PDV_Wm_AmountReceived", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmar Pagamento [F2].
+        /// </summary>
+        internal static string PDV_Btn_ConfirmCash {
+            get {
+                return ResourceManager.GetString("PDV_Btn_ConfirmCash", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Item removido.
         /// </summary>
@@ -3389,6 +3479,151 @@ namespace PDV.Desktop.I18n {
             }
         }
         
+        internal static string Session_Open_Title {
+            get { return ResourceManager.GetString("Session_Open_Title", resourceCulture); }
+        }
+        internal static string Session_Open_Subtitle {
+            get { return ResourceManager.GetString("Session_Open_Subtitle", resourceCulture); }
+        }
+        internal static string Session_Open_BalanceLabel {
+            get { return ResourceManager.GetString("Session_Open_BalanceLabel", resourceCulture); }
+        }
+        internal static string Session_Open_Btn {
+            get { return ResourceManager.GetString("Session_Open_Btn", resourceCulture); }
+        }
+        internal static string Session_Open_Loading {
+            get { return ResourceManager.GetString("Session_Open_Loading", resourceCulture); }
+        }
+        internal static string Session_Open_InvalidBalance {
+            get { return ResourceManager.GetString("Session_Open_InvalidBalance", resourceCulture); }
+        }
+        internal static string Session_Open_NoOperator {
+            get { return ResourceManager.GetString("Session_Open_NoOperator", resourceCulture); }
+        }
+        internal static string Session_Open_Error {
+            get { return ResourceManager.GetString("Session_Open_Error", resourceCulture); }
+        }
+        internal static string Session_Close_Title {
+            get { return ResourceManager.GetString("Session_Close_Title", resourceCulture); }
+        }
+        internal static string Session_Close_Subtitle {
+            get { return ResourceManager.GetString("Session_Close_Subtitle", resourceCulture); }
+        }
+        internal static string Session_Close_CountedLabel {
+            get { return ResourceManager.GetString("Session_Close_CountedLabel", resourceCulture); }
+        }
+        internal static string Session_Close_Btn {
+            get { return ResourceManager.GetString("Session_Close_Btn", resourceCulture); }
+        }
+        internal static string Session_Close_Loading {
+            get { return ResourceManager.GetString("Session_Close_Loading", resourceCulture); }
+        }
+        internal static string Session_Close_SummaryTitle {
+            get { return ResourceManager.GetString("Session_Close_SummaryTitle", resourceCulture); }
+        }
+        internal static string Session_Close_Opening {
+            get { return ResourceManager.GetString("Session_Close_Opening", resourceCulture); }
+        }
+        internal static string Session_Close_Supply {
+            get { return ResourceManager.GetString("Session_Close_Supply", resourceCulture); }
+        }
+        internal static string Session_Close_Bleed {
+            get { return ResourceManager.GetString("Session_Close_Bleed", resourceCulture); }
+        }
+        internal static string Session_Close_SalesCash {
+            get { return ResourceManager.GetString("Session_Close_SalesCash", resourceCulture); }
+        }
+        internal static string Session_Close_SalesCard {
+            get { return ResourceManager.GetString("Session_Close_SalesCard", resourceCulture); }
+        }
+        internal static string Session_Close_SalesPix {
+            get { return ResourceManager.GetString("Session_Close_SalesPix", resourceCulture); }
+        }
+        internal static string Session_Close_SalesOther {
+            get { return ResourceManager.GetString("Session_Close_SalesOther", resourceCulture); }
+        }
+        internal static string Session_Close_Expected {
+            get { return ResourceManager.GetString("Session_Close_Expected", resourceCulture); }
+        }
+        internal static string Session_Close_Counted {
+            get { return ResourceManager.GetString("Session_Close_Counted", resourceCulture); }
+        }
+        internal static string Session_Close_Difference {
+            get { return ResourceManager.GetString("Session_Close_Difference", resourceCulture); }
+        }
+        internal static string Session_Close_Confirm {
+            get { return ResourceManager.GetString("Session_Close_Confirm", resourceCulture); }
+        }
+        internal static string Session_Close_NoSession {
+            get { return ResourceManager.GetString("Session_Close_NoSession", resourceCulture); }
+        }
+        internal static string Session_Close_InvalidValue {
+            get { return ResourceManager.GetString("Session_Close_InvalidValue", resourceCulture); }
+        }
+        internal static string Session_Close_Error {
+            get { return ResourceManager.GetString("Session_Close_Error", resourceCulture); }
+        }
+        internal static string CashTx_Supply {
+            get { return ResourceManager.GetString("CashTx_Supply", resourceCulture); }
+        }
+        internal static string CashTx_Bleed {
+            get { return ResourceManager.GetString("CashTx_Bleed", resourceCulture); }
+        }
+        internal static string CashTx_AmountLabel {
+            get { return ResourceManager.GetString("CashTx_AmountLabel", resourceCulture); }
+        }
+        internal static string CashTx_DescriptionLabel {
+            get { return ResourceManager.GetString("CashTx_DescriptionLabel", resourceCulture); }
+        }
+        internal static string CashTx_DescriptionWatermark {
+            get { return ResourceManager.GetString("CashTx_DescriptionWatermark", resourceCulture); }
+        }
+        internal static string CashTx_AdminAuth {
+            get { return ResourceManager.GetString("CashTx_AdminAuth", resourceCulture); }
+        }
+        internal static string CashTx_AdminCode {
+            get { return ResourceManager.GetString("CashTx_AdminCode", resourceCulture); }
+        }
+        internal static string CashTx_AdminPin {
+            get { return ResourceManager.GetString("CashTx_AdminPin", resourceCulture); }
+        }
+        internal static string CashTx_BtnCancel {
+            get { return ResourceManager.GetString("CashTx_BtnCancel", resourceCulture); }
+        }
+        internal static string CashTx_BtnConfirm {
+            get { return ResourceManager.GetString("CashTx_BtnConfirm", resourceCulture); }
+        }
+        internal static string CashTx_InvalidAmount {
+            get { return ResourceManager.GetString("CashTx_InvalidAmount", resourceCulture); }
+        }
+        internal static string CashTx_NoSession {
+            get { return ResourceManager.GetString("CashTx_NoSession", resourceCulture); }
+        }
+        internal static string CashTx_AdminRequired {
+            get { return ResourceManager.GetString("CashTx_AdminRequired", resourceCulture); }
+        }
+        internal static string CashTx_InvalidCredentials {
+            get { return ResourceManager.GetString("CashTx_InvalidCredentials", resourceCulture); }
+        }
+        internal static string CashTx_NotAdmin {
+            get { return ResourceManager.GetString("CashTx_NotAdmin", resourceCulture); }
+        }
+        internal static string CashTx_NoOperator {
+            get { return ResourceManager.GetString("CashTx_NoOperator", resourceCulture); }
+        }
+        internal static string CashTx_Error {
+            get { return ResourceManager.GetString("CashTx_Error", resourceCulture); }
+        }
+        internal static string Nav_Btn_Supply {
+            get { return ResourceManager.GetString("Nav_Btn_Supply", resourceCulture); }
+        }
+        internal static string Nav_Btn_Bleed {
+            get { return ResourceManager.GetString("Nav_Btn_Bleed", resourceCulture); }
+        }
+        internal static string Nav_Btn_CloseSession {
+            get { return ResourceManager.GetString("Nav_Btn_CloseSession", resourceCulture); }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Comprovante de Venda.
         /// </summary>

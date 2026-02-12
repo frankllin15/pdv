@@ -31,11 +31,19 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.Property(s => s.Total)
             .HasColumnType("REAL");
 
+        builder.Property(s => s.Change)
+            .HasColumnType("REAL")
+            .HasDefaultValue(0m);
+
         builder.Property(s => s.Status)
             .IsRequired();
 
         builder.Property(s => s.CustomerDocument)
             .HasMaxLength(20);
+
+        builder.Property(s => s.CashSessionId);
+
+        builder.HasIndex(s => s.CashSessionId);
 
         builder.Property(s => s.SyncState)
             .HasDefaultValue(SyncState.Pending);

@@ -13,6 +13,8 @@ public class Sale : Entity
     public SaleStatus Status { get; private set; }
     public string? CustomerDocument { get; private set; } // CPF
     public Guid? OperatorId { get; private set; }
+    public Guid? CashSessionId { get; private set; }
+    public decimal Change { get; private set; }
     public SyncState SyncState { get; private set; } = SyncState.Pending;
 
     // Fiscal fields
@@ -29,12 +31,13 @@ public class Sale : Entity
 
     private Sale() { }
 
-    public Sale(int saleNumber, Guid? operatorId = null)
+    public Sale(int saleNumber, Guid? operatorId = null, Guid? cashSessionId = null)
     {
         SaleNumber = saleNumber;
         SaleDate = DateTime.UtcNow;
         Status = SaleStatus.InProgress;
         OperatorId = operatorId;
+        CashSessionId = cashSessionId;
     }
 
     public SaleItem AddItem(Product product, decimal quantity, decimal discount = 0)
@@ -127,6 +130,8 @@ public class Sale : Entity
         var totalPaid = _payments.Sum(p => p.Amount);
         if (totalPaid < Total)
             throw new InvalidOperationException($"Payment insufficient. Total: {Total:C}, Paid: {totalPaid:C}");
+
+        Change = totalPaid > Total ? totalPaid - Total : 0;
 
         Status = SaleStatus.Completed;
         SetUpdatedAt();

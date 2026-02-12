@@ -148,19 +148,29 @@
                                    Foreground="#2196F3" />
                     </Grid>
 
-                    <!-- Payment Section (visible when in payment mode) -->
-                    <StackPanel IsVisible="{Binding IsPaymentMode}">
-                        <TextBlock Text="{i18n:Localize PDV_Lbl_AmountReceived}" Margin="0,0,0,4" />
-                        <TextBox Text="{Binding AmountPaid}"
-                                 FontSize="18"
-                                 Height="40"
-                                 Margin="0,0,0,8" />
-
-                        <TextBlock Text="{Binding ChangeDisplay}"
-                                   FontSize="16" FontWeight="SemiBold"
-                                   Foreground="#4CAF50"
-                                   IsVisible="{Binding Change}"
-                                   Margin="0,0,0,16" />
+                    <!-- Cash Amount Input (visible when paying with cash) -->
+                    <StackPanel IsVisible="{Binding IsPaymentMode}" Margin="0,0,0,8">
+                        <TextBlock Text="{i18n:Localize PDV_Lbl_AmountReceived}"
+                                   FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <TextBox x:Name="AmountReceivedInput"
+                                 Text="{Binding AmountReceivedText}"
+                                 Watermark="{i18n:Localize PDV_Wm_AmountReceived}"
+                                 FontSize="20"
+                                 Height="48"
+                                 Margin="0,0,0,8">
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding ProcessPaymentCommand}" CommandParameter="Cash" />
+                            </TextBox.KeyBindings>
+                        </TextBox>
+                        <Button Content="{i18n:Localize PDV_Btn_ConfirmCash}"
+                                Command="{Binding ProcessPaymentCommand}"
+                                CommandParameter="Cash"
+                                Height="44"
+                                HorizontalAlignment="Stretch"
+                                Background="#4CAF50"
+                                Foreground="White"
+                                FontSize="14" FontWeight="SemiBold"
+                                HorizontalContentAlignment="Center" />
                     </StackPanel>
 
                     <!-- Payment Buttons -->
@@ -612,6 +622,76 @@
                     </Grid>
                 </Border>
             </Grid>
+        </Border>
+    </Border>
+
+    <!-- Change (Troco) Dialog Overlay -->
+    <Border IsVisible="{Binding ShowChangeDialog}"
+            Background="#CC000000">
+        <Border Background="White" CornerRadius="12"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                MinWidth="420" MaxWidth="480"
+                Padding="32"
+                BoxShadow="0 8 32 0 #60000000">
+            <Border.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding DismissChangeDialogCommand}" />
+            </Border.KeyBindings>
+            <StackPanel Spacing="16">
+                <!-- Title -->
+                <TextBlock Text="{i18n:Localize PDV_Dlg_ChangeTitle}"
+                           FontSize="24" FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="#333" />
+
+                <!-- Sale Total -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{i18n:Localize PDV_Dlg_SaleTotal}"
+                               FontSize="16" Foreground="#666"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding Total, StringFormat='{}{0:C}'}"
+                               FontSize="18" FontWeight="SemiBold"
+                               Foreground="#333" />
+                </Grid>
+
+                <!-- Amount Received -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{i18n:Localize PDV_Dlg_AmountReceived}"
+                               FontSize="16" Foreground="#666"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding AmountPaid, StringFormat='{}{0:C}'}"
+                               FontSize="18" FontWeight="SemiBold"
+                               Foreground="#333" />
+                </Grid>
+
+                <Separator Margin="0,4" />
+
+                <!-- Change Value - Big and prominent -->
+                <Border Background="#E8F5E9" CornerRadius="8" Padding="20,16">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{i18n:Localize PDV_Dlg_ChangeValue}"
+                                   FontSize="16" Foreground="#2E7D32"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding Change, StringFormat='{}{0:C}'}"
+                                   FontSize="48" FontWeight="Bold"
+                                   Foreground="#2E7D32"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Confirm Button -->
+                <Button Content="{i18n:Localize PDV_Btn_ConfirmChange}"
+                        Command="{Binding DismissChangeDialogCommand}"
+                        Height="48"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        FontSize="16" FontWeight="SemiBold"
+                        Margin="0,8,0,0" />
+            </StackPanel>
         </Border>
     </Border>
     </Panel>

@@ -17,6 +17,97 @@ namespace PDV.Data.Local.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
+            modelBuilder.Entity("PDV.Core.Entities.CashSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("BLOB");
+
+                    b.Property<decimal>("CalculatedBalance")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("ClosingBalance")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OpenedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("OpeningBalance")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("OperatorId")
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SyncState")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("TerminalId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TerminalId", "Status");
+
+                    b.ToTable("CashSessions", (string)null);
+                });
+
+            modelBuilder.Entity("PDV.Core.Entities.CashTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("BLOB");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("CashSessionId")
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OperatorId")
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("SyncState")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CashSessionId");
+
+                    b.ToTable("CashTransactions", (string)null);
+                });
+
             modelBuilder.Entity("PDV.Core.Entities.FiscalConfiguration", b =>
                 {
                     b.Property<Guid>("Id")
@@ -415,6 +506,14 @@ namespace PDV.Data.Local.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("BLOB");
 
+                    b.Property<Guid?>("CashSessionId")
+                        .HasColumnType("BLOB");
+
+                    b.Property<decimal>("Change")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("REAL")
+                        .HasDefaultValue(0m);
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -468,6 +567,8 @@ namespace PDV.Data.Local.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CashSessionId");
+
                     b.ToTable("Sales", (string)null);
                 });
 
@@ -515,6 +616,17 @@ namespace PDV.Data.Local.Migrations
                     b.HasIndex("SaleId");
 
                     b.ToTable("SaleItems", (string)null);
+                });
+
+            modelBuilder.Entity("PDV.Core.Entities.CashTransaction", b =>
+                {
+                    b.HasOne("PDV.Core.Entities.CashSession", "CashSession")
+                        .WithMany("Transactions")
+                        .HasForeignKey("CashSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CashSession");
                 });
 
             modelBuilder.Entity("PDV.Core.Entities.FiscalReprintLog", b =>
@@ -567,6 +679,11 @@ namespace PDV.Data.Local.Migrations
                         .IsRequired();
 
                     b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("PDV.Core.Entities.CashSession", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("PDV.Core.Entities.Sale", b =>

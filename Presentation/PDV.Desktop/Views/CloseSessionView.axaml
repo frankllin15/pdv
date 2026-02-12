@@ -1,0 +1,162 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:i18n="using:PDV.Desktop.I18n"
+             x:Class="PDV.Desktop.Views.CloseSessionView"
+             x:DataType="vm:CloseSessionViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding CloseSessionCommand}" />
+    </UserControl.KeyBindings>
+
+    <Grid Background="#F0F0F0">
+        <!-- Input Panel (before closing) -->
+        <Border Background="White"
+                CornerRadius="12"
+                Padding="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="450"
+                BoxShadow="0 4 20 0 #40000000"
+                IsVisible="{Binding !ShowResult}">
+            <StackPanel Spacing="24">
+                <StackPanel HorizontalAlignment="Center" Spacing="8">
+                    <TextBlock Text="{i18n:Localize Session_Close_Title}"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#FF9800"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{i18n:Localize Session_Close_Subtitle}"
+                               FontSize="14"
+                               Foreground="#757575"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{i18n:Localize Session_Close_CountedLabel}"
+                               FontSize="14"
+                               Foreground="#424242" />
+                    <TextBox Text="{Binding CountedCashBalanceText}"
+                             FontSize="22"
+                             Height="52"
+                             Watermark="0,00"
+                             IsEnabled="{Binding !IsLoading}" />
+                </StackPanel>
+
+                <Border Background="#FFEBEE"
+                        CornerRadius="4"
+                        Padding="12"
+                        IsVisible="{Binding HasError}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#C62828"
+                               FontSize="14"
+                               TextWrapping="Wrap" />
+                </Border>
+
+                <Button Command="{Binding CloseSessionCommand}"
+                        Height="52"
+                        HorizontalAlignment="Stretch"
+                        Background="#FF9800"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        IsEnabled="{Binding !IsLoading}"
+                        HorizontalContentAlignment="Center">
+                    <Panel>
+                        <TextBlock Text="{i18n:Localize Session_Close_Btn}"
+                                   IsVisible="{Binding !IsLoading}"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="{i18n:Localize Session_Close_Loading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   HorizontalAlignment="Center" />
+                    </Panel>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- Result Panel (after closing) -->
+        <Border Background="White"
+                CornerRadius="12"
+                Padding="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="500"
+                MaxWidth="600"
+                BoxShadow="0 4 20 0 #40000000"
+                IsVisible="{Binding ShowResult}">
+            <StackPanel Spacing="16">
+                <TextBlock Text="{i18n:Localize Session_Close_SummaryTitle}"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="#333" />
+
+                <Border Height="1" Background="#E0E0E0" />
+
+                <!-- Balance Details -->
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{i18n:Localize Session_Close_Opening}" FontSize="14" Foreground="#666" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OpeningBalance, StringFormat=R$ {0:N2}}" FontSize="14" FontWeight="SemiBold" />
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{i18n:Localize Session_Close_Supply}" FontSize="14" Foreground="#4CAF50" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TotalSupply, StringFormat=R$ {0:N2}}" FontSize="14" Foreground="#4CAF50" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{i18n:Localize Session_Close_Bleed}" FontSize="14" Foreground="#F44336" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalBleed, StringFormat=R$ {0:N2}}" FontSize="14" Foreground="#F44336" />
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{i18n:Localize Session_Close_SalesCash}" FontSize="14" Foreground="#666" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TotalSalesCash, StringFormat=R$ {0:N2}}" FontSize="14" />
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{i18n:Localize Session_Close_SalesCard}" FontSize="14" Foreground="#666" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding TotalSalesCard, StringFormat=R$ {0:N2}}" FontSize="14" />
+
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{i18n:Localize Session_Close_SalesPix}" FontSize="14" Foreground="#666" />
+                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding TotalSalesPix, StringFormat=R$ {0:N2}}" FontSize="14" />
+
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{i18n:Localize Session_Close_SalesOther}" FontSize="14" Foreground="#666" />
+                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding TotalSalesOther, StringFormat=R$ {0:N2}}" FontSize="14" />
+
+                    <Border Grid.Row="7" Grid.ColumnSpan="2" Height="1" Background="#E0E0E0" Margin="0,8" />
+
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{i18n:Localize Session_Close_Expected}" FontSize="16" FontWeight="Bold" />
+                    <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding ExpectedCashBalance, StringFormat=R$ {0:N2}}" FontSize="16" FontWeight="Bold" />
+
+                    <TextBlock Grid.Row="9" Grid.Column="0" Text="{i18n:Localize Session_Close_Counted}" FontSize="16" FontWeight="Bold" />
+                    <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding CountedBalance, StringFormat=R$ {0:N2}}" FontSize="16" FontWeight="Bold" />
+                </Grid>
+
+                <!-- Difference -->
+                <Panel>
+                    <Border CornerRadius="8" Padding="16"
+                            Background="#E8F5E9"
+                            IsVisible="{Binding IsDifferencePositive}">
+                        <StackPanel HorizontalAlignment="Center" Spacing="4">
+                            <TextBlock Text="{i18n:Localize Session_Close_Difference}" FontSize="14" HorizontalAlignment="Center" Foreground="#666" />
+                            <TextBlock Text="{Binding Difference, StringFormat=R$ {0:N2}}"
+                                       FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#2E7D32" />
+                        </StackPanel>
+                    </Border>
+                    <Border CornerRadius="8" Padding="16"
+                            Background="#FFEBEE"
+                            IsVisible="{Binding !IsDifferencePositive}">
+                        <StackPanel HorizontalAlignment="Center" Spacing="4">
+                            <TextBlock Text="{i18n:Localize Session_Close_Difference}" FontSize="14" HorizontalAlignment="Center" Foreground="#666" />
+                            <TextBlock Text="{Binding Difference, StringFormat=R$ {0:N2}}"
+                                       FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#C62828" />
+                        </StackPanel>
+                    </Border>
+                </Panel>
+
+                <Button Command="{Binding ConfirmCloseCommand}"
+                        Height="48"
+                        HorizontalAlignment="Stretch"
+                        Background="#2196F3"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        HorizontalContentAlignment="Center"
+                        Content="{i18n:Localize Session_Close_Confirm}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

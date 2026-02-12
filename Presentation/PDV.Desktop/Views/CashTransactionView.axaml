@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:i18n="using:PDV.Desktop.I18n"
+             x:Class="PDV.Desktop.Views.CashTransactionView"
+             x:DataType="vm:CashTransactionViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding ConfirmTransactionCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding CancelTransactionCommand}" />
+    </UserControl.KeyBindings>
+
+    <!-- Overlay background -->
+    <Border Background="#80000000"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Border Background="White"
+                CornerRadius="8"
+                Padding="32"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="420"
+                BoxShadow="0 8 32 0 #60000000">
+            <StackPanel Spacing="20">
+                <TextBlock Text="{Binding Title}"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
+
+                <!-- Amount -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{i18n:Localize CashTx_AmountLabel}"
+                               FontSize="14"
+                               Foreground="#424242" />
+                    <TextBox Text="{Binding AmountText}"
+                             FontSize="20"
+                             Height="48"
+                             Watermark="0,00"
+                             IsEnabled="{Binding !IsLoading}" />
+                </StackPanel>
+
+                <!-- Description -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{i18n:Localize CashTx_DescriptionLabel}"
+                               FontSize="14"
+                               Foreground="#424242" />
+                    <TextBox Text="{Binding Description}"
+                             FontSize="14"
+                             Height="40"
+                             Watermark="{i18n:Localize CashTx_DescriptionWatermark}"
+                             IsEnabled="{Binding !IsLoading}" />
+                </StackPanel>
+
+                <!-- Admin Auth (for Bleed) -->
+                <StackPanel Spacing="8" IsVisible="{Binding RequiresAdminAuth}">
+                    <Border Height="1" Background="#E0E0E0" />
+                    <TextBlock Text="{i18n:Localize CashTx_AdminAuth}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="#F44336" />
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{i18n:Localize CashTx_AdminCode}" FontSize="13" Foreground="#666" />
+                        <TextBox Text="{Binding AdminCode}"
+                                 FontSize="14"
+                                 Height="36"
+                                 IsEnabled="{Binding !IsLoading}" />
+                    </StackPanel>
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{i18n:Localize CashTx_AdminPin}" FontSize="13" Foreground="#666" />
+                        <TextBox Text="{Binding AdminPin}"
+                                 FontSize="14"
+                                 Height="36"
+                                 PasswordChar="*"
+                                 IsEnabled="{Binding !IsLoading}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Error -->
+                <Border Background="#FFEBEE"
+                        CornerRadius="4"
+                        Padding="12"
+                        IsVisible="{Binding HasError}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#C62828"
+                               FontSize="14"
+                               TextWrapping="Wrap" />
+                </Border>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            Spacing="12"
+                            HorizontalAlignment="Center"
+                            Margin="0,8,0,0">
+                    <Button Content="{i18n:Localize CashTx_BtnCancel}"
+                            Command="{Binding CancelTransactionCommand}"
+                            Padding="24,10"
+                            Background="#E0E0E0"
+                            Foreground="#333" />
+                    <Button Content="{i18n:Localize CashTx_BtnConfirm}"
+                            Command="{Binding ConfirmTransactionCommand}"
+                            Padding="24,10"
+                            Background="#4CAF50"
+                            Foreground="White"
+                            IsEnabled="{Binding !IsLoading}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Border>
+</UserControl>

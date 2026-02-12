@@ -14,6 +14,8 @@ public class CloudDbContext(DbContextOptions<CloudDbContext> options) : DbContex
     public DbSet<FiscalTransaction> FiscalTransactions => Set<FiscalTransaction>();
     public DbSet<FiscalConfiguration> FiscalConfigurations => Set<FiscalConfiguration>();
     public DbSet<FiscalReprintLog> FiscalReprintLogs => Set<FiscalReprintLog>();
+    public DbSet<CashSession> CashSessions => Set<CashSession>();
+    public DbSet<CashTransaction> CashTransactions => Set<CashTransaction>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

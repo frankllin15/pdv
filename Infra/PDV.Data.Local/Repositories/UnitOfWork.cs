@@ -4,32 +4,30 @@ using PDV.Data.Local.Context;
 
 namespace PDV.Data.Local.Repositories;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(PdvDbContext context) : IUnitOfWork
 {
-    private readonly PdvDbContext _context;
     private IDbContextTransaction? _transaction;
 
     private IProductRepository? _products;
     private ISaleRepository? _sales;
     private IOperatorRepository? _operators;
+    private ICashSessionRepository? _cashSessions;
+    private ICashTransactionRepository? _cashTransactions;
 
-    public UnitOfWork(PdvDbContext context)
-    {
-        _context = context;
-    }
-
-    public IProductRepository Products => _products ??= new ProductRepository(_context);
-    public ISaleRepository Sales => _sales ??= new SaleRepository(_context);
-    public IOperatorRepository Operators => _operators ??= new OperatorRepository(_context);
+    public IProductRepository Products => _products ??= new ProductRepository(context);
+    public ISaleRepository Sales => _sales ??= new SaleRepository(context);
+    public IOperatorRepository Operators => _operators ??= new OperatorRepository(context);
+    public ICashSessionRepository CashSessions => _cashSessions ??= new CashSessionRepository(context);
+    public ICashTransactionRepository CashTransactions => _cashTransactions ??= new CashTransactionRepository(context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        _transaction = await context.Database.BeginTransactionAsync(cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
@@ -55,6 +53,6 @@ public class UnitOfWork : IUnitOfWork
     public void Dispose()
     {
         _transaction?.Dispose();
-        _context.Dispose();
+        context.Dispose();
     }
 }
