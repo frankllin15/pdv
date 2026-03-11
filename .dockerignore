@@ -1,0 +1,10 @@
+.git
+**/bin
+**/obj
+**/TestResults
+Tests/
+*.md
+.github/
+.vscode/
+.vs/
+nul

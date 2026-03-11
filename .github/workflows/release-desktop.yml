@@ -1,0 +1,103 @@
+name: Release Desktop
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "informational=$TAG+${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          if [[ "$TAG" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore
+        run: dotnet restore PDV.sln
+
+      - name: Build
+        run: >
+          dotnet build PDV.sln -c Release --no-restore
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:InformationalVersion=${{ steps.version.outputs.informational }}
+
+      - name: Test
+        run: dotnet test Tests/PDV.Tests/PDV.Tests.csproj -c Release --no-build
+
+      - name: Publish Desktop
+        run: >
+          dotnet publish Presentation/PDV.Desktop/PDV.Desktop.csproj
+          -c Release
+          --no-build
+          -r win-x64
+          --self-contained
+          -p:PublishSingleFile=true
+          -o publish/desktop
+
+      - name: Install Velopack CLI
+        run: dotnet tool install -g vpk
+
+      - name: Pack with Velopack
+        run: >
+          vpk pack
+          --packId PDV
+          --packVersion ${{ steps.version.outputs.version }}
+          --packDir publish/desktop
+          --mainExe PDV.Desktop.exe
+          --outputDir releases
+
+      - name: Generate release notes
+        id: notes
+        shell: bash
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            NOTES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --no-merges)
+          else
+            NOTES=$(git log --pretty=format:"- %s" --no-merges -20)
+          fi
+          {
+            echo "notes<<EOF"
+            echo "$NOTES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PDV Desktop v${{ steps.version.outputs.version }}
+          body: |
+            ## Changes
+            ${{ steps.notes.outputs.notes }}
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          files: releases/*
