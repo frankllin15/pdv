@@ -58,10 +58,11 @@ jobs:
         run: >
           dotnet publish Presentation/PDV.Desktop/PDV.Desktop.csproj
           -c Release
-          --no-build
           -r win-x64
           --self-contained
           -p:PublishSingleFile=true
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:InformationalVersion=${{ steps.version.outputs.informational }}
           -o publish/desktop
 
       - name: Install Velopack CLI

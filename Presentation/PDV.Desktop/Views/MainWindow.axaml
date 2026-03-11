@@ -5,6 +5,7 @@
         xmlns:i18n="using:PDV.Desktop.I18n"
         x:Class="PDV.Desktop.Views.MainWindow"
         x:DataType="vm:MainViewModel"
+        Icon="/Assets/icon.ico"
         Title="{i18n:Localize Nav_Lbl_WindowTitle}"
         Width="1024" Height="768"
         MinWidth="800" MinHeight="600"
