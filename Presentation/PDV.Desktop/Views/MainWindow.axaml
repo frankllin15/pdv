@@ -18,6 +18,7 @@
         <KeyBinding Gesture="F7" Command="{Binding NavigateToCloseSessionCommand}" />
         <KeyBinding Gesture="F8" Command="{Binding OpenSupplyDialogCommand}" />
         <KeyBinding Gesture="F9" Command="{Binding OpenBleedDialogCommand}" />
+        <KeyBinding Gesture="F5" Command="{Binding NavigateToReportsCommand}" />
     </Window.KeyBindings>
 
     <Window.DataTemplates>
@@ -47,6 +48,9 @@
         </DataTemplate>
         <DataTemplate DataType="vm:CloseSessionViewModel">
             <views:CloseSessionView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ReportsViewModel">
+            <views:ReportsView />
         </DataTemplate>
     </Window.DataTemplates>
 
@@ -252,6 +256,16 @@
                                         Margin="24,0,8,0"
                                         Padding="16,10">
                                     <TextBlock Text="{i18n:Localize Nav_Btn_FiscalHistory}" FontSize="13" />
+                                </Button>
+                                <Button Command="{Binding NavigateToReportsCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="{Binding IsReportsActive, Converter={x:Static views:MainWindow.SidebarActiveBrushConverter}}"
+                                        Foreground="#CE93D8"
+                                        CornerRadius="4"
+                                        Margin="24,0,8,0"
+                                        Padding="16,10">
+                                    <TextBlock Text="{i18n:Localize Nav_Btn_Reports}" FontSize="13" />
                                 </Button>
                                 <Border Height="1" Background="#444" Margin="24,4,8,4" />
                                 <Button Command="{Binding OpenSupplyDialogCommand}"

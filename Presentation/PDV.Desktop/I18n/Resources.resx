@@ -564,4 +564,21 @@
   <data name="Receipt_Msg_NfceContingency" xml:space="preserve"><value>NFC-e {0} (Contingencia)</value></data>
   <data name="Receipt_Msg_NfceNormal" xml:space="preserve"><value>NFC-e {0}</value></data>
   <data name="Receipt_Msg_NoContent" xml:space="preserve"><value>Nenhum conteudo para imprimir</value></data>
+
+  <!-- ==================== REPORTS ==================== -->
+  <data name="Reports_Lbl_Title" xml:space="preserve"><value>Relatorios</value></data>
+  <data name="Reports_Lbl_Subtitle" xml:space="preserve"><value>Gerar e exportar relatorios em CSV</value></data>
+  <data name="Reports_Lbl_SelectReport" xml:space="preserve"><value>Tipo de Relatorio</value></data>
+  <data name="Reports_Lbl_DateRange" xml:space="preserve"><value>Periodo</value></data>
+  <data name="Reports_Lbl_Hint" xml:space="preserve"><value>Selecione o tipo de relatorio e clique em Gerar CSV</value></data>
+  <data name="Reports_Btn_Generate" xml:space="preserve"><value>Gerar CSV</value></data>
+  <data name="Reports_Msg_Generating" xml:space="preserve"><value>Gerando relatorio...</value></data>
+  <data name="Reports_Msg_Success" xml:space="preserve"><value>Relatorio salvo: {0}</value></data>
+  <data name="Reports_Msg_NoData" xml:space="preserve"><value>Nenhum dado encontrado para o periodo selecionado</value></data>
+  <data name="Reports_Msg_Error" xml:space="preserve"><value>Erro ao gerar relatorio: {0}</value></data>
+  <data name="Reports_Type_SalesByPeriod" xml:space="preserve"><value>Vendas por Periodo</value></data>
+  <data name="Reports_Type_RevenueByPayment" xml:space="preserve"><value>Receita por Forma de Pagamento</value></data>
+  <data name="Reports_Type_StockPosition" xml:space="preserve"><value>Posicao de Estoque</value></data>
+  <data name="Nav_Btn_Reports" xml:space="preserve"><value>Relatorios</value></data>
+  <data name="Session_Btn_PrintClosing" xml:space="preserve"><value>Imprimir Fechamento</value></data>
 </root>

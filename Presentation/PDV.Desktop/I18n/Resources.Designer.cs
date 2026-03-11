@@ -4001,5 +4001,95 @@ namespace PDV.Desktop.I18n {
                 return ResourceManager.GetString("Sales_Status_InProgress", resourceCulture);
             }
         }
+
+        internal static string Reports_Lbl_Title {
+            get {
+                return ResourceManager.GetString("Reports_Lbl_Title", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Lbl_Subtitle {
+            get {
+                return ResourceManager.GetString("Reports_Lbl_Subtitle", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Lbl_SelectReport {
+            get {
+                return ResourceManager.GetString("Reports_Lbl_SelectReport", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Lbl_DateRange {
+            get {
+                return ResourceManager.GetString("Reports_Lbl_DateRange", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Lbl_Hint {
+            get {
+                return ResourceManager.GetString("Reports_Lbl_Hint", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Btn_Generate {
+            get {
+                return ResourceManager.GetString("Reports_Btn_Generate", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Msg_Generating {
+            get {
+                return ResourceManager.GetString("Reports_Msg_Generating", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Msg_Success {
+            get {
+                return ResourceManager.GetString("Reports_Msg_Success", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Msg_NoData {
+            get {
+                return ResourceManager.GetString("Reports_Msg_NoData", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Msg_Error {
+            get {
+                return ResourceManager.GetString("Reports_Msg_Error", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Type_SalesByPeriod {
+            get {
+                return ResourceManager.GetString("Reports_Type_SalesByPeriod", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Type_RevenueByPayment {
+            get {
+                return ResourceManager.GetString("Reports_Type_RevenueByPayment", resourceCulture);
+            }
+        }
+
+        internal static string Reports_Type_StockPosition {
+            get {
+                return ResourceManager.GetString("Reports_Type_StockPosition", resourceCulture);
+            }
+        }
+
+        internal static string Nav_Btn_Reports {
+            get {
+                return ResourceManager.GetString("Nav_Btn_Reports", resourceCulture);
+            }
+        }
+
+        internal static string Session_Btn_PrintClosing {
+            get {
+                return ResourceManager.GetString("Session_Btn_PrintClosing", resourceCulture);
+            }
+        }
     }
 }

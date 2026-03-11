@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PDV.Desktop.ViewModels"
+             xmlns:conv="using:PDV.Desktop.Converters"
+             xmlns:i18n="using:PDV.Desktop.I18n"
+             x:Class="PDV.Desktop.Views.ReportsView"
+             x:DataType="vm:ReportsViewModel"
+             Background="#F0F0F0">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#7B1FA2" Padding="16">
+            <StackPanel>
+                <TextBlock Text="{i18n:Localize Reports_Lbl_Title}"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="White" />
+                <TextBlock Text="{i18n:Localize Reports_Lbl_Subtitle}"
+                           FontSize="14" Foreground="White" Opacity="0.9" />
+            </StackPanel>
+        </Border>
+
+        <!-- Filters -->
+        <Border Grid.Row="1" Background="White" Padding="16" Margin="16,16,16,0"
+                CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowDefinitions="Auto">
+                <!-- Report Type -->
+                <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                    <TextBlock Text="{i18n:Localize Reports_Lbl_SelectReport}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                    <ComboBox ItemsSource="{Binding ReportTypes}"
+                              SelectedValue="{Binding SelectedReportType}"
+                              SelectedValueBinding="{Binding Value}"
+                              DisplayMemberBinding="{Binding Label}"
+                              Width="200" />
+                </StackPanel>
+
+                <!-- Date Range (hidden for stock position) -->
+                <StackPanel Grid.Column="1" Margin="0,0,16,0"
+                            IsVisible="{Binding ShowDateRange}">
+                    <TextBlock Text="{i18n:Localize Global_Lbl_StartDate}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                    <DatePicker SelectedDate="{Binding StartDate}" Width="140" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Margin="0,0,16,0"
+                            IsVisible="{Binding ShowDateRange}">
+                    <TextBlock Text="{i18n:Localize Global_Lbl_EndDate}" Margin="0,0,0,4" FontSize="12" Foreground="#666" />
+                    <DatePicker SelectedDate="{Binding EndDate}" Width="140" />
+                </StackPanel>
+
+                <!-- Quick Filters -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Bottom"
+                            Spacing="4" Margin="0,0,16,0"
+                            IsVisible="{Binding ShowDateRange}">
+                    <Button Content="{i18n:Localize Global_Lbl_Today}" Command="{Binding SetTodayCommand}" Padding="8,6" />
+                    <Button Content="{i18n:Localize Global_Lbl_ThisWeek}" Command="{Binding SetThisWeekCommand}" Padding="8,6" />
+                    <Button Content="{i18n:Localize Global_Lbl_ThisMonth}" Command="{Binding SetThisMonthCommand}" Padding="8,6" />
+                </StackPanel>
+
+                <!-- Generate Button -->
+                <Button Grid.Column="5"
+                        Content="{i18n:Localize Reports_Btn_Generate}"
+                        Command="{Binding GenerateReportCommand}"
+                        Background="#7B1FA2"
+                        Foreground="White"
+                        Padding="24,8"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Bottom"
+                        IsEnabled="{Binding !IsLoading}" />
+            </Grid>
+        </Border>
+
+        <!-- Center Content Area (placeholder for future preview) -->
+        <Border Grid.Row="2" Margin="16" Background="White" CornerRadius="8"
+                BorderBrush="#E0E0E0" BorderThickness="1"
+                Padding="32">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                <!-- Loading indicator -->
+                <TextBlock Text="{i18n:Localize Reports_Msg_Generating}"
+                           FontSize="16" Foreground="#7B1FA2"
+                           HorizontalAlignment="Center"
+                           IsVisible="{Binding IsLoading}" />
+
+                <!-- Idle hint -->
+                <TextBlock Text="{i18n:Localize Reports_Lbl_Hint}"
+                           FontSize="14" Foreground="#999"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           IsVisible="{Binding !IsLoading}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Padding="12,8" Margin="16,0,16,16"
+                CornerRadius="4"
+                Background="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#FFEBEE|#E8F5E9'}"
+                IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding StatusMessage}"
+                       FontSize="13"
+                       Foreground="{Binding IsError, Converter={x:Static conv:BoolToBrushConverter.Instance}, ConverterParameter='#C62828|#2E7D32'}" />
+        </Border>
+    </Grid>
+</UserControl>

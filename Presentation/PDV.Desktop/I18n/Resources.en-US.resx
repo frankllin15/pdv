@@ -564,4 +564,21 @@
   <data name="Receipt_Msg_NfceContingency" xml:space="preserve"><value>NFC-e {0} (Contingency)</value></data>
   <data name="Receipt_Msg_NfceNormal" xml:space="preserve"><value>NFC-e {0}</value></data>
   <data name="Receipt_Msg_NoContent" xml:space="preserve"><value>No content to print</value></data>
+
+  <!-- ==================== REPORTS ==================== -->
+  <data name="Reports_Lbl_Title" xml:space="preserve"><value>Reports</value></data>
+  <data name="Reports_Lbl_Subtitle" xml:space="preserve"><value>Generate and export reports as CSV</value></data>
+  <data name="Reports_Lbl_SelectReport" xml:space="preserve"><value>Report Type</value></data>
+  <data name="Reports_Lbl_DateRange" xml:space="preserve"><value>Date Range</value></data>
+  <data name="Reports_Lbl_Hint" xml:space="preserve"><value>Select the report type and click Generate CSV</value></data>
+  <data name="Reports_Btn_Generate" xml:space="preserve"><value>Generate CSV</value></data>
+  <data name="Reports_Msg_Generating" xml:space="preserve"><value>Generating report...</value></data>
+  <data name="Reports_Msg_Success" xml:space="preserve"><value>Report saved: {0}</value></data>
+  <data name="Reports_Msg_NoData" xml:space="preserve"><value>No data found for the selected period</value></data>
+  <data name="Reports_Msg_Error" xml:space="preserve"><value>Error generating report: {0}</value></data>
+  <data name="Reports_Type_SalesByPeriod" xml:space="preserve"><value>Sales by Period</value></data>
+  <data name="Reports_Type_RevenueByPayment" xml:space="preserve"><value>Revenue by Payment Method</value></data>
+  <data name="Reports_Type_StockPosition" xml:space="preserve"><value>Stock Position</value></data>
+  <data name="Nav_Btn_Reports" xml:space="preserve"><value>Reports</value></data>
+  <data name="Session_Btn_PrintClosing" xml:space="preserve"><value>Print Closing Receipt</value></data>
 </root>

@@ -99,6 +99,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISaleQuery>(_ => new SaleQuery(connectionString));
         services.AddScoped<IOperatorQuery>(_ => new OperatorQuery(connectionString));
         services.AddScoped<ICashSessionQuery>(_ => new CashSessionQuery(connectionString));
+        services.AddScoped<ISalesReportQuery>(_ => new SalesReportQuery(connectionString));
+        services.AddScoped<IStockReportQuery>(_ => new StockReportQuery(connectionString));
     }
 
     private static void AddFiscalServices(IServiceCollection services)
@@ -119,6 +121,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ThermalPrinterService>();
         services.AddSingleton<IReceiptPrinterService>(sp => sp.GetRequiredService<ThermalPrinterService>());
         services.AddSingleton<IThermalPrinterService>(sp => sp.GetRequiredService<ThermalPrinterService>());
+        services.AddSingleton<ICsvExportService, CsvExportService>();
     }
 
     private static void AddSessionServices(IServiceCollection services)
@@ -140,6 +143,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<OpenSessionViewModel>();
         services.AddTransient<CloseSessionViewModel>();
         services.AddTransient<CashTransactionViewModel>();
+        services.AddTransient<ReportsViewModel>();
     }
 
     private static void AddLogging(IServiceCollection services)

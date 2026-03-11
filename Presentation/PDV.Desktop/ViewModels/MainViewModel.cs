@@ -42,6 +42,9 @@ public partial class MainViewModel : ViewModelBase
     private bool _isFiscalHistoryActive;
 
     [ObservableProperty]
+    private bool _isReportsActive;
+
+    [ObservableProperty]
     private bool _isSidebarVisible;
 
     [ObservableProperty]
@@ -191,6 +194,7 @@ public partial class MainViewModel : ViewModelBase
         IsSalesHistoryActive = false;
         IsFiscalConfigActive = false;
         IsFiscalHistoryActive = false;
+        IsReportsActive = false;
     }
 
     [RelayCommand]
@@ -309,6 +313,25 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = viewModel;
         ResetActiveStates();
         IsFiscalHistoryActive = true;
+        IsSidebarVisible = true;
+    }
+
+    [RelayCommand]
+    private void NavigateToReports()
+    {
+        if (!TryNavigateWithConfirmation(DoNavigateToReports))
+            return;
+    }
+
+    private void DoNavigateToReports()
+    {
+        _checkoutViewModel = null;
+        var viewModel = App.Services?.GetRequiredService<ReportsViewModel>()
+            ?? throw new InvalidOperationException("ReportsViewModel not registered");
+
+        CurrentView = viewModel;
+        ResetActiveStates();
+        IsReportsActive = true;
         IsSidebarVisible = true;
     }
 

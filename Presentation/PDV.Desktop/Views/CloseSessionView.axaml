@@ -147,15 +147,38 @@
                     </Border>
                 </Panel>
 
-                <Button Command="{Binding ConfirmCloseCommand}"
-                        Height="48"
-                        HorizontalAlignment="Stretch"
-                        Background="#2196F3"
-                        Foreground="White"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        HorizontalContentAlignment="Center"
-                        Content="{i18n:Localize Session_Close_Confirm}" />
+                <!-- Print Status -->
+                <Border Background="#E3F2FD"
+                        CornerRadius="4"
+                        Padding="8"
+                        IsVisible="{Binding PrintStatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                    <TextBlock Text="{Binding PrintStatusMessage}"
+                               Foreground="#1565C0"
+                               FontSize="13"
+                               HorizontalAlignment="Center" />
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Stretch">
+                    <Button Command="{Binding PrintClosingReceiptCommand}"
+                            Height="48"
+                            HorizontalAlignment="Stretch"
+                            Background="#7B1FA2"
+                            Foreground="White"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            HorizontalContentAlignment="Center"
+                            Content="{i18n:Localize Session_Btn_PrintClosing}"
+                            Padding="20,0" />
+                    <Button Command="{Binding ConfirmCloseCommand}"
+                            Height="48"
+                            HorizontalAlignment="Stretch"
+                            Background="#2196F3"
+                            Foreground="White"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            HorizontalContentAlignment="Center"
+                            Content="{i18n:Localize Session_Close_Confirm}" />
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>
