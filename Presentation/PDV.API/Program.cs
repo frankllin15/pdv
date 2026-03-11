@@ -86,7 +86,8 @@ var syncOptions = new SyncOptions
     DisableConstraintsOnApplyChanges = true
 };
 
-builder.Services.AddSyncServer<SqlSyncProvider>(connectionString, syncSetup, syncOptions);
+var syncProvider = new SqlSyncProvider(connectionString);
+builder.Services.AddSyncServer(syncProvider, syncSetup, syncOptions);
 
 // CORS for Desktop client
 builder.Services.AddCors(options =>
